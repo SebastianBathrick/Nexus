@@ -2,6 +2,16 @@ namespace Cemble;
 
 class Lexer
 {
+    static readonly IReadOnlyDictionary<string, TokenType> ReservedKeywords = new Dictionary<string, TokenType>()
+    {
+        {"float", TokenType.FloatKeyword },
+        {"int", TokenType.IntKeyword },
+        {"string", TokenType.StringKeyword },
+        {"bool", TokenType.BoolKeyword },
+        {"true", TokenType.TrueKeyword },
+        {"false", TokenType.FalseKeyword }
+    };
+    
     public static IReadOnlyList<Token> Lex(string srcCode)
     {
         var tokens = new List<Token>();
@@ -34,7 +44,7 @@ class Lexer
         while (stream.IsCharAlpha() || stream.IsCharUnderscore() || stream.IsCharNumeric())
             builder.Append(stream.ReadNextChar());
 
-        if (SyntaxSpecSheet.ReservedKeywords.TryGetValue(builder.ToString(), out TokenType keywordType))
+        if (ReservedKeywords.TryGetValue(builder.ToString(), out TokenType keywordType))
             return builder.Build(keywordType);
 
         return builder.Build();
@@ -69,7 +79,7 @@ class Lexer
     }
 }
 
-struct Token
+internal struct Token
 {
     // Return empty string each time, because the class should only retrieve/store the plaintext of specific token types
     public string Plaintext => _plaintext ?? string.Empty;
@@ -84,7 +94,7 @@ struct Token
     }
 }
 
-enum TokenType
+internal enum TokenType
 {
     None,
     IntLiteral,
