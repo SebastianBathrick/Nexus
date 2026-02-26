@@ -33,6 +33,14 @@ public class CharStreamTests
     }
 
     [Test]
+    public void Constructor_InvalidCharacterAtIndexZero_ThrowsArgumentException()
+    {
+        var ex = Assert.Throws<ArgumentException>(() => new CharStream("!abc"));
+        Assert.That(ex!.Message, Does.Contain("!"));
+        Assert.That(ex.Message, Does.Contain("0"));
+    }
+
+    [Test]
     public void Constructor_InvalidCharacter_ErrorMessageContainsCharacterAndIndex()
     {
         var ex = Assert.Throws<ArgumentException>(() => new CharStream("abc!def"));
@@ -41,33 +49,9 @@ public class CharStreamTests
     }
 
     [Test]
-    public void Constructor_NullExtraAllowedChars_DoesNotThrow()
+    public void Constructor_UnderscoreAndDecimal_DoesNotThrow()
     {
-        Assert.DoesNotThrow(() => new CharStream("hello", null));
-    }
-
-    [Test]
-    public void Constructor_ExtraAllowedChars_PermitsSpecifiedCharacters()
-    {
-        Assert.DoesNotThrow(() => new CharStream("hello!", ['!']));
-    }
-
-    [Test]
-    public void Constructor_ExtraAllowedChars_StillRejectsOtherInvalidCharacters()
-    {
-        Assert.Throws<ArgumentException>(() => new CharStream("hello!@", ['!']));
-    }
-
-    [Test]
-    public void Constructor_MultipleExtraAllowedChars_PermitsAllSpecified()
-    {
-        Assert.DoesNotThrow(() => new CharStream("a+b-c", ['+', '-']));
-    }
-
-    [Test]
-    public void Constructor_EmptyExtraAllowedChars_BehavesLikeDefault()
-    {
-        Assert.Throws<ArgumentException>(() => new CharStream("hello!", []));
+        Assert.DoesNotThrow(() => new CharStream("_hello 3.14"));
     }
 
     // IsCharInStream
@@ -201,6 +185,7 @@ public class CharStreamTests
     [TestCase("0")]
     [TestCase("9")]
     [TestCase(" ")]
+    [TestCase("_")]
     public void IsCharAlpha_NonAlphaChar_ReturnsFalse(string input)
     {
         var stream = new CharStream(input);
@@ -241,5 +226,56 @@ public class CharStreamTests
     {
         var stream = new CharStream("");
         Assert.That(stream.IsCharWhitespace(), Is.False);
+    }
+
+    // IsCharUnderscore
+
+    [Test]
+    public void IsCharUnderscore_Underscore_ReturnsTrue()
+    {
+        var stream = new CharStream("_");
+        Assert.That(stream.IsCharUnderscore(), Is.True);
+    }
+
+    [TestCase("a")]
+    [TestCase("1")]
+    [TestCase(" ")]
+    public void IsCharUnderscore_NonUnderscore_ReturnsFalse(string input)
+    {
+        var stream = new CharStream(input);
+        Assert.That(stream.IsCharUnderscore(), Is.False);
+    }
+
+    [Test]
+    public void IsCharUnderscore_EmptyStream_ReturnsFalse()
+    {
+        var stream = new CharStream("");
+        Assert.That(stream.IsCharUnderscore(), Is.False);
+    }
+
+    // IsCharDecimal
+
+    [Test]
+    public void IsCharDecimal_Dot_ReturnsTrue()
+    {
+        var stream = new CharStream(".");
+        Assert.That(stream.IsCharDot(), Is.True);
+    }
+
+    [TestCase("a")]
+    [TestCase("1")]
+    [TestCase(" ")]
+    [TestCase("_")]
+    public void IsCharDecimal_NonDot_ReturnsFalse(string input)
+    {
+        var stream = new CharStream(input);
+        Assert.That(stream.IsCharDot(), Is.False);
+    }
+
+    [Test]
+    public void IsCharDecimal_EmptyStream_ReturnsFalse()
+    {
+        var stream = new CharStream("");
+        Assert.That(stream.IsCharDot(), Is.False);
     }
 }

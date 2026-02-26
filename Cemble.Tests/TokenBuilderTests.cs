@@ -106,6 +106,13 @@ public class TokenBuilderTests
     }
 
     [Test]
+    public void Build_WithSameTypeArg_WhenInternalTypeIsAlreadySet_ThrowsInvalidOperationException()
+    {
+        var builder = new TokenBuilder(TokenType.IntLiteral);
+        Assert.Throws<InvalidOperationException>(() => builder.Build(TokenType.IntLiteral));
+    }
+
+    [Test]
     public void Build_BothNone_ThrowsInvalidOperationException()
     {
         var builder = new TokenBuilder();

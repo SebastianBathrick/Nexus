@@ -5,7 +5,7 @@ class Lexer
     public static IReadOnlyList<Token> Lex(string srcCode)
     {
         var tokens = new List<Token>();
-        var stream = new CharStream(srcCode, ['.']);
+        var stream = new CharStream(srcCode);
 
         while (stream.IsCharInStream())
         {
@@ -15,10 +15,29 @@ class Lexer
                 continue;
             }
 
+            if (stream.IsCharAlpha() || stream.IsCharUnderscore())
+            {
+                tokens.Add(ReadIdentifier(stream));
+                continue;
+            }
+
             stream.ReadNextChar();
         }
 
         return tokens;
+    }
+
+    static Token ReadIdentifier(CharStream stream)
+    {
+        var builder = new TokenBuilder(TokenType.Identifier);
+
+        while (stream.IsCharAlpha() || stream.IsCharUnderscore() || stream.IsCharNumeric())
+            builder.Append(stream.ReadNextChar());
+
+        if (SyntaxSpecSheet.ReservedKeywords.TryGetValue(builder.ToString(), out TokenType keywordType))
+            return builder.Build(keywordType);
+
+        return builder.Build();
     }
 
     static Token ReadNumber(CharStream stream)
@@ -28,7 +47,7 @@ class Lexer
         while (stream.IsCharNumeric())
             builder.Append(stream.ReadNextChar());
 
-        if (!stream.TryPeekChar(out char next) || next != '.')
+        if (!stream.IsCharDot())
             return builder.Build();
 
         // Consume the '.'
@@ -43,7 +62,7 @@ class Lexer
         while (stream.IsCharNumeric())
             builder.Append(stream.ReadNextChar());
 
-        if (stream.TryPeekChar(out char extra) && extra == '.')
+        if (stream.IsCharDot())
             throw new ArgumentException($"Invalid float literal '{builder}' — unexpected '.'");
 
         return builder.Build();
@@ -70,4 +89,11 @@ enum TokenType
     None,
     IntLiteral,
     FloatLiteral,
+    Identifier,
+    IntKeyword,
+    FloatKeyword,
+    StringKeyword,
+    BoolKeyword,
+    TrueKeyword,
+    FalseKeyword
 }

@@ -8,21 +8,20 @@ public class CharStream
     readonly char[] _chars;
     private int _currIndex;
 
-    public CharStream(string srcCode, char[]? extraAllowedChars = null)
+    public CharStream(string srcCode)
     {
         _currIndex = InitialIndex;
         _chars = srcCode.ToCharArray();
-        
 
         while (IsCharInStream())
         {
-            if (extraAllowedChars?.Contains(_chars[_currIndex]) == true || IsCharNumeric() || IsCharAlpha() || IsCharWhitespace())
+            if (IsCharNumeric() || IsCharAlpha() || IsCharWhitespace() || IsCharUnderscore() || IsCharDot())
             {
                 // Ignore return value since all we need to know is if it is valid
                 ReadNextChar();
                 continue;
             }
-            
+
             throw new ArgumentException($"Invalid character '{_chars[_currIndex]}' at index {_currIndex}");
         }
 
@@ -62,8 +61,12 @@ public class CharStream
     }
     
     public bool IsCharNumeric() => TryPeekChar(out var c) && (c >= '0' && c <= '9');
-    
+
     public bool IsCharAlpha() => TryPeekChar(out var c) && (c  >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z');
-    
+
+    public bool IsCharUnderscore() => TryPeekChar(out var c) && c == '_';
+
+    public bool IsCharDot() => TryPeekChar(out var c) && c == '.';
+
     public bool IsCharInStream() => _currIndex < _chars.Length;
 }
