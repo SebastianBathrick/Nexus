@@ -1,4 +1,3 @@
-using Clua.Utilities;
 using Clua.Values;
 namespace Clua.CodeGeneration;
 
@@ -9,7 +8,7 @@ static class VirtualMachine
     public static CluaValue ExecuteCode(CodeObject codeObject)
     {
         var chunkIndex = ChunkStartIndex;
-        var valStack = new FastStack<CluaValue>();
+        var valStack = new Stack<CluaValue>();
 
         while (chunkIndex < codeObject.Length)
         {
@@ -46,6 +45,6 @@ static class VirtualMachine
         }
 
         // Temporarily return value at top of stack if it exists, otherwise return 0
-        return valStack.Any() ? valStack.Pop() : new CluaNumber(0);
+        return valStack.Count > 0 ? valStack.Pop() : new CluaNumber(0);
     }
 }
