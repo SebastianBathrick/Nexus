@@ -18,9 +18,9 @@ static class Parser
 
         while (tkns.IsOfType(TokenType.LogicalAndOperator, TokenType.LogicalOrOperator))
         {
-            var opType = tkns.ReadType() == TokenType.LogicalAndOperator ? OperationType.LogicalAnd : OperationType.LogicalOr;
+            var opType = tkns.ReadType() == TokenType.LogicalAndOperator ? Operator.LogicalAnd : Operator.LogicalOr;
             var right = ParseLogicTerm(tkns);
-            left = new OperationNode(opType, left, right);
+            left = new ExpressionNode(opType, left, right);
         }
         
         return left;
@@ -35,7 +35,7 @@ static class Parser
         {
             var opType = GetComparisonOperationType(tkns.ReadType());
             var right = ParseArithmeticExpression(tkns);
-            left = new OperationNode(opType, left, right);
+            left = new ExpressionNode(opType, left, right);
         }
         
         return left;
@@ -49,7 +49,7 @@ static class Parser
         {
             var opType = GetArithmeticOperationType(tkns.ReadType());
             var right = ParseArithmeticTerm(tkns);
-            left = new OperationNode(opType, left, right);
+            left = new ExpressionNode(opType, left, right);
         }
         
         return left;
@@ -63,7 +63,7 @@ static class Parser
         {
             var opType = GetArithmeticOperationType(tkns.ReadType());
             var right = ParseFactor(tkns);
-            left = new OperationNode(opType, left, right);
+            left = new ExpressionNode(opType, left, right);
         }
         
         return left;
@@ -98,7 +98,7 @@ static class Parser
         if (!tkns.IsOfType(TokenType.NumberLiteral, TokenType.OpenParen))
             throw new ArgumentException($"Invalid negation of factor: {tkns.ReadType()}");
 
-        return new OperationNode(OperationType.Multiply, new NumberLiteralNode(-1), ParseFactor(tkns));
+        return new ExpressionNode(Operator.Multiply, new NumberLiteralNode(-1), ParseFactor(tkns));
     }
     
     static Node ParseNestedExpression(ITokenCollection tkns)
@@ -114,28 +114,28 @@ static class Parser
         return expr;
     }
     
-    static OperationType GetArithmeticOperationType(TokenType tokenType)
+    static Operator GetArithmeticOperationType(TokenType tokenType)
     {
         return tokenType switch
         {
-            TokenType.PlusOperator => OperationType.Add,
-            TokenType.MinusOperator => OperationType.Subtract,
-            TokenType.MultiplyOperator => OperationType.Multiply,
-            TokenType.DivideOperator => OperationType.Divide,
+            TokenType.PlusOperator => Operator.Add,
+            TokenType.MinusOperator => Operator.Subtract,
+            TokenType.MultiplyOperator => Operator.Multiply,
+            TokenType.DivideOperator => Operator.Divide,
             _ => throw new ArgumentException($"Invalid arithmetic operator: {tokenType}")
         };
     }
     
-    static OperationType GetComparisonOperationType(TokenType tokenType)
+    static Operator GetComparisonOperationType(TokenType tokenType)
     {
         return tokenType switch
         {
-            TokenType.GreaterThanOperator => OperationType.GreaterThan,
-            TokenType.GreaterThanOrEqualOperator => OperationType.GreaterThanOrEqual,
-            TokenType.LessThanOperator => OperationType.LessThan,
-            TokenType.LessThanOrEqualOperator => OperationType.LessThanOrEqual,
-            TokenType.EqualityOperator => OperationType.Equality,
-            TokenType.InequalityOperator => OperationType.Inequality,
+            TokenType.GreaterThanOperator => Operator.GreaterThan,
+            TokenType.GreaterThanOrEqualOperator => Operator.GreaterThanOrEqual,
+            TokenType.LessThanOperator => Operator.LessThan,
+            TokenType.LessThanOrEqualOperator => Operator.LessThanOrEqual,
+            TokenType.EqualityOperator => Operator.Equality,
+            TokenType.InequalityOperator => Operator.Inequality,
             _ => throw new ArgumentException($"Invalid comparison operator: {tokenType}")
         };
     }
