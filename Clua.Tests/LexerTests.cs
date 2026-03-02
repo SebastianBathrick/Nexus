@@ -126,6 +126,59 @@ public class LexerTests
         Assert.That(tokens[1].Type, Is.EqualTo(TokenType.Identifier));
         Assert.That(tokens[1].Plaintext, Is.EqualTo("myVar"));
     }
+    // Operators
+
+    static IEnumerable<string> OperatorStrings => SyntaxSpecSheet.ValidOperators.Keys;
+
+    [TestCaseSource(nameof(OperatorStrings))]
+    public void Lex_ValidOperator_ReturnsCorrectOperatorToken(string op)
+    {
+        var expectedType = SyntaxSpecSheet.ValidOperators[op];
+        var tokens = Lexer.Lex(op);
+        Assert.That(tokens.Count, Is.EqualTo(1));
+        Assert.That(tokens[0].Type, Is.EqualTo(expectedType));
+    }
+
+    [Test]
+    public void Lex_InvalidOperatorSequence_ThrowsArgumentException()
+    {
+        Assert.Throws<ArgumentException>(() => Lexer.Lex("+-"));
+    }
+
+    [Test]
+    public void Lex_OperatorBetweenIdentifiers_ReturnsThreeTokens()
+    {
+        var tokens = Lexer.Lex("a+b");
+        Assert.That(tokens.Count, Is.EqualTo(3));
+        Assert.That(tokens[0].Type, Is.EqualTo(TokenType.Identifier));
+        Assert.That(tokens[1].Type, Is.EqualTo(TokenType.PlusOperator));
+        Assert.That(tokens[2].Type, Is.EqualTo(TokenType.Identifier));
+    }
+
+    [Test]
+    public void Lex_OperatorBetweenIntLiterals_ReturnsThreeTokens()
+    {
+        var tokens = Lexer.Lex("1+2");
+        Assert.That(tokens.Count, Is.EqualTo(3));
+        Assert.That(tokens[0].Type, Is.EqualTo(TokenType.IntLiteral));
+        Assert.That(tokens[1].Type, Is.EqualTo(TokenType.PlusOperator));
+        Assert.That(tokens[2].Type, Is.EqualTo(TokenType.IntLiteral));
+    }
+
+    [Test]
+    public void Lex_AssignEquals_ReturnsEqualsOperator()
+    {
+        var tokens = Lexer.Lex("a=b");
+        Assert.That(tokens[1].Type, Is.EqualTo(TokenType.EqualsOperator));
+    }
+
+    [Test]
+    public void Lex_DoubleEquals_ReturnsEqualityOperator()
+    {
+        var tokens = Lexer.Lex("a==b");
+        Assert.That(tokens[1].Type, Is.EqualTo(TokenType.EqualityOperator));
+    }
+
     // Number error cases
 
     [Test]

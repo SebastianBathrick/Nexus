@@ -20,10 +20,10 @@ public class CharStreamTests
     [Test]
     public void Constructor_InvalidCharacter_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => new CharStream("hello!"));
+        Assert.Throws<ArgumentException>(() => new CharStream("hello@"));
     }
 
-    [TestCase("hello!")]
+    [TestCase("hello@")]
     [TestCase("123#")]
     [TestCase("@abc")]
     [TestCase("abc$def")]
@@ -35,16 +35,16 @@ public class CharStreamTests
     [Test]
     public void Constructor_InvalidCharacterAtIndexZero_ThrowsArgumentException()
     {
-        var ex = Assert.Throws<ArgumentException>(() => new CharStream("!abc"));
-        Assert.That(ex!.Message, Does.Contain("!"));
+        var ex = Assert.Throws<ArgumentException>(() => new CharStream(CharStream.InvalidChar + "abc"));
+        Assert.That(ex!.Message, Does.Contain(CharStream.InvalidChar));
         Assert.That(ex.Message, Does.Contain("0"));
     }
 
     [Test]
     public void Constructor_InvalidCharacter_ErrorMessageContainsCharacterAndIndex()
     {
-        var ex = Assert.Throws<ArgumentException>(() => new CharStream("abc!def"));
-        Assert.That(ex!.Message, Does.Contain("!"));
+        var ex = Assert.Throws<ArgumentException>(() => new CharStream("abc@def"));
+        Assert.That(ex!.Message, Does.Contain("@"));
         Assert.That(ex.Message, Does.Contain("3"));
     }
 
@@ -52,6 +52,12 @@ public class CharStreamTests
     public void Constructor_UnderscoreAndDecimal_DoesNotThrow()
     {
         Assert.DoesNotThrow(() => new CharStream("_hello 3.14"));
+    }
+
+    [Test]
+    public void Constructor_ValidOperatorCharacters_DoesNotThrow()
+    {
+        Assert.DoesNotThrow(() => new CharStream("+ - * / = ! < > & |"));
     }
 
     // IsCharInStream
@@ -277,5 +283,41 @@ public class CharStreamTests
     {
         var stream = new CharStream("");
         Assert.That(stream.IsCharDot(), Is.False);
+    }
+
+    // IsCharOperator
+
+    [TestCase("+")]
+    [TestCase("-")]
+    [TestCase("*")]
+    [TestCase("/")]
+    [TestCase("=")]
+    [TestCase("!")]
+    [TestCase("<")]
+    [TestCase(">")]
+    [TestCase("&")]
+    [TestCase("|")]
+    public void IsCharOperator_OperatorChar_ReturnsTrue(string input)
+    {
+        var stream = new CharStream(input);
+        Assert.That(stream.IsCharOperator(), Is.True);
+    }
+
+    [TestCase("a")]
+    [TestCase("1")]
+    [TestCase(" ")]
+    [TestCase("_")]
+    [TestCase(".")]
+    public void IsCharOperator_NonOperatorChar_ReturnsFalse(string input)
+    {
+        var stream = new CharStream(input);
+        Assert.That(stream.IsCharOperator(), Is.False);
+    }
+
+    [Test]
+    public void IsCharOperator_EmptyStream_ReturnsFalse()
+    {
+        var stream = new CharStream("");
+        Assert.That(stream.IsCharOperator(), Is.False);
     }
 }

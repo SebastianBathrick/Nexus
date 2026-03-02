@@ -4,27 +4,36 @@ class Lexer
 {
     public static IReadOnlyList<Token> Lex(string srcCode)
     {
-        var tokens = new List<Token>();
+        var tknList = new List<Token>();
         var stream = new CharStream(srcCode);
 
         while (stream.IsCharInStream())
         {
-            if (stream.IsCharNumeric())
+            Token tkn;
+            
+            switch (stream.GetCharType())
             {
-                tokens.Add(ReadNumber(stream));
-                continue;
+                case CharType.Numeric: 
+                    tkn = ReadNumber(stream); 
+                    break;
+                case CharType.Operator:
+                    tkn = ReadOperator(stream);
+                    break;
+                case CharType.Alpha: 
+                case CharType.Underscore: 
+                    tkn = ReadIdentifier(stream); 
+                    break;
+                case CharType.Whitespace:
+                    stream.IgnoreChar();
+                    continue;
+                case CharType.Invalid: default:
+                    throw new ArgumentException($"Invalid character '{stream.ReadNextChar()}'");
             }
-
-            if (stream.IsCharAlpha() || stream.IsCharUnderscore())
-            {
-                tokens.Add(ReadIdentifier(stream));
-                continue;
-            }
-
-            stream.ReadNextChar();
+            
+            tknList.Add(tkn);
         }
 
-        return tokens;
+        return tknList;
     }
 
     static Token ReadIdentifier(CharStream stream)
@@ -40,18 +49,33 @@ class Lexer
         return builder.Build();
     }
 
+    static Token ReadOperator(CharStream stream)
+    {
+        var builder = new TokenBuilder();
+        
+        while (stream.IsCharOperator())
+            builder.Append(stream.ReadNextChar());
+        
+        if (!SyntaxSpecSheet.ValidOperators.TryGetValue(builder.ToString(), out var operatorType))
+            throw new ArgumentException($"Invalid operator '{builder}'");
+            
+        builder.SetType(operatorType);
+        return builder.Build();
+    }
+
     static Token ReadNumber(CharStream stream)
     {
         var builder = new TokenBuilder(TokenType.IntLiteral);
 
         while (stream.IsCharNumeric())
             builder.Append(stream.ReadNextChar());
-
+        
+        // If there wasn't a dot return an integer literal token
         if (!stream.IsCharDot())
             return builder.Build();
 
         // Consume the '.'
-        stream.ReadNextChar();
+        stream.IgnoreChar();
 
         if (!stream.IsCharNumeric())
             throw new ArgumentException($"Invalid float literal '{builder}.' — expected digit after decimal point");

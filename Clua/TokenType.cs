@@ -11,5 +11,19 @@ internal enum TokenType
     StringKeyword,
     BoolKeyword,
     TrueKeyword,
-    FalseKeyword
+    FalseKeyword,
+    PlusOperator,
+    MinusOperator,
+    MultiplyOperator,
+    DivideOperator,
+    EqualsOperator,
+    EqualityOperator,
+    InequalityOperator,
+    LessThanOperator,
+    GreaterThanOperator,
+    LessThanOrEqualOperator,
+    GreaterThanOrEqualOperator,
+    LogicalAndOperator,
+    LogicalOrOperator,
+    LogicalNotOperator
 }

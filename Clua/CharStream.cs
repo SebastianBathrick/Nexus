@@ -1,12 +1,12 @@
 namespace Clua;
 
-public class CharStream
+class CharStream
 {
     const int InitialIndex = 0;
-    const char InvalidChar = '\0';
+    public const char InvalidChar = '\0';
     
     readonly char[] _chars;
-    private int _currIndex;
+    int _currIndex;
 
     public CharStream(string srcCode)
     {
@@ -15,7 +15,7 @@ public class CharStream
 
         while (IsCharInStream())
         {
-            if (IsCharNumeric() || IsCharAlpha() || IsCharWhitespace() || IsCharUnderscore() || IsCharDot())
+            if (GetCharType() != CharType.Invalid)
             {
                 // Ignore return value since all we need to know is if it is valid
                 ReadNextChar();
@@ -28,6 +28,8 @@ public class CharStream
         _currIndex = InitialIndex;
     }
 
+    public void IgnoreChar() => ReadNextChar();
+    
     public char ReadNextChar()
     {
         if (_currIndex >= _chars.Length)
@@ -35,7 +37,7 @@ public class CharStream
 
         return _chars[_currIndex++];
     }
-
+    
     public bool TryPeekChar(out char c)
     {
         if (_currIndex >= _chars.Length)
@@ -48,25 +50,30 @@ public class CharStream
         return true;
     }
 
-    public bool IsCharWhitespace()
+    public CharType GetCharType()
     {
-        if (!TryPeekChar(out char c))
-            return false;
-
-        return c switch
-        {
-            ' ' or '\t' or '\n' or '\r' or '\v' or '\f' => true,
-            _ => false
-        };
+        if (!TryPeekChar(out var c))
+            return CharType.Invalid;
+        return SyntaxSpecSheet.GetCharType(c);
     }
+
+    #region Char Type Flag Methods
+
+    public bool IsCharWhitespace() => GetCharType() == CharType.Whitespace;
     
-    public bool IsCharNumeric() => TryPeekChar(out var c) && (c >= '0' && c <= '9');
+    public bool IsCharNumeric() => GetCharType() == CharType.Numeric;
 
-    public bool IsCharAlpha() => TryPeekChar(out var c) && (c  >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z');
+    public bool IsCharAlpha() => GetCharType() == CharType.Alpha;
 
-    public bool IsCharUnderscore() => TryPeekChar(out var c) && c == '_';
+    public bool IsCharUnderscore() => GetCharType() == CharType.Underscore;
 
-    public bool IsCharDot() => TryPeekChar(out var c) && c == '.';
+    public bool IsCharDot() => GetCharType() == CharType.Dot;
+
+    public bool IsCharOperator() => GetCharType() == CharType.Operator;
 
     public bool IsCharInStream() => _currIndex < _chars.Length;
+
+    #endregion
 }
+
+    public enum CharType { Numeric, Alpha, Underscore, Whitespace, Dot, Operator, Invalid}
