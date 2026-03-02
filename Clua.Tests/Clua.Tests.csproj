@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Cemble\Cemble.csproj" />
+      <ProjectReference Include="..\Clua\Clua.csproj" />
     </ItemGroup>
 
 </Project>
