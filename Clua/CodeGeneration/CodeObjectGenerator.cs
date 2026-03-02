@@ -34,11 +34,12 @@ class CodeObjectGenerator
         var numVal = numNode.GetNumberValue();
         var constIndex = _constsCache.FindIndex(x => x == numVal);
 
-        if (constIndex != -1)
-            return new Instruction(Operation.PushConstant, CacheType.Constant, constIndex);
-        
-        _constsCache.Add(new CluaNumber(numVal));
-        constIndex = _constsCache.Count - 1;
+        if (constIndex == -1)
+        {
+            _constsCache.Add(new CluaNumber(numVal));
+            constIndex = _constsCache.Count - 1;
+        }
+
         return new Instruction(Operation.PushConstant, CacheType.Constant, constIndex);
     }
 
