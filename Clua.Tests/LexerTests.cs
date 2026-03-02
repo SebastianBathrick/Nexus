@@ -11,7 +11,13 @@ class TokenCollection : ITokenCollection
 
     public void Add(Token token) => _tokens.Add(token);
 
-    public bool IsMatchAndConsumed(TokenType tokenType) => throw new NotImplementedException();
+    public Token Read() => throw new NotImplementedException();
+
+    public TokenType ReadType() => throw new NotImplementedException();
+
+    public TokenType PeekType() => throw new NotImplementedException();
+
+    public bool IsOfTypeAndConsume(TokenType tokenType) => throw new NotImplementedException();
 
     public bool IsOfType(TokenType tokenType) => throw new NotImplementedException();
 

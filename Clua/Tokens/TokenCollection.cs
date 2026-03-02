@@ -16,7 +16,25 @@ class TokenCollection : ITokenCollection
         _tokens.Add(token);
     }
 
-    public bool IsMatchAndConsumed(TokenType tokenType)
+    public Token Read()
+    {
+        if (_index >= _tokens.Count)
+            throw new InvalidOperationException("No tokens remaining.");
+
+        return _tokens[_index++];
+    }
+
+    public TokenType ReadType() => Read().Type;
+
+    public TokenType PeekType()
+    {
+        if (_index >= _tokens.Count)
+            throw new InvalidOperationException("No tokens remaining.");
+
+        return _tokens[_index].Type;
+    }
+
+    public bool IsOfTypeAndConsume(TokenType tokenType)
     {
         if (_index >= _tokens.Count || _tokens[_index].Type != tokenType)
             return false;
