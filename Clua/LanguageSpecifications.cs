@@ -1,6 +1,6 @@
 namespace Clua;
 
-internal class SyntaxSpecSheet
+internal class LanguageSpecifications
 {
     public static readonly IReadOnlyDictionary<string, TokenType> ReservedKeywords = new Dictionary<string, TokenType>()
     {

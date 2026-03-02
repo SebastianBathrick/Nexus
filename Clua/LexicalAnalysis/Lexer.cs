@@ -43,7 +43,7 @@ class Lexer
         while (stream.IsCharAlpha() || stream.IsCharUnderscore() || stream.IsCharNumeric())
             builder.Append(stream.ReadNextChar());
 
-        if (SyntaxSpecSheet.ReservedKeywords.TryGetValue(builder.ToString(), out TokenType keywordType))
+        if (LanguageSpecifications.ReservedKeywords.TryGetValue(builder.ToString(), out TokenType keywordType))
             builder.SetType(keywordType);
 
         return builder.Build();
@@ -56,7 +56,7 @@ class Lexer
         while (stream.IsCharOperator())
             builder.Append(stream.ReadNextChar());
         
-        if (!SyntaxSpecSheet.ValidOperators.TryGetValue(builder.ToString(), out var operatorType))
+        if (!LanguageSpecifications.ValidOperators.TryGetValue(builder.ToString(), out var operatorType))
             throw new ArgumentException($"Invalid operator '{builder}'");
             
         builder.SetType(operatorType);

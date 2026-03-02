@@ -74,12 +74,12 @@ public class LexerTests
 
     // Keywords
 
-    static IEnumerable<string> KeywordStrings => SyntaxSpecSheet.ReservedKeywords.Keys;
+    static IEnumerable<string> KeywordStrings => LanguageSpecifications.ReservedKeywords.Keys;
 
     [TestCaseSource(nameof(KeywordStrings))]
     public void Lex_ReservedKeyword_ReturnsKeywordToken(string keyword)
     {
-        var expectedType = SyntaxSpecSheet.ReservedKeywords[keyword];
+        var expectedType = LanguageSpecifications.ReservedKeywords[keyword];
         var tokens = Lexer.Lex(keyword);
         Assert.That(tokens.Count, Is.EqualTo(1));
         Assert.That(tokens[0].Type, Is.EqualTo(expectedType));
@@ -105,7 +105,7 @@ public class LexerTests
     [Test]
     public void Lex_MultipleKeywords_ReturnsCorrectTypes()
     {
-        var keywords = SyntaxSpecSheet.ReservedKeywords.ToList();
+        var keywords = LanguageSpecifications.ReservedKeywords.ToList();
         if (keywords.Count < 2) return;
 
         var input = string.Join(" ", keywords.Select(k => k.Key));
@@ -119,7 +119,7 @@ public class LexerTests
     [TestCaseSource(nameof(KeywordStrings))]
     public void Lex_KeywordMixedWithIdentifier_ReturnsBothCorrectly(string keyword)
     {
-        var expectedType = SyntaxSpecSheet.ReservedKeywords[keyword];
+        var expectedType = LanguageSpecifications.ReservedKeywords[keyword];
         var tokens = Lexer.Lex(keyword + " myVar");
         Assert.That(tokens.Count, Is.EqualTo(2));
         Assert.That(tokens[0].Type, Is.EqualTo(expectedType));
@@ -128,12 +128,12 @@ public class LexerTests
     }
     // Operators
 
-    static IEnumerable<string> OperatorStrings => SyntaxSpecSheet.ValidOperators.Keys;
+    static IEnumerable<string> OperatorStrings => LanguageSpecifications.ValidOperators.Keys;
 
     [TestCaseSource(nameof(OperatorStrings))]
     public void Lex_ValidOperator_ReturnsCorrectOperatorToken(string op)
     {
-        var expectedType = SyntaxSpecSheet.ValidOperators[op];
+        var expectedType = LanguageSpecifications.ValidOperators[op];
         var tokens = Lexer.Lex(op);
         Assert.That(tokens.Count, Is.EqualTo(1));
         Assert.That(tokens[0].Type, Is.EqualTo(expectedType));

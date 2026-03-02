@@ -54,7 +54,7 @@ class CharStream
     {
         if (!TryPeekChar(out var c))
             return CharType.Invalid;
-        return SyntaxSpecSheet.GetCharType(c);
+        return LanguageSpecifications.GetCharType(c);
     }
 
     #region Char Type Flag Methods
