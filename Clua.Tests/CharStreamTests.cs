@@ -1,3 +1,4 @@
+using Clua.LexicalAnalysis;
 namespace Clua.Tests;
 
 [TestFixture]

@@ -1,4 +1,6 @@
 using Clua;
+using Clua.LexicalAnalysis;
+using Clua.Tokens;
 
 namespace Clua.Tests;
 

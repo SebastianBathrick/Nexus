@@ -1,4 +1,5 @@
-namespace Clua;
+using Clua.Tokens;
+namespace Clua.LexicalAnalysis;
 
 class Lexer
 {
@@ -10,11 +11,11 @@ class Lexer
         while (stream.IsCharInStream())
         {
             Token tkn;
-            
+
             switch (stream.GetCharType())
             {
-                case CharType.Numeric: 
-                    tkn = ReadNumber(stream); 
+                case CharType.Numeric:
+                    tkn = ReadNumber(stream);
                     break;
                 case CharType.Operator:
                     tkn = ReadOperator(stream);
@@ -23,17 +24,20 @@ class Lexer
                 case CharType.Underscore:
                     tkn = ReadIdentifier(stream);
                     break;
-                case CharType.OpenParen: case CharType.CloseParen:
-                case CharType.CurlyOpen: case CharType.CurlyClose:
+                case CharType.OpenParen:
+                case CharType.CloseParen:
+                case CharType.CurlyOpen:
+                case CharType.CurlyClose:
                     tkn = ReadDelimiter(stream);
                     break;
                 case CharType.Whitespace:
                     stream.IgnoreChar();
                     continue;
-                case CharType.Invalid: default:
+                case CharType.Invalid:
+                default:
                     throw new ArgumentException($"Invalid character '{stream.ReadNextChar()}'");
             }
-            
+
             tknList.Add(tkn);
         }
 
@@ -58,7 +62,7 @@ class Lexer
         while (stream.IsCharAlpha() || stream.IsCharUnderscore() || stream.IsCharNumeric())
             builder.Append(stream.ReadNextChar());
 
-        if (LanguageSpecifications.ReservedKeywords.TryGetValue(builder.ToString(), out TokenType keywordType))
+        if (LanguageSpecifications.ReservedKeywords.TryGetValue(builder.ToString(), out var keywordType))
             builder.SetType(keywordType);
 
         return builder.Build();
@@ -74,7 +78,7 @@ class Lexer
 
         if (!LanguageSpecifications.Operators.TryGetValue(builder.ToString(), out var operatorType))
             throw new ArgumentException($"Invalid operator '{builder}'");
-            
+
         builder.SetType(operatorType);
         return builder.Build();
     }
@@ -85,7 +89,7 @@ class Lexer
 
         while (stream.IsCharNumeric())
             builder.Append(stream.ReadNextChar());
-        
+
         // If there wasn't a dot return an integer literal token
         if (!stream.IsCharDot())
             return builder.Build();

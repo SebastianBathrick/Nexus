@@ -1,4 +1,4 @@
-namespace Clua;
+namespace Clua.Tokens;
 
 readonly struct Token(TokenType type, string? plaintext = null)
 {

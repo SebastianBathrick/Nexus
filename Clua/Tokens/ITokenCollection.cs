@@ -1,4 +1,4 @@
-namespace Clua;
+namespace Clua.Tokens;
 
 interface ITokenCollection
 {

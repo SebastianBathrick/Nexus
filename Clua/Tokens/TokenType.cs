@@ -1,6 +1,6 @@
-namespace Clua;
+namespace Clua.Tokens;
 
-internal enum TokenType
+enum TokenType
 {
     None,
     IntLiteral,

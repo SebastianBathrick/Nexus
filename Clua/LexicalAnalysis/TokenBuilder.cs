@@ -1,27 +1,27 @@
 using System.Text;
-
-namespace Clua;
+using Clua.Tokens;
+namespace Clua.LexicalAnalysis;
 
 class TokenBuilder(TokenType tokenType = TokenType.None)
 {
-    StringBuilder? _builder = null;
+    StringBuilder? _builder;
     TokenType _tokenType = tokenType;
-    
+
     public bool IsValid => _tokenType != TokenType.None;
-    
+
     public int Length => _builder?.Length ?? 0;
 
     public void SetType(TokenType newType)
     {
         _tokenType = newType;
     }
-    
+
     public void Append(char c)
     {
-        _builder ??= new();
+        _builder ??= new StringBuilder();
         _builder.Append(c);
     }
-    
+
     public bool TryBuild(out Token token, TokenType tokenType = TokenType.None)
     {
         if (!IsValid)
