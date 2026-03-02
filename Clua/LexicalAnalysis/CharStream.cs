@@ -72,6 +72,8 @@ class CharStream
     public bool IsCharOperator() => GetCharType() == CharType.Operator;
 
     public bool IsCharInStream() => _currIndex < _chars.Length;
+    
+    public bool IsCharMinus() => TryPeekChar(out var c) && c == '-';
 
     #endregion
 }

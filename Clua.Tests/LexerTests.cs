@@ -140,9 +140,11 @@ public class LexerTests
     }
 
     [Test]
-    public void Lex_InvalidOperatorSequence_ThrowsArgumentException()
+    public void Lex_InvalidOperatorSequence_ReturnsSeparateMinusToken()
     {
-        Assert.Throws<ArgumentException>(() => Lexer.Lex("+-"));
+        var tkns = Lexer.Lex("a+-b");
+        Assert.That(tkns[1].Type == TokenType.PlusOperator);
+        Assert.That(tkns[2].Type == TokenType.MinusOperator);
     }
 
     [Test]

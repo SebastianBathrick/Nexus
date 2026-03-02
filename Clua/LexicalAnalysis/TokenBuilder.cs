@@ -8,6 +8,8 @@ class TokenBuilder(TokenType tokenType = TokenType.None)
     TokenType _tokenType = tokenType;
     
     public bool IsValid => _tokenType != TokenType.None;
+    
+    public int Length => _builder?.Length ?? 0;
 
     public void SetType(TokenType newType)
     {

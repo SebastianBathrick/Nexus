@@ -65,10 +65,11 @@ class Lexer
     static Token ReadOperator(CharStream stream)
     {
         var builder = new TokenBuilder();
-        
-        while (stream.IsCharOperator())
+
+        // While the next character is an operator, and NOT A TRAILING minus ("+-" will be treated as separate tokens, but "-=" will be one)
+        while (stream.IsCharOperator() && (!stream.IsCharMinus() || builder.Length == 0))
             builder.Append(stream.ReadNextChar());
-        
+
         if (!LanguageSpecifications.ValidOperators.TryGetValue(builder.ToString(), out var operatorType))
             throw new ArgumentException($"Invalid operator '{builder}'");
             
