@@ -23,11 +23,9 @@ class Lexer
                 case CharType.Underscore:
                     tkn = ReadIdentifier(stream);
                     break;
-                case CharType.OpenParen:
-                    tkn = ReadSingleChar(stream, TokenType.OpenParen);
-                    break;
-                case CharType.CloseParen:
-                    tkn = ReadSingleChar(stream, TokenType.CloseParen);
+                case CharType.OpenParen: case CharType.CloseParen:
+                case CharType.CurlyOpen: case CharType.CurlyClose:
+                    tkn = ReadDelimiter(stream);
                     break;
                 case CharType.Whitespace:
                     stream.IgnoreChar();
@@ -42,9 +40,13 @@ class Lexer
         return tknList;
     }
 
-    static Token ReadSingleChar(CharStream stream, TokenType type)
+    static Token ReadDelimiter(CharStream stream)
     {
-        var builder = new TokenBuilder(type);
+        var charType = stream.GetCharType();
+        if (!LanguageSpecifications.Delimeters.TryGetValue(charType, out var tokenType))
+            throw new ArgumentException($"Unknown delimiter '{stream.ReadNextChar()}'");
+
+        var builder = new TokenBuilder(tokenType);
         builder.Append(stream.ReadNextChar());
         return builder.Build();
     }
@@ -70,7 +72,7 @@ class Lexer
         while (stream.IsCharOperator() && (!stream.IsCharMinus() || builder.Length == 0))
             builder.Append(stream.ReadNextChar());
 
-        if (!LanguageSpecifications.ValidOperators.TryGetValue(builder.ToString(), out var operatorType))
+        if (!LanguageSpecifications.Operators.TryGetValue(builder.ToString(), out var operatorType))
             throw new ArgumentException($"Invalid operator '{builder}'");
             
         builder.SetType(operatorType);

@@ -27,5 +27,7 @@ internal enum TokenType
     LogicalOrOperator,
     LogicalNotOperator,
     OpenParen,
-    CloseParen
+    CloseParen,
+    CurlyOpen,
+    CurlyClose
 }

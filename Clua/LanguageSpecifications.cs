@@ -12,7 +12,7 @@ internal class LanguageSpecifications
         {"false", TokenType.FalseKeyword }
     };
     
-    public static readonly IReadOnlyDictionary<string, TokenType> ValidOperators = new Dictionary<string, TokenType>()
+    public static readonly IReadOnlyDictionary<string, TokenType> Operators = new Dictionary<string, TokenType>()
     {
         {"+", TokenType.PlusOperator },
         {"-", TokenType.MinusOperator },
@@ -29,6 +29,15 @@ internal class LanguageSpecifications
         {"||", TokenType.LogicalOrOperator },
         {"!", TokenType.LogicalNotOperator }
     };
+    
+    public static readonly IReadOnlyDictionary<CharType, TokenType> Delimeters = new Dictionary<CharType, TokenType>()
+    {
+        { CharType.OpenParen, TokenType.OpenParen },
+        { CharType.CloseParen, TokenType.CloseParen },
+        { CharType.CurlyOpen, TokenType.CurlyOpen },
+        { CharType.CurlyClose, TokenType.CurlyClose }
+    };
+    
 
     public static CharType GetCharType(char c)
     {
@@ -51,7 +60,11 @@ internal class LanguageSpecifications
             '.' => CharType.Dot,
             '(' => CharType.OpenParen,
             ')' => CharType.CloseParen,
+            '{' => CharType.CurlyOpen,
+            '}' => CharType.CurlyClose,
             _ => CharType.Invalid
         };
     }
 }
+
+    public enum CharType { Numeric, Alpha, Underscore, Whitespace, Dot, Operator, OpenParen, CloseParen, CurlyOpen, CurlyClose,  Invalid}

@@ -128,12 +128,12 @@ public class LexerTests
     }
     // Operators
 
-    static IEnumerable<string> OperatorStrings => LanguageSpecifications.ValidOperators.Keys;
+    static IEnumerable<string> OperatorStrings => LanguageSpecifications.Operators.Keys;
 
     [TestCaseSource(nameof(OperatorStrings))]
     public void Lex_ValidOperator_ReturnsCorrectOperatorToken(string op)
     {
-        var expectedType = LanguageSpecifications.ValidOperators[op];
+        var expectedType = LanguageSpecifications.Operators[op];
         var tokens = Lexer.Lex(op);
         Assert.That(tokens.Count, Is.EqualTo(1));
         Assert.That(tokens[0].Type, Is.EqualTo(expectedType));
@@ -181,7 +181,7 @@ public class LexerTests
         Assert.That(tokens[1].Type, Is.EqualTo(TokenType.EqualityOperator));
     }
 
-    // Parentheses
+    // Delimiters
 
     [Test]
     public void Lex_OpenParen_ReturnsOpenParenToken()
@@ -209,6 +209,34 @@ public class LexerTests
         Assert.That(tokens[0].Type, Is.EqualTo(TokenType.OpenParen));
         Assert.That(tokens[1].Type, Is.EqualTo(TokenType.Identifier));
         Assert.That(tokens[2].Type, Is.EqualTo(TokenType.CloseParen));
+    }
+
+    [Test]
+    public void Lex_CurlyOpen_ReturnsCurlyOpenToken()
+    {
+        var tokens = Lexer.Lex("{");
+        Assert.That(tokens.Count, Is.EqualTo(1));
+        Assert.That(tokens[0].Type, Is.EqualTo(TokenType.CurlyOpen));
+        Assert.That(tokens[0].Plaintext, Is.EqualTo("{"));
+    }
+
+    [Test]
+    public void Lex_CurlyClose_ReturnsCurlyCloseToken()
+    {
+        var tokens = Lexer.Lex("}");
+        Assert.That(tokens.Count, Is.EqualTo(1));
+        Assert.That(tokens[0].Type, Is.EqualTo(TokenType.CurlyClose));
+        Assert.That(tokens[0].Plaintext, Is.EqualTo("}"));
+    }
+
+    [Test]
+    public void Lex_CurlyWrappedIdentifier_ReturnsThreeTokens()
+    {
+        var tokens = Lexer.Lex("{a}");
+        Assert.That(tokens.Count, Is.EqualTo(3));
+        Assert.That(tokens[0].Type, Is.EqualTo(TokenType.CurlyOpen));
+        Assert.That(tokens[1].Type, Is.EqualTo(TokenType.Identifier));
+        Assert.That(tokens[2].Type, Is.EqualTo(TokenType.CurlyClose));
     }
 
     // Number error cases
