@@ -7,7 +7,14 @@ class TokenCollection : ITokenCollection
 {
     readonly List<Token> _tokens = [];
 
+    public bool IsEmpty { get; }
+
     public void Add(Token token) => _tokens.Add(token);
+
+    public bool IsMatchAndConsumed(TokenType tokenType) => throw new NotImplementedException();
+
+    public bool IsOfType(TokenType tokenType) => throw new NotImplementedException();
+
     public IReadOnlyList<Token> ToList() => new List<Token>(_tokens);
 }
 
@@ -151,11 +158,11 @@ public class LexerTests
     }
 
     [Test]
-    public void Lex_InvalidOperatorSequence_ReturnsSeparateMinusToken()
+    public void Lex_ValidOperatorSequence_ReturnsSeparateMinusToken()
     {
         var tkns = Lexer.Lex<TokenCollection>("a+-b").ToList();
-        Assert.That(tkns[1].Type == TokenType.PlusOperator);
-        Assert.That(tkns[2].Type == TokenType.MinusOperator);
+        Assert.That(tkns[1].Type, Is.EqualTo(TokenType.PlusOperator));
+        Assert.That(tkns[2].Type, Is.EqualTo(TokenType.MinusOperator));
     }
 
     [Test]
