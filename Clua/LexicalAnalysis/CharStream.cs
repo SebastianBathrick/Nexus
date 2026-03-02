@@ -28,7 +28,7 @@ class CharStream
         _currIndex = InitialIndex;
     }
 
-    public void IgnoreChar() => ReadNextChar();
+    public void ConsumeChar() => ReadNextChar();
 
     public char ReadNextChar()
     {

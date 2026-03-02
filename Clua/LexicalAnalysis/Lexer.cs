@@ -31,7 +31,7 @@ static class Lexer
                     tkn = ReadDelimiter(stream);
                     break;
                 case CharType.Whitespace:
-                    stream.IgnoreChar();
+                    stream.ConsumeChar();
                     continue;
                 case CharType.Invalid:
                 default:
