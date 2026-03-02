@@ -1,13 +1,11 @@
-namespace Clua.AbstractSyntaxTree;
+namespace Clua. SyntaxTree;
 
 public class ExpressionNode(Operator @operator, Node left, Node right) : Node
 {
     public Operator Operator { get; init; } = @operator;
     public Node Left { get; } = left;
     public Node Right { get; } = right;
-
-    public override string ToString() => $"({Left} {GetOperatorString()} {Right})";
-
+    
     string GetOperatorString()
     {
         return Operator switch
@@ -27,6 +25,8 @@ public class ExpressionNode(Operator @operator, Node left, Node right) : Node
             _ => throw new InvalidOperationException($"Unsupported operation type: {Operator}")
         };
     }
+    
+    public override string ToString() => $"({Left} {GetOperatorString()} {Right})";
 }
 
 public enum Operator
