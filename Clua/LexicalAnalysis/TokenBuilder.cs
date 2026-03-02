@@ -2,19 +2,13 @@ using System.Text;
 
 namespace Clua;
 
-class TokenBuilder
+class TokenBuilder(TokenType tokenType = TokenType.None)
 {
-    private StringBuilder? _builder;
-    private TokenType _tokenType;
+    StringBuilder? _builder = null;
+    TokenType _tokenType = tokenType;
     
     public bool IsValid => _tokenType != TokenType.None;
-    
-    public TokenBuilder(TokenType tokenType = TokenType.None)
-    {
-        _builder = null;
-        _tokenType = tokenType;
-    }
-    
+
     public void SetType(TokenType newType)
     {
         _tokenType = newType;
