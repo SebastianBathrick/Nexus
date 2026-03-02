@@ -49,6 +49,8 @@ internal class LanguageSpecifications
             '+' or '-' or '*' or '/' or '=' or '!' or '<' or '>' or '&' or '|' => CharType.Operator,
             '_' => CharType.Underscore,
             '.' => CharType.Dot,
+            '(' => CharType.OpenParen,
+            ')' => CharType.CloseParen,
             _ => CharType.Invalid
         };
     }

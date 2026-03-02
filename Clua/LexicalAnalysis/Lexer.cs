@@ -19,9 +19,15 @@ class Lexer
                 case CharType.Operator:
                     tkn = ReadOperator(stream);
                     break;
-                case CharType.Alpha: 
-                case CharType.Underscore: 
-                    tkn = ReadIdentifier(stream); 
+                case CharType.Alpha:
+                case CharType.Underscore:
+                    tkn = ReadIdentifier(stream);
+                    break;
+                case CharType.OpenParen:
+                    tkn = ReadSingleChar(stream, TokenType.OpenParen);
+                    break;
+                case CharType.CloseParen:
+                    tkn = ReadSingleChar(stream, TokenType.CloseParen);
                     break;
                 case CharType.Whitespace:
                     stream.IgnoreChar();
@@ -34,6 +40,13 @@ class Lexer
         }
 
         return tknList;
+    }
+
+    static Token ReadSingleChar(CharStream stream, TokenType type)
+    {
+        var builder = new TokenBuilder(type);
+        builder.Append(stream.ReadNextChar());
+        return builder.Build();
     }
 
     static Token ReadIdentifier(CharStream stream)

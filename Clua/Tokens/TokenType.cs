@@ -25,5 +25,7 @@ internal enum TokenType
     GreaterThanOrEqualOperator,
     LogicalAndOperator,
     LogicalOrOperator,
-    LogicalNotOperator
+    LogicalNotOperator,
+    OpenParen,
+    CloseParen
 }

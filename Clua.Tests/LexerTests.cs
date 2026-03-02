@@ -179,6 +179,36 @@ public class LexerTests
         Assert.That(tokens[1].Type, Is.EqualTo(TokenType.EqualityOperator));
     }
 
+    // Parentheses
+
+    [Test]
+    public void Lex_OpenParen_ReturnsOpenParenToken()
+    {
+        var tokens = Lexer.Lex("(");
+        Assert.That(tokens.Count, Is.EqualTo(1));
+        Assert.That(tokens[0].Type, Is.EqualTo(TokenType.OpenParen));
+        Assert.That(tokens[0].Plaintext, Is.EqualTo("("));
+    }
+
+    [Test]
+    public void Lex_CloseParen_ReturnsCloseParenToken()
+    {
+        var tokens = Lexer.Lex(")");
+        Assert.That(tokens.Count, Is.EqualTo(1));
+        Assert.That(tokens[0].Type, Is.EqualTo(TokenType.CloseParen));
+        Assert.That(tokens[0].Plaintext, Is.EqualTo(")"));
+    }
+
+    [Test]
+    public void Lex_ParenWrappedIdentifier_ReturnsThreeTokens()
+    {
+        var tokens = Lexer.Lex("(a)");
+        Assert.That(tokens.Count, Is.EqualTo(3));
+        Assert.That(tokens[0].Type, Is.EqualTo(TokenType.OpenParen));
+        Assert.That(tokens[1].Type, Is.EqualTo(TokenType.Identifier));
+        Assert.That(tokens[2].Type, Is.EqualTo(TokenType.CloseParen));
+    }
+
     // Number error cases
 
     [Test]

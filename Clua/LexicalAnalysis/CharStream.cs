@@ -76,4 +76,4 @@ class CharStream
     #endregion
 }
 
-    public enum CharType { Numeric, Alpha, Underscore, Whitespace, Dot, Operator, Invalid}
+    public enum CharType { Numeric, Alpha, Underscore, Whitespace, Dot, Operator, OpenParen, CloseParen, Invalid}
