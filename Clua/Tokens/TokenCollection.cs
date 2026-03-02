@@ -12,6 +12,12 @@ class TokenCollection : ITokenCollection
     {
         _tokens.Add(token);
     }
+    
+    public IReadOnlyList<Token> ToList()
+    {
+        // Ensure to copy the list to prevent external modification of the internal list
+        return new List<Token>(_tokens);
+    }
 
     #endregion
 }
