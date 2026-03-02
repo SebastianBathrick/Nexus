@@ -3,11 +3,9 @@ namespace Clua.Tokens;
 enum TokenType
 {
     None,
-    IntLiteral,
-    FloatLiteral,
+    NumberLiteral,
     Identifier,
-    IntKeyword,
-    FloatKeyword,
+    NumberKeyword,
     StringKeyword,
     BoolKeyword,
     TrueKeyword,

@@ -79,7 +79,7 @@ public class LexerTests
     {
         var tokens = Lexer.Lex<TokenCollection>("123abc").ToList();
         Assert.That(tokens.Count, Is.EqualTo(2));
-        Assert.That(tokens[0].Type, Is.EqualTo(TokenType.IntLiteral));
+        Assert.That(tokens[0].Type, Is.EqualTo(TokenType.NumberLiteral));
         Assert.That(tokens[0].Plaintext, Is.EqualTo("123"));
         Assert.That(tokens[1].Type, Is.EqualTo(TokenType.Identifier));
         Assert.That(tokens[1].Plaintext, Is.EqualTo("abc"));
@@ -186,9 +186,9 @@ public class LexerTests
     {
         var tokens = Lexer.Lex<TokenCollection>("1+2").ToList();
         Assert.That(tokens.Count, Is.EqualTo(3));
-        Assert.That(tokens[0].Type, Is.EqualTo(TokenType.IntLiteral));
+        Assert.That(tokens[0].Type, Is.EqualTo(TokenType.NumberLiteral));
         Assert.That(tokens[1].Type, Is.EqualTo(TokenType.PlusOperator));
-        Assert.That(tokens[2].Type, Is.EqualTo(TokenType.IntLiteral));
+        Assert.That(tokens[2].Type, Is.EqualTo(TokenType.NumberLiteral));
     }
 
     [Test]

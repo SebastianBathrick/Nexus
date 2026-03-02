@@ -85,28 +85,25 @@ static class Lexer
 
     static Token ReadNumber(CharStream stream)
     {
-        var builder = new TokenBuilder(TokenType.IntLiteral);
+        var builder = new TokenBuilder(TokenType.NumberLiteral);
 
         while (stream.IsCharNumeric())
             builder.Append(stream.ReadNextChar());
 
-        // If there wasn't a dot return an integer literal token
         if (!stream.IsCharDot())
             return builder.Build();
 
         // Consume the '.'
         builder.Append(stream.ReadNextChar());
- 
+
         if (!stream.IsCharNumeric())
-            throw new ArgumentException($"Invalid float literal '{builder}.' — expected digit after decimal point");
-        
-        builder.SetType(TokenType.FloatLiteral);
+            throw new ArgumentException($"Invalid number literal '{builder}.' — expected digit after decimal point");
 
         while (stream.IsCharNumeric())
             builder.Append(stream.ReadNextChar());
 
         if (stream.IsCharDot())
-            throw new ArgumentException($"Invalid float literal '{builder}' — unexpected '.'");
+            throw new ArgumentException($"Invalid number literal '{builder}' — unexpected '.'");
 
         return builder.Build();
     }

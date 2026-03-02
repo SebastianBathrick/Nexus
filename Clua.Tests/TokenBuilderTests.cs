@@ -26,7 +26,7 @@ public class TokenBuilderTests
     [Test]
     public void IsValid_ConstructedWithValidType_ReturnsTrue()
     {
-        var builder = new TokenBuilder(TokenType.IntLiteral);
+        var builder = new TokenBuilder(TokenType.NumberLiteral);
         Assert.That(builder.IsValid, Is.True);
     }
 
@@ -36,14 +36,14 @@ public class TokenBuilderTests
     public void ChangeType_SetsTypeCorrectly()
     {
         var builder = new TokenBuilder();
-        builder.SetType(TokenType.IntLiteral);
+        builder.SetType(TokenType.NumberLiteral);
         Assert.That(builder.IsValid, Is.True);
     }
 
     [Test]
     public void ChangeType_ToNone_MakesIsValidFalse()
     {
-        var builder = new TokenBuilder(TokenType.IntLiteral);
+        var builder = new TokenBuilder(TokenType.NumberLiteral);
         builder.SetType(TokenType.None);
         Assert.That(builder.IsValid, Is.False);
     }
@@ -53,16 +53,16 @@ public class TokenBuilderTests
     [Test]
     public void Build_WithValidType_ReturnsTokenWithCorrectType()
     {
-        var builder = new TokenBuilder(TokenType.IntLiteral);
+        var builder = new TokenBuilder(TokenType.NumberLiteral);
         builder.Append('1');
         var token = builder.Build();
-        Assert.That(token.Type, Is.EqualTo(TokenType.IntLiteral));
+        Assert.That(token.Type, Is.EqualTo(TokenType.NumberLiteral));
     }
 
     [Test]
     public void Build_WithAppendedChars_ReturnsTokenWithCorrectPlaintext()
     {
-        var builder = new TokenBuilder(TokenType.IntLiteral);
+        var builder = new TokenBuilder(TokenType.NumberLiteral);
         builder.Append('1');
         builder.Append('2');
         builder.Append('3');
@@ -73,7 +73,7 @@ public class TokenBuilderTests
     [Test]
     public void Build_WithNoAppendedChars_ReturnsTokenWithEmptyPlaintext()
     {
-        var builder = new TokenBuilder(TokenType.IntLiteral);
+        var builder = new TokenBuilder(TokenType.NumberLiteral);
         var token = builder.Build();
         Assert.That(token.Plaintext, Is.EqualTo(string.Empty));
     }
@@ -81,7 +81,7 @@ public class TokenBuilderTests
     [Test]
     public void Build_ResetsTypeToNone()
     {
-        var builder = new TokenBuilder(TokenType.IntLiteral);
+        var builder = new TokenBuilder(TokenType.NumberLiteral);
         builder.Build();
         Assert.That(builder.IsValid, Is.False);
     }
@@ -98,22 +98,22 @@ public class TokenBuilderTests
     {
         var builder = new TokenBuilder();
         builder.Append('1');
-        var token = builder.Build(TokenType.IntLiteral);
-        Assert.That(token.Type, Is.EqualTo(TokenType.IntLiteral));
+        var token = builder.Build(TokenType.NumberLiteral);
+        Assert.That(token.Type, Is.EqualTo(TokenType.NumberLiteral));
     }
 
     [Test]
     public void Build_WithTypeArg_WhenInternalTypeIsAlreadySet_ThrowsInvalidOperationException()
     {
-        var builder = new TokenBuilder(TokenType.IntLiteral);
-        Assert.Throws<InvalidOperationException>(() => builder.Build(TokenType.FloatLiteral));
+        var builder = new TokenBuilder(TokenType.NumberLiteral);
+        Assert.Throws<InvalidOperationException>(() => builder.Build(TokenType.NumberLiteral));
     }
 
     [Test]
     public void Build_WithSameTypeArg_WhenInternalTypeIsAlreadySet_ThrowsInvalidOperationException()
     {
-        var builder = new TokenBuilder(TokenType.IntLiteral);
-        Assert.Throws<InvalidOperationException>(() => builder.Build(TokenType.IntLiteral));
+        var builder = new TokenBuilder(TokenType.NumberLiteral);
+        Assert.Throws<InvalidOperationException>(() => builder.Build(TokenType.NumberLiteral));
     }
 
     [Test]
@@ -128,13 +128,13 @@ public class TokenBuilderTests
     [Test]
     public void TryBuild_WithValidType_ReturnsTrueAndCorrectToken()
     {
-        var builder = new TokenBuilder(TokenType.FloatLiteral);
+        var builder = new TokenBuilder(TokenType.NumberLiteral);
         builder.Append('3');
         builder.Append('.');
         builder.Append('1');
         var result = builder.TryBuild(out var token);
         Assert.That(result, Is.True);
-        Assert.That(token.Type, Is.EqualTo(TokenType.FloatLiteral));
+        Assert.That(token.Type, Is.EqualTo(TokenType.NumberLiteral));
         Assert.That(token.Plaintext, Is.EqualTo("3.1"));
     }
 
@@ -150,7 +150,7 @@ public class TokenBuilderTests
     [Test]
     public void TryBuild_ResetsStateAfterSuccess()
     {
-        var builder = new TokenBuilder(TokenType.IntLiteral);
+        var builder = new TokenBuilder(TokenType.NumberLiteral);
         builder.Append('1');
         builder.TryBuild(out _);
         Assert.That(builder.IsValid, Is.False);
@@ -159,7 +159,7 @@ public class TokenBuilderTests
     [Test]
     public void TryBuild_CalledTwice_SecondReturnsFalse()
     {
-        var builder = new TokenBuilder(TokenType.IntLiteral);
+        var builder = new TokenBuilder(TokenType.NumberLiteral);
         builder.Append('1');
         builder.TryBuild(out _);
         var result = builder.TryBuild(out _);

@@ -76,10 +76,8 @@ static class Parser
         
         switch (tkns.PeekType())
         {
-            case TokenType.IntLiteral:
-                return new IntLiteralNode(int.Parse(tkns.Read().Plaintext));
-            case TokenType.FloatLiteral:
-                return new FloatLiteralNode(float.Parse(tkns.Read().Plaintext));
+            case TokenType.NumberLiteral:
+                return new NumberLiteralNode(double.Parse(tkns.Read().Plaintext));
             case TokenType.OpenParen:
                 return ParseNestedExpression(tkns);
             case TokenType.MinusOperator:
@@ -97,10 +95,10 @@ static class Parser
             throw new ArgumentException("Unexpected end of expression after '-' operator");
         
         // Add identifiers
-        if (!tkns.IsOfType(TokenType.IntLiteral, TokenType.FloatLiteral, TokenType.OpenParen))
+        if (!tkns.IsOfType(TokenType.NumberLiteral, TokenType.OpenParen))
             throw new ArgumentException($"Invalid negation of factor: {tkns.ReadType()}");
 
-        return new OperationNode(OperationType.Multiply, new IntLiteralNode(-1), ParseFactor(tkns));
+        return new OperationNode(OperationType.Multiply, new NumberLiteralNode(-1), ParseFactor(tkns));
     }
     
     static Node ParseNestedExpression(ITokenCollection tkns)
