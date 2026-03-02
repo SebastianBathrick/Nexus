@@ -1,5 +1,6 @@
 using System;
-using Clua.SyntaxTree;
+using Clua.SyntaxAnalysis;
+using Clua.SyntaxAnalysis.Expressions;
 using Clua.Values;
 
 namespace Clua.CodeGeneration;
@@ -8,10 +9,12 @@ class CodeObjectGenerator
 {
     List<CluaValue> _constsCache = [];
     
-    public CodeObject GenerateChunk(Node node)
+    public CodeObject Generate(Node node)
     {
         var instructions = GetExpressionInstructions(node);
-        return new CodeObject(instructions, _constsCache);
+        var retObj = new CodeObject(instructions, _constsCache);
+        Reset();
+        return retObj;
     }
 
     List<Instruction> GetExpressionInstructions(Node node)
@@ -43,6 +46,12 @@ class CodeObjectGenerator
         return new Instruction(Operation.PushConstant, CacheType.Constant, constIndex);
     }
 
+    // Reset the generator's state so it can be reused if needed
+    void Reset()
+    {
+        _constsCache.Clear();
+    }
+    
     static Operation GetOperatorOperation(Operator op)
     {
         switch (op)
