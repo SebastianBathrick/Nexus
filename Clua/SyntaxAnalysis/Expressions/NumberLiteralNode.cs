@@ -1,5 +1,5 @@
 using System.Globalization;
-namespace Clua.SyntaxTree;
+namespace Clua.SyntaxAnalysis.Expressions;
 
 public class NumberLiteralNode(double val) : LiteralNode
 {

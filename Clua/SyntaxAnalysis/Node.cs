@@ -1,4 +1,4 @@
-namespace Clua.SyntaxTree;
+namespace Clua.SyntaxAnalysis;
 
 public abstract class Node
 {

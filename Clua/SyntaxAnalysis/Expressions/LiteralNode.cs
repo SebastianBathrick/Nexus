@@ -1,4 +1,4 @@
-namespace Clua.SyntaxTree;
+namespace Clua.SyntaxAnalysis.Expressions;
 
 public abstract class LiteralNode : Node
 {

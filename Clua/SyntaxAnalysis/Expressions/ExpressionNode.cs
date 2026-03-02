@@ -1,4 +1,4 @@
-namespace Clua. SyntaxTree;
+namespace Clua.SyntaxAnalysis. Expressions;
 
 public class ExpressionNode(Operator @operator, Node left, Node right) : Node
 {

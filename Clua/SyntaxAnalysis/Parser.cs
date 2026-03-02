@@ -1,7 +1,6 @@
-using Clua.SyntaxTree;
+using Clua.SyntaxAnalysis.Expressions;
 using Clua.Tokens;
-
-namespace Clua;
+namespace Clua.SyntaxAnalysis;
 
 class Parser
 {
@@ -9,6 +8,8 @@ class Parser
     {
         return ParseExpression(tkns);
     }
+
+    #region Parse Expressions Methods
     
     static Node ParseExpression(ITokenCollection tkns) => ParseLogicExpression(tkns);
     
@@ -25,6 +26,14 @@ class Parser
         
         return left;
     }
+    
+    #endregion
+
+    #region 
+
+    
+
+    #endregion
     
     static Node ParseLogicTerm(ITokenCollection tkns)
     {
