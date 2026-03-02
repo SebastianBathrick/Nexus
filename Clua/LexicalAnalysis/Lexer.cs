@@ -1,11 +1,11 @@
 using Clua.Tokens;
 namespace Clua.LexicalAnalysis;
 
-class Lexer
+static class Lexer
 {
-    public static IReadOnlyList<Token> Lex(string srcCode)
+    public static ITokenCollection Lex<TTokenCollection>(string srcCode) where TTokenCollection : ITokenCollection, new()
     {
-        var tknList = new List<Token>();
+        var tknList = new TTokenCollection();
         var stream = new CharStream(srcCode);
 
         while (stream.IsCharInStream())
@@ -95,12 +95,11 @@ class Lexer
             return builder.Build();
 
         // Consume the '.'
-        stream.IgnoreChar();
-
+        builder.Append(stream.ReadNextChar());
+ 
         if (!stream.IsCharNumeric())
             throw new ArgumentException($"Invalid float literal '{builder}.' — expected digit after decimal point");
-
-        builder.Append('.');
+        
         builder.SetType(TokenType.FloatLiteral);
 
         while (stream.IsCharNumeric())
