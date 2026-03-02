@@ -1,4 +1,4 @@
-using Clua.AbstractSyntaxTree;
+using Clua.SyntaxTree;
 using Clua.Tokens;
 
 namespace Clua;

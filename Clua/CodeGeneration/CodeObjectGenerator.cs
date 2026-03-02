@@ -1,5 +1,5 @@
 using System;
-using Clua.AbstractSyntaxTree;
+using Clua.SyntaxTree;
 using Clua.Values;
 
 namespace Clua.CodeGeneration;
