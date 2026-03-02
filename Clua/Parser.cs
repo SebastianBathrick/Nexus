@@ -3,7 +3,7 @@ using Clua.Tokens;
 
 namespace Clua;
 
-static class Parser
+class Parser
 {
     public static Node Parse(ITokenCollection tkns)
     {
@@ -98,7 +98,7 @@ static class Parser
         if (!tkns.IsOfType(TokenType.NumberLiteral, TokenType.OpenParen))
             throw new ArgumentException($"Invalid negation of factor: {tkns.ReadType()}");
 
-        return new ExpressionNode(Operator.Multiply, new NumberLiteralNode(-1), ParseFactor(tkns));
+        return new ExpressionNode(Operator.Multiplication, new NumberLiteralNode(-1), ParseFactor(tkns));
     }
     
     static Node ParseNestedExpression(ITokenCollection tkns)
@@ -118,10 +118,10 @@ static class Parser
     {
         return tokenType switch
         {
-            TokenType.PlusOperator => Operator.Add,
-            TokenType.MinusOperator => Operator.Subtract,
-            TokenType.MultiplyOperator => Operator.Multiply,
-            TokenType.DivideOperator => Operator.Divide,
+            TokenType.PlusOperator => Operator.Addition,
+            TokenType.MinusOperator => Operator.Subtraction,
+            TokenType.MultiplyOperator => Operator.Multiplication,
+            TokenType.DivideOperator => Operator.Division,
             _ => throw new ArgumentException($"Invalid arithmetic operator: {tokenType}")
         };
     }

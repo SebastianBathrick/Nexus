@@ -1,21 +1,21 @@
 namespace Clua.AbstractSyntaxTree;
 
-public class ExpressionNode(Operator op, Node left, Node right) : Node
+public class ExpressionNode(Operator @operator, Node left, Node right) : Node
 {
-    Operator Op { get; init; } = op;
-    Node Left { get; init; } = left;
-    Node Right { get; init; } = right;
+    public Operator Operator { get; init; } = @operator;
+    public Node Left { get; } = left;
+    public Node Right { get; } = right;
 
     public override string ToString() => $"({Left} {GetOperatorString()} {Right})";
 
     string GetOperatorString()
     {
-        return Op switch
+        return Operator switch
         {
-            Operator.Add => "+",
-            Operator.Subtract => "-",
-            Operator.Multiply => "*",
-            Operator.Divide => "/",
+            Operator.Addition => "+",
+            Operator.Subtraction => "-",
+            Operator.Multiplication => "*",
+            Operator.Division => "/",
             Operator.LogicalAnd => "&&",
             Operator.LogicalOr => "||",
             Operator.GreaterThan => ">",
@@ -24,17 +24,17 @@ public class ExpressionNode(Operator op, Node left, Node right) : Node
             Operator.LessThanOrEqual => "<=",
             Operator.Equality => "==",
             Operator.Inequality => "!=",
-            _ => throw new InvalidOperationException($"Unsupported operation type: {Op}")
+            _ => throw new InvalidOperationException($"Unsupported operation type: {Operator}")
         };
     }
 }
 
 public enum Operator
 {
-    Add,
-    Subtract,
-    Multiply,
-    Divide,
+    Addition,
+    Subtraction,
+    Multiplication,
+    Division,
     LogicalAnd,
     LogicalOr,
     GreaterThan,
