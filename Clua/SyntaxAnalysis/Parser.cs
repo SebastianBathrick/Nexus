@@ -4,14 +4,80 @@ namespace Clua.SyntaxAnalysis;
 
 class Parser
 {
-    public static Node Parse(ITokenCollection tkns)
+    public static Node ParseTokens(ITokenCollection tkns)
     {
-        return ParseExpression(tkns);
+        var topLvlBlock = ParseBlock(tkns);
+
+        if (!tkns.IsEmpty)
+            throw new ArgumentException($"Unexpected token {tkns.Read()}");
+        
+        return new SyntaxTree(topLvlBlock);
+    }
+    
+    public static Node ParseBlock(ITokenCollection tkns)
+    {
+        var statements = new List<Node>();
+
+        while (TryParseStatement(tkns, out var statementNode))
+        {
+            if (statementNode == null)
+                throw new NullReferenceException($"{nameof(TryParseStatement)} returned true but statementNode is null");
+            
+            statements.Add(statementNode);
+        }
+        
+        return new BlockNode(statements.ToArray());
     }
 
-    #region Parse Expressions Methods
+    #region Statement Parsing Methods
+    
+    static bool TryParseStatement(ITokenCollection tkns, out Node? statementNode)
+    {
+        if (tkns.IsEmpty)
+        {
+            statementNode = null;
+            return false;
+        }
+        
+        // TODO: Update exceptions that enable better error reporting for client/user
+        switch (tkns.PeekType())
+        {
+            case TokenType.ReturnKeyword:
+                statementNode = ParseReturnStatement(tkns);
+                return true;
+            default:
+                statementNode = null;
+                return false;
+        }
+    }
+    
+    static Node ParseReturnStatement(ITokenCollection tkns)
+    {
+        if (!tkns.IsOfTypeAndConsume(TokenType.ReturnKeyword))
+            throw new ArgumentException($"Expected {TokenType.ReturnKeyword}");
+        
+        return new ReturnNode(ParseExpression(tkns));
+    }
+    
+    #endregion
+
+    #region Parse Expression Methods
     
     static Node ParseExpression(ITokenCollection tkns) => ParseLogicExpression(tkns);
+    
+    static Node ParseArithmeticExpression(ITokenCollection tkns)
+    {
+        var left = ParseArithmeticTerm(tkns);
+        
+        while (tkns.IsOfType(TokenType.PlusOperator, TokenType.MinusOperator))
+        {
+            var opType = GetArithmeticOperationType(tkns.ReadType());
+            var right = ParseArithmeticTerm(tkns);
+            left = new ExpressionNode(opType, left, right);
+        }
+        
+        return left;
+    }
     
     static Node ParseLogicExpression(ITokenCollection tkns)
     {
@@ -19,7 +85,7 @@ class Parser
 
         while (tkns.IsOfType(TokenType.LogicalAndOperator, TokenType.LogicalOrOperator))
         {
-            var opType = tkns.ReadType() == TokenType.LogicalAndOperator ? Operator.LogicalAnd : Operator.LogicalOr;
+            var opType = tkns.ReadType() == TokenType.LogicalAndOperator ? ExpressionOperator.LogicalAnd : ExpressionOperator.LogicalOr;
             var right = ParseLogicTerm(tkns);
             left = new ExpressionNode(opType, left, right);
         }
@@ -27,14 +93,37 @@ class Parser
         return left;
     }
     
+    static Node ParseNestedExpression(ITokenCollection tkns)
+    {
+        // Consume the opening parenthesis
+        tkns.Consume();
+        
+        var expr = ParseExpression(tkns);
+        
+        if (!tkns.IsOfTypeAndConsume(TokenType.CloseParen))
+            throw new ArgumentException("Expected ')'");
+        
+        return expr;
+    }
+    
     #endregion
 
-    #region 
+    #region Parse Term Methods
 
-    
+    static Node ParseArithmeticTerm(ITokenCollection tkns)
+    {
+        var left = ParseFactor(tkns);
+        
+        while (tkns.IsOfType(TokenType.MultiplyOperator, TokenType.DivideOperator))
+        {
+            var opType = GetArithmeticOperationType(tkns.ReadType());
+            var right = ParseFactor(tkns);
+            left = new ExpressionNode(opType, left, right);
+        }
+        
+        return left;
+    }
 
-    #endregion
-    
     static Node ParseLogicTerm(ITokenCollection tkns)
     {
         var left = ParseArithmeticExpression(tkns);
@@ -50,33 +139,9 @@ class Parser
         return left;
     }
     
-    static Node ParseArithmeticExpression(ITokenCollection tkns)
-    {
-        var left = ParseArithmeticTerm(tkns);
-        
-        while (tkns.IsOfType(TokenType.PlusOperator, TokenType.MinusOperator))
-        {
-            var opType = GetArithmeticOperationType(tkns.ReadType());
-            var right = ParseArithmeticTerm(tkns);
-            left = new ExpressionNode(opType, left, right);
-        }
-        
-        return left;
-    }
+    #endregion
 
-    static Node ParseArithmeticTerm(ITokenCollection tkns)
-    {
-        var left = ParseFactor(tkns);
-        
-        while (tkns.IsOfType(TokenType.MultiplyOperator, TokenType.DivideOperator))
-        {
-            var opType = GetArithmeticOperationType(tkns.ReadType());
-            var right = ParseFactor(tkns);
-            left = new ExpressionNode(opType, left, right);
-        }
-        
-        return left;
-    }
+    #region Parse Factor Methods
     
     static Node ParseFactor(ITokenCollection tkns)
     {
@@ -107,45 +172,37 @@ class Parser
         if (!tkns.IsOfType(TokenType.NumberLiteral, TokenType.OpenParen))
             throw new ArgumentException($"Invalid negation of factor: {tkns.ReadType()}");
 
-        return new ExpressionNode(Operator.Multiplication, new NumberLiteralNode(-1), ParseFactor(tkns));
+        return new ExpressionNode(ExpressionOperator.Multiplication, new NumberLiteralNode(-1), ParseFactor(tkns));
     }
     
-    static Node ParseNestedExpression(ITokenCollection tkns)
-    {
-        // Consume the opening parenthesis
-        tkns.Consume();
-        
-        var expr = ParseExpression(tkns);
-        
-        if (!tkns.IsOfTypeAndConsume(TokenType.CloseParen))
-            throw new ArgumentException("Expected ')'");
-        
-        return expr;
-    }
+
     
-    static Operator GetArithmeticOperationType(TokenType tokenType)
+    static ExpressionOperator GetArithmeticOperationType(TokenType tokenType)
     {
         return tokenType switch
         {
-            TokenType.PlusOperator => Operator.Addition,
-            TokenType.MinusOperator => Operator.Subtraction,
-            TokenType.MultiplyOperator => Operator.Multiplication,
-            TokenType.DivideOperator => Operator.Division,
+            TokenType.PlusOperator => ExpressionOperator.Addition,
+            TokenType.MinusOperator => ExpressionOperator.Subtraction,
+            TokenType.MultiplyOperator => ExpressionOperator.Multiplication,
+            TokenType.DivideOperator => ExpressionOperator.Division,
             _ => throw new ArgumentException($"Invalid arithmetic operator: {tokenType}")
         };
     }
     
-    static Operator GetComparisonOperationType(TokenType tokenType)
+    static ExpressionOperator GetComparisonOperationType(TokenType tokenType)
     {
         return tokenType switch
         {
-            TokenType.GreaterThanOperator => Operator.GreaterThan,
-            TokenType.GreaterThanOrEqualOperator => Operator.GreaterThanOrEqual,
-            TokenType.LessThanOperator => Operator.LessThan,
-            TokenType.LessThanOrEqualOperator => Operator.LessThanOrEqual,
-            TokenType.EqualityOperator => Operator.Equality,
-            TokenType.InequalityOperator => Operator.Inequality,
+            TokenType.GreaterThanOperator => ExpressionOperator.GreaterThan,
+            TokenType.GreaterThanOrEqualOperator => ExpressionOperator.GreaterThanOrEqual,
+            TokenType.LessThanOperator => ExpressionOperator.LessThan,
+            TokenType.LessThanOrEqualOperator => ExpressionOperator.LessThanOrEqual,
+            TokenType.EqualityOperator => ExpressionOperator.Equality,
+            TokenType.InequalityOperator => ExpressionOperator.Inequality,
             _ => throw new ArgumentException($"Invalid comparison operator: {tokenType}")
         };
     }
+    
+    #endregion
+    
 }

@@ -13,12 +13,14 @@ class CharStream
         _currIndex = InitialIndex;
         _chars = srcCode.ToCharArray();
 
+        /* Iterate through each char to ensure all are valid. This simplifies the logic in the lexer,
+         * and will result in the Lexer having a O(2N) time complexity, where N is the number of chars
+         * in the source code. */
         while (IsCharInStream())
         {
             if (GetCharType() != CharType.Invalid)
             {
-                // Ignore return value since all we need to know is if it is valid
-                ReadNextChar();
+                ConsumeChar();
                 continue;
             }
 

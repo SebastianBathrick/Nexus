@@ -1,15 +1,16 @@
 ﻿using Clua;
+using Clua.Chunks.Generation;
 using Clua.LexicalAnalysis;
 using Clua.Tokens;
-using Clua.CodeGeneration;
 using Clua.SyntaxAnalysis;
+using Clua.VirtualMachine;
 
-var tkns = Lexer.Lex<TokenCollection>("(1 + 2 * (5.3 - -3) - 10 / (2 * 8 + 4 - 3 * 80 * -(2-1.203))) / -2");
-var ast = Parser.Parse(tkns);
-var codeObj = new CodeObjectGenerator().Generate(ast);
+var tkns = Lexer.Lex<TokenCollection>("return (1 + 2 * (5.3 - -3) - 10 / (2 * 8 + 4 - 3 * 80 * -(2-1.203))) / -2");
+var root = Parser.ParseTokens(tkns);
+var codeObj = ChunkGenerator.GenerateTopLevelChunk(root);
 
 Console.WriteLine(codeObj);
 
-var res = VirtualMachine.ExecuteCode(codeObj);
+var res = Executor.ExecuteChunk(codeObj);
 
 Console.WriteLine(res);

@@ -1,7 +1,7 @@
-namespace Clua.CodeGeneration;
+namespace Clua.Chunks;
 
 /// <summary>
-/// The type of cache an instruction will access when executed by <see cref="VirtualMachine"/>.
+/// The type of cache an operation will access when executed by <see cref="VirtualMachine"/>.
 /// </summary>
 public enum CacheType
 {

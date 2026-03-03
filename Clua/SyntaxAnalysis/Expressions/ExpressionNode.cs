@@ -1,8 +1,8 @@
 namespace Clua.SyntaxAnalysis. Expressions;
 
-public class ExpressionNode(Operator @operator, Node left, Node right) : Node
+class ExpressionNode(ExpressionOperator @operator, Node left, Node right) : Node
 {
-    public Operator Operator { get; init; } = @operator;
+    public ExpressionOperator Operator { get; } = @operator;
     public Node Left { get; } = left;
     public Node Right { get; } = right;
     
@@ -10,18 +10,18 @@ public class ExpressionNode(Operator @operator, Node left, Node right) : Node
     {
         return Operator switch
         {
-            Operator.Addition => "+",
-            Operator.Subtraction => "-",
-            Operator.Multiplication => "*",
-            Operator.Division => "/",
-            Operator.LogicalAnd => "&&",
-            Operator.LogicalOr => "||",
-            Operator.GreaterThan => ">",
-            Operator.GreaterThanOrEqual => ">=",
-            Operator.LessThan => "<",
-            Operator.LessThanOrEqual => "<=",
-            Operator.Equality => "==",
-            Operator.Inequality => "!=",
+            ExpressionOperator.Addition => "+",
+            ExpressionOperator.Subtraction => "-",
+            ExpressionOperator.Multiplication => "*",
+            ExpressionOperator.Division => "/",
+            ExpressionOperator.LogicalAnd => "&&",
+            ExpressionOperator.LogicalOr => "||",
+            ExpressionOperator.GreaterThan => ">",
+            ExpressionOperator.GreaterThanOrEqual => ">=",
+            ExpressionOperator.LessThan => "<",
+            ExpressionOperator.LessThanOrEqual => "<=",
+            ExpressionOperator.Equality => "==",
+            ExpressionOperator.Inequality => "!=",
             _ => throw new InvalidOperationException($"Unsupported operation type: {Operator}")
         };
     }
@@ -29,7 +29,7 @@ public class ExpressionNode(Operator @operator, Node left, Node right) : Node
     public override string ToString() => $"({Left} {GetOperatorString()} {Right})";
 }
 
-public enum Operator
+enum ExpressionOperator
 {
     Addition,
     Subtraction,

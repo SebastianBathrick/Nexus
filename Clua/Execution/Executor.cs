@@ -1,50 +1,52 @@
-using Clua.Values;
-namespace Clua.CodeGeneration;
+using Clua.Chunks;
+using Clua.Execution.Values;
+namespace Clua.VirtualMachine;
 
-static class VirtualMachine
+static class Executor
 {
     const int ChunkStartIndex = 0;
+    const int SuccessExitCode = 0;
 
-    public static CluaValue ExecuteCode(CodeObject codeObject)
+    public static CluaValue ExecuteChunk(Chunk chunk)
     {
         var chunkIndex = ChunkStartIndex;
         var valStack = new Stack<CluaValue>();
 
-        while (chunkIndex < codeObject.Length)
+        while (chunkIndex < chunk.Length)
         {
-            var inst = codeObject[chunkIndex];
+            var op = chunk[chunkIndex];
 
-            switch (inst.Operation)
+            switch (op.OpType)
             {
-                case Operation.PushConstant:
-                    valStack.Push(codeObject.GetConstant(inst.CacheIndex));
+                case OpType.PushConstant:
+                    valStack.Push(chunk.GetConstant(op.CacheIndex));
                     break;
-                case Operation.Add:
+                case OpType.Add:
                     CluaValue rAdd = valStack.Pop(), lAdd = valStack.Pop();
                     valStack.Push(lAdd + rAdd);
                     break;
-                case Operation.Subtract:
+                case OpType.Subtract:
                     CluaValue rSub = valStack.Pop(), lSub = valStack.Pop();
                     valStack.Push(lSub - rSub);
                     break;
-                case Operation.Multiply:
+                case OpType.Multiply:
                     CluaValue rMul = valStack.Pop(), lMul = valStack.Pop();
                     valStack.Push(lMul * rMul);
                     break;
-                case Operation.Divide:
+                case OpType.Divide:
                     CluaValue rDiv = valStack.Pop(), lDiv = valStack.Pop();
                     valStack.Push(lDiv / rDiv);
                     break;
-                case Operation.Return:
+                case OpType.Return:
                     return valStack.Pop();
                 default:
-                    throw new InvalidOperationException($"Unknown operation: {inst.Operation}");
+                    throw new InvalidOperationException($"Unknown operation: {op.OpType}");
             }
 
             chunkIndex++;
         }
 
         // Temporarily return value at top of stack if it exists, otherwise return 0
-        return valStack.Count > 0 ? valStack.Pop() : new CluaNumber(0);
+        return new CluaNumber(SuccessExitCode);
     }
 }

@@ -1,7 +1,7 @@
 using System.Globalization;
 namespace Clua.SyntaxAnalysis.Expressions;
 
-public class NumberLiteralNode(double val) : LiteralNode
+class NumberLiteralNode(double val) : LiteralNode
 {
     public override double GetNumberValue() => val;
 

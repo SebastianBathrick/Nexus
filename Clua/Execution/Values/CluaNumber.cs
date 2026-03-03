@@ -1,5 +1,5 @@
 using System.Globalization;
-namespace Clua.Values;
+namespace Clua.Execution.Values;
 
 public class CluaNumber : CluaValue
 {

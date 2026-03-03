@@ -5,9 +5,7 @@ class LanguageSpecifications
 {
     public static readonly IReadOnlyDictionary<string, TokenType> ReservedKeywords = new Dictionary<string, TokenType>
     {
-        { "number", TokenType.NumberKeyword },
-        { "string", TokenType.StringKeyword },
-        { "bool", TokenType.BoolKeyword },
+        { "return", TokenType.ReturnKeyword },
         { "true", TokenType.TrueKeyword },
         { "false", TokenType.FalseKeyword }
     };

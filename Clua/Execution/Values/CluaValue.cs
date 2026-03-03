@@ -1,4 +1,4 @@
-namespace Clua.Values;
+namespace Clua.Execution.Values;
 
 public abstract class CluaValue
 {
