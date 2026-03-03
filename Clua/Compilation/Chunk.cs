@@ -1,6 +1,7 @@
 using System.Text;
+using Clua.ByteCode;
 using Clua.Execution.Values;
-namespace Clua.Chunks;
+namespace Clua.Compilation;
 
 class Chunk(Op[] instructions, CluaValue[] constsCache)
 {

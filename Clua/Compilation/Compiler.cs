@@ -1,9 +1,10 @@
+using Clua.ByteCode;
 using Clua.Execution.Values;
 using Clua.SyntaxAnalysis;
 using Clua.SyntaxAnalysis.Expressions;
-namespace Clua.Chunks.Generation;
+namespace Clua.Compilation;
 
-static class ChunkGenerator
+static class Compiler
 {
     public static Chunk GenerateTopLevelChunk(Node root)
     {
@@ -14,12 +15,12 @@ static class ChunkGenerator
             throw new ArgumentException($"{nameof(tree.TopLevelBlockNode)} is not a {nameof(BlockNode)}");
 
         // TODO: Add functions, control flow constructs, and more statements.
-        var tempData = new TempChunkCache();
+        var tempData = new TempCompilerCache();
         GetReturnInstructions(block.Statements.First(), tempData);
         return new Chunk(tempData.Instructions.ToArray(), tempData.Values.ToArray());
     }
 
-    static void GetReturnInstructions(Node node, TempChunkCache tempCache)
+    static void GetReturnInstructions(Node node, TempCompilerCache tempCache)
     {
         if (node is not ReturnNode returnNode)
             throw new ArgumentException("node is not a ReturnNode");
@@ -28,7 +29,7 @@ static class ChunkGenerator
         tempCache.Instructions.Add(new Op(OpType.Return));
     }
 
-    static void GetExpressionInstructions(Node node, TempChunkCache tempCache)
+    static void GetExpressionInstructions(Node node, TempCompilerCache tempCache)
     {
         if (node is not ExpressionNode expression)
         {
@@ -41,7 +42,7 @@ static class ChunkGenerator
         tempCache.Instructions.Add(new Op(GetOpType(expression.Operator)));
     }
 
-    static void GetPushInstruction(Node node, TempChunkCache tempCache)
+    static void GetPushInstruction(Node node, TempCompilerCache tempCache)
     {
         // TODO: Add comparison and logic operators
         if (node is not NumberLiteralNode numNode)

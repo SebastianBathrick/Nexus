@@ -1,6 +1,7 @@
-using Clua.Chunks;
+using Clua.ByteCode;
+using Clua.Compilation;
 using Clua.Execution.Values;
-namespace Clua.VirtualMachine;
+namespace Clua.Execution;
 
 static class Executor
 {

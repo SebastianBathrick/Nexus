@@ -1,7 +1,8 @@
+using Clua.ByteCode;
 using Clua.Execution.Values;
-namespace Clua.Chunks.Generation;
+namespace Clua.Compilation;
 
-record TempChunkCache
+record TempCompilerCache
 {
     public List<Op> Instructions { get; } = [];
     public List<CluaValue> Values { get; } = [];

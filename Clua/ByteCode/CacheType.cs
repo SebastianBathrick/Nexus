@@ -1,4 +1,4 @@
-namespace Clua.Chunks;
+namespace Clua.ByteCode;
 
 /// <summary>
 /// The type of cache an operation will access when executed by <see cref="VirtualMachine"/>.
