@@ -1,0 +1,4 @@
+﻿using Nexus;
+
+var res =CluaInterpreter.Run("return (1 + 2 * (5.3 - -3) - 10 / (2 * 8 + 4 - 3 * 80 * -(2-1.203))) / -2");
+Console.WriteLine(res);
