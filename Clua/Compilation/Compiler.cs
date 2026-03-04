@@ -6,7 +6,7 @@ namespace Clua.Compilation;
 
 static class Compiler
 {
-    public static Chunk GenerateTopLevelChunk(Node root)
+    public static Chunk CompileFromSyntaxTree(Node root)
     {
         if (root is not SyntaxTree tree)
             throw new ArgumentException($"{nameof(root)} is not a {nameof(SyntaxTree)}");
