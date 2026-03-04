@@ -1,16 +1,17 @@
 using System.Text;
 
-namespace Clua.SyntaxAnalysis;
-
-class BlockNode(Node[] statements) : Node
+namespace Clua.SyntaxAnalysis
 {
-    public Node[] Statements => statements;
-
-    public override string ToString()
+    class BlockNode(Node[] statements) : Node
     {
-        var sb = new StringBuilder();
-        foreach (var node in statements)
-            sb.AppendLine(node.ToString());
-        return sb.ToString();
+        public Node[] Statements => statements;
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            foreach (var node in statements)
+                sb.AppendLine(node.ToString());
+            return sb.ToString();
+        }
     }
 }

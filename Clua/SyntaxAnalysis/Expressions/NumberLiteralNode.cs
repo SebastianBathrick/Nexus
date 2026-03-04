@@ -1,9 +1,11 @@
 using System.Globalization;
-namespace Clua.SyntaxAnalysis.Expressions;
 
-class NumberLiteralNode(double val) : LiteralNode
+namespace Clua.SyntaxAnalysis.Expressions
 {
-    public override double GetNumberValue() => val;
+    class NumberLiteralNode(double val) : LiteralNode
+    {
+        public override double GetNumberValue() => val;
 
-    public override string ToString() => val.ToString(CultureInfo.InvariantCulture);
+        public override string ToString() => val.ToString(CultureInfo.InvariantCulture);
+    }
 }

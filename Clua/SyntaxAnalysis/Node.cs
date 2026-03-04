@@ -1,6 +1,7 @@
-namespace Clua.SyntaxAnalysis;
-
-abstract class Node
+namespace Clua.SyntaxAnalysis
 {
-    public abstract override string ToString();
+    abstract class Node
+    {
+        public abstract override string ToString();
+    }
 }

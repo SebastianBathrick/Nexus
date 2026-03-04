@@ -1,11 +1,12 @@
-namespace Clua.SyntaxAnalysis;
-
-class SyntaxTree(Node topLevelBlockNode) : Node
+namespace Clua.SyntaxAnalysis
 {
-    public Node TopLevelBlockNode { get; } = topLevelBlockNode;
-    
-    public override string ToString()
+    class SyntaxTree(Node topLevelBlockNode) : Node
     {
-        return TopLevelBlockNode.ToString();
+        public Node TopLevelBlockNode { get; } = topLevelBlockNode;
+
+        public override string ToString()
+        {
+            return TopLevelBlockNode.ToString();
+        }
     }
 }

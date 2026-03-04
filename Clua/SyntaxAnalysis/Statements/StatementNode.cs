@@ -1,6 +1,7 @@
-namespace Clua.SyntaxAnalysis;
-
-abstract class StatementNode : Node
+namespace Clua.SyntaxAnalysis
 {
-    
+    abstract class StatementNode : Node
+    {
+
+    }
 }

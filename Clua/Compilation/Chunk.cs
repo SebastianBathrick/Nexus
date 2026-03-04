@@ -1,30 +1,32 @@
 using System.Text;
 using Clua.ByteCode;
 using Clua.Execution.Values;
-namespace Clua.Compilation;
 
-class Chunk(Op[] instructions, CluaValue[] constsCache)
+namespace Clua.Compilation
 {
-    public int Length => instructions.Length;
-
-    public Op this[int index] => instructions[index];
-
-    public CluaValue GetConstant(int index) => constsCache[index];
-
-    public override string ToString()
+    class Chunk(Op[] instructions, CluaValue[] constsCache)
     {
-        var sb = new StringBuilder();
+        public int Length => instructions.Length;
 
-        sb.AppendLine("[CONSTANTS]:\n");
+        public Op this[int index] => instructions[index];
 
-        for (var i = 0; i < constsCache.Length; i++)
-            sb.AppendLine($"[{i}] {constsCache[i]}");
+        public CluaValue GetConstant(int index) => constsCache[index];
 
-        sb.AppendLine("\n[INSTRUCTIONS]:\n");
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
 
-        for(var i = 0; i < instructions.Length; i++)
-            sb.AppendLine($"[{i}] {instructions[i]}");
+            sb.AppendLine("[CONSTANTS]:\n");
 
-        return sb.ToString();
+            for (var i = 0; i < constsCache.Length; i++)
+                sb.AppendLine($"[{i}] {constsCache[i]}");
+
+            sb.AppendLine("\n[INSTRUCTIONS]:\n");
+
+            for(var i = 0; i < instructions.Length; i++)
+                sb.AppendLine($"[{i}] {instructions[i]}");
+
+            return sb.ToString();
+        }
     }
 }

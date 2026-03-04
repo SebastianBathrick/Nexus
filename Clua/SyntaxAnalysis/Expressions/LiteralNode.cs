@@ -1,6 +1,7 @@
-namespace Clua.SyntaxAnalysis.Expressions;
-
-abstract class LiteralNode : Node
+namespace Clua.SyntaxAnalysis.Expressions
 {
-    public abstract double GetNumberValue();
+    abstract class LiteralNode : Node
+    {
+        public abstract double GetNumberValue();
+    }
 }

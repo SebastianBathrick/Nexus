@@ -1,12 +1,13 @@
-namespace Clua.Tokens;
-
-readonly struct Token(TokenType type, string? plaintext = null)
+namespace Clua.Tokens
 {
-    // Return empty string each time, because the class should only retrieve/store the plaintext of specific token types
-    public string Plaintext
+    readonly struct Token(TokenType type, string? plaintext = null)
     {
-        get => field ?? string.Empty;
-    } = plaintext;
+        // Return empty string each time, because the class should only retrieve/store the plaintext of specific token types
+        public string Plaintext
+        {
+            get => field ?? string.Empty;
+        } = plaintext;
 
-    public TokenType Type { get; init; } = type;
+        public TokenType Type { get; init; } = type;
+    }
 }

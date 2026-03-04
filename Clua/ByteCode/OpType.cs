@@ -1,11 +1,12 @@
-namespace Clua.ByteCode;
-
-public enum OpType
+namespace Clua.ByteCode
 {
-    Add,
-    Subtract,
-    Multiply,
-    Divide,
-    Return,
-    PushConstant,
+    public enum OpType
+    {
+        Add,
+        Subtract,
+        Multiply,
+        Divide,
+        Return,
+        PushConstant,
+    }
 }

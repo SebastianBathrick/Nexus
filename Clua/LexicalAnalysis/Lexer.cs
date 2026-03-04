@@ -1,110 +1,112 @@
 using Clua.Tokens;
-namespace Clua.LexicalAnalysis;
 
-static class Lexer
+namespace Clua.LexicalAnalysis
 {
-    public static ITokenCollection Lex<TTokenCollection>(string srcCode) where TTokenCollection : ITokenCollection, new()
+    static class Lexer
     {
-        var tknList = new TTokenCollection();
-        var stream = new CharStream(srcCode);
-
-        while (stream.IsCharInStream())
+        public static ITokenCollection Lex<TTokenCollection>(string srcCode) where TTokenCollection : ITokenCollection, new()
         {
-            Token tkn;
+            var tknList = new TTokenCollection();
+            var stream = new CharStream(srcCode);
 
-            switch (stream.GetCharType())
+            while (stream.IsCharInStream())
             {
-                case CharType.Numeric:
-                    tkn = ReadNumber(stream);
-                    break;
-                case CharType.Operator:
-                    tkn = ReadOperator(stream);
-                    break;
-                case CharType.Alpha:
-                case CharType.Underscore:
-                    tkn = ReadIdentifier(stream);
-                    break;
-                case CharType.OpenParen:
-                case CharType.CloseParen:
-                case CharType.CurlyOpen:
-                case CharType.CurlyClose:
-                    tkn = ReadDelimiter(stream);
-                    break;
-                case CharType.Whitespace:
-                    stream.ConsumeChar();
-                    continue;
-                case CharType.Invalid:
-                default:
-                    throw new ArgumentException($"Invalid character '{stream.ReadNextChar()}'");
+                Token tkn;
+
+                switch (stream.GetCharType())
+                {
+                    case CharType.Numeric:
+                        tkn = ReadNumber(stream);
+                        break;
+                    case CharType.Operator:
+                        tkn = ReadOperator(stream);
+                        break;
+                    case CharType.Alpha:
+                    case CharType.Underscore:
+                        tkn = ReadIdentifier(stream);
+                        break;
+                    case CharType.OpenParen:
+                    case CharType.CloseParen:
+                    case CharType.CurlyOpen:
+                    case CharType.CurlyClose:
+                        tkn = ReadDelimiter(stream);
+                        break;
+                    case CharType.Whitespace:
+                        stream.ConsumeChar();
+                        continue;
+                    case CharType.Invalid:
+                    default:
+                        throw new ArgumentException($"Invalid character '{stream.ReadNextChar()}'");
+                }
+
+                tknList.Add(tkn);
             }
 
-            tknList.Add(tkn);
+            return tknList;
         }
 
-        return tknList;
-    }
+        static Token ReadDelimiter(CharStream stream)
+        {
+            var charType = stream.GetCharType();
+            if (!LanguageSpecifications.Delimeters.TryGetValue(charType, out var tokenType))
+                throw new ArgumentException($"Unknown delimiter '{stream.ReadNextChar()}'");
 
-    static Token ReadDelimiter(CharStream stream)
-    {
-        var charType = stream.GetCharType();
-        if (!LanguageSpecifications.Delimeters.TryGetValue(charType, out var tokenType))
-            throw new ArgumentException($"Unknown delimiter '{stream.ReadNextChar()}'");
-
-        var builder = new TokenBuilder(tokenType);
-        builder.Append(stream.ReadNextChar());
-        return builder.Build();
-    }
-
-    static Token ReadIdentifier(CharStream stream)
-    {
-        var builder = new TokenBuilder(TokenType.Identifier);
-
-        while (stream.IsCharAlpha() || stream.IsCharUnderscore() || stream.IsCharNumeric())
+            var builder = new TokenBuilder(tokenType);
             builder.Append(stream.ReadNextChar());
-
-        if (LanguageSpecifications.ReservedKeywords.TryGetValue(builder.ToString(), out var keywordType))
-            builder.SetType(keywordType);
-
-        return builder.Build();
-    }
-
-    static Token ReadOperator(CharStream stream)
-    {
-        var builder = new TokenBuilder();
-
-        // While the next character is an operator, and NOT A TRAILING minus ("+-" will be treated as separate tokens, but "-=" will be one)
-        while (stream.IsCharOperator() && (!stream.IsCharMinus() || builder.Length == 0))
-            builder.Append(stream.ReadNextChar());
-
-        if (!LanguageSpecifications.Operators.TryGetValue(builder.ToString(), out var operatorType))
-            throw new ArgumentException($"Invalid operator '{builder}'");
-
-        builder.SetType(operatorType);
-        return builder.Build();
-    }
-
-    static Token ReadNumber(CharStream stream)
-    {
-        var builder = new TokenBuilder(TokenType.NumberLiteral);
-
-        while (stream.IsCharNumeric())
-            builder.Append(stream.ReadNextChar());
-
-        if (!stream.IsCharDot())
             return builder.Build();
+        }
 
-        // Consume the '.'
-        builder.Append(stream.ReadNextChar());
+        static Token ReadIdentifier(CharStream stream)
+        {
+            var builder = new TokenBuilder(TokenType.Identifier);
 
-        if (!stream.IsCharNumeric())
-            throw new ArgumentException($"Invalid number literal '{builder}.' — expected digit after decimal point");
+            while (stream.IsCharAlpha() || stream.IsCharUnderscore() || stream.IsCharNumeric())
+                builder.Append(stream.ReadNextChar());
 
-        while (stream.IsCharNumeric())
+            if (LanguageSpecifications.ReservedKeywords.TryGetValue(builder.ToString(), out var keywordType))
+                builder.SetType(keywordType);
+
+            return builder.Build();
+        }
+
+        static Token ReadOperator(CharStream stream)
+        {
+            var builder = new TokenBuilder();
+
+            // While the next character is an operator, and NOT A TRAILING minus ("+-" will be treated as separate tokens, but "-=" will be one)
+            while (stream.IsCharOperator() && (!stream.IsCharMinus() || builder.Length == 0))
+                builder.Append(stream.ReadNextChar());
+
+            if (!LanguageSpecifications.Operators.TryGetValue(builder.ToString(), out var operatorType))
+                throw new ArgumentException($"Invalid operator '{builder}'");
+
+            builder.SetType(operatorType);
+            return builder.Build();
+        }
+
+        static Token ReadNumber(CharStream stream)
+        {
+            var builder = new TokenBuilder(TokenType.NumberLiteral);
+
+            while (stream.IsCharNumeric())
+                builder.Append(stream.ReadNextChar());
+
+            if (!stream.IsCharDot())
+                return builder.Build();
+
+            // Consume the '.'
             builder.Append(stream.ReadNextChar());
 
-        if (stream.IsCharDot())
-            throw new ArgumentException($"Invalid number literal '{builder}' — unexpected '.'");
+            if (!stream.IsCharNumeric())
+                throw new ArgumentException($"Invalid number literal '{builder}.' — expected digit after decimal point");
 
-        return builder.Build();
+            while (stream.IsCharNumeric())
+                builder.Append(stream.ReadNextChar());
+
+            if (stream.IsCharDot())
+                throw new ArgumentException($"Invalid number literal '{builder}' — unexpected '.'");
+
+            return builder.Build();
+        }
     }
 }
