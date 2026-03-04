@@ -66,7 +66,56 @@ namespace Nexus.SyntaxAnalysis
 
         #region Parse Expression Methods
 
+        /*
+         * Operator Precedence:
+         * 1. Arithmetic: *, /, +, -
+         * 2. Comparison: >, >=, <, <=, is, is not
+         * 3. Logic: and, or
+         *
+         * Function Call Order:
+         * 1. ParseExpression
+         * 2. ParseLogicExpression
+         * 3. ParseLogicTerm (terms are made up of comparison expressions)
+         * 4. ParseComparisonExpression
+         * 5. ParseArithmeticExpression
+         * 6. ParseArithmeticTerm
+         * 7. ParseFactor
+         * 8. ParseNestedExpression
+         *
+         * Note: If there are parenthesis it will call ParseExpression and the call order will repeat.
+         *       It will continuously reach and call nested expression until the inner most expression
+         *       is reached and parsed.
+        */
+
         static Node ParseExpression(ITokenCollection tkns) => ParseLogicExpression(tkns);
+
+        static Node ParseLogicExpression(ITokenCollection tkns)
+        {
+            var left = ParseComparisonExpression(tkns);
+
+            while (tkns.IsOfType(TokenType.LogicalOr, TokenType.LogicalNot))
+            {
+                var opType = GetLogicOperationType(tkns.ReadType());
+                var right = ParseComparisonExpression(tkns);
+                left = new ExpressionNode(opType, left, right);
+            }
+
+            return left;
+        }
+
+            static Node ParseComparisonExpression(ITokenCollection tkns)
+        {
+            var left = ParseArithmeticExpression(tkns);
+
+            while (tkns.IsOfType(TokenType.GreaterThanOperator, TokenType.GreaterThanOrEqualOperator, TokenType.LessThanOperator, TokenType.LessThanOrEqualOperator, TokenType.EqualityOperator, TokenType.InequalityOperator))
+            {
+                var opType = GetComparisonOperationType(tkns.ReadType());
+                var right = ParseArithmeticExpression(tkns);
+                left = new ExpressionNode(opType, left, right);
+            }
+
+            return left;
+        }
 
         static Node ParseArithmeticExpression(ITokenCollection tkns)
         {
@@ -82,19 +131,9 @@ namespace Nexus.SyntaxAnalysis
             return left;
         }
 
-        static Node ParseLogicExpression(ITokenCollection tkns)
-        {
-            var left = ParseLogicTerm(tkns);
 
-            while (tkns.IsOfType(TokenType.LogicalAnd, TokenType.LogicalOr))
-            {
-                var opType = tkns.ReadType() == TokenType.LogicalAnd ? ExpressionOperator.LogicalAnd : ExpressionOperator.LogicalOr;
-                var right = ParseLogicTerm(tkns);
-                left = new ExpressionNode(opType, left, right);
-            }
 
-            return left;
-        }
+
 
         static Node ParseNestedExpression(ITokenCollection tkns)
         {
@@ -109,9 +148,20 @@ namespace Nexus.SyntaxAnalysis
             return expr;
         }
 
-        #endregion
 
-        #region Parse Term Methods
+        static Node ParseLogicTerm(ITokenCollection tkns)
+        {
+            var left = ParseComparisonExpression(tkns);
+
+            while (tkns.IsOfType(TokenType.LogicalAnd))
+            {
+                var opType = GetComparisonOperationType(tkns.ReadType());
+                var right = ParseComparisonExpression(tkns);
+                left = new ExpressionNode(opType, left, right);
+            }
+
+            return left;
+        }
 
         static Node ParseArithmeticTerm(ITokenCollection tkns)
         {
@@ -121,21 +171,6 @@ namespace Nexus.SyntaxAnalysis
             {
                 var opType = GetArithmeticOperationType(tkns.ReadType());
                 var right = ParseFactor(tkns);
-                left = new ExpressionNode(opType, left, right);
-            }
-
-            return left;
-        }
-
-        static Node ParseLogicTerm(ITokenCollection tkns)
-        {
-            var left = ParseArithmeticExpression(tkns);
-
-            while (tkns.IsOfType(TokenType.GreaterThanOperator, TokenType.GreaterThanOrEqualOperator, TokenType.LessThanOperator,
-                       TokenType.LessThanOrEqualOperator, TokenType.EqualityOperator, TokenType.InequalityOperator))
-            {
-                var opType = GetComparisonOperationType(tkns.ReadType());
-                var right = ParseArithmeticExpression(tkns);
                 left = new ExpressionNode(opType, left, right);
             }
 
@@ -197,8 +232,10 @@ namespace Nexus.SyntaxAnalysis
             return new UnaryExpressionNode(ExpressionOperator.LogicalNot, ParseFactor(tkns));
         }
 
+        #endregion
 
-
+        #region Get Operation Type Methods
+        
         static ExpressionOperator GetArithmeticOperationType(TokenType tokenType)
         {
             return tokenType switch
@@ -225,7 +262,17 @@ namespace Nexus.SyntaxAnalysis
             };
         }
 
-        #endregion
+        static ExpressionOperator GetLogicOperationType(TokenType tokenType)
+        {
+            return tokenType switch
+            {
+                TokenType.LogicalAnd => ExpressionOperator.LogicalAnd,
+                TokenType.LogicalOr => ExpressionOperator.LogicalOr,
+                TokenType.LogicalNot => ExpressionOperator.LogicalNot,
+                _ => throw new ArgumentException($"Invalid logic operator: {tokenType}")
+            };
+        }
 
+        #endregion
     }
 }

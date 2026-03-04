@@ -4,7 +4,8 @@ using Nexus.Tokens;
 
 namespace Nexus.Tests
 {
-    class TokenCollection : ITokenCollection
+    /// <summary>Stub used only by LexerTests: implements Add and ToList so the Lexer can produce a list of tokens. Parser/integration tests use Nexus.Tokens.TokenCollection.</summary>
+    class LexerTestTokenCollection : ITokenCollection
     {
         readonly List<Token> _tokens = [];
 
@@ -33,7 +34,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_SimpleIdentifier_ReturnsIdentifierToken()
         {
-            var tokens = Lexer.Lex<TokenCollection>("hello").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("hello").ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.Identifier));
             Assert.That(tokens[0].Plaintext, Is.EqualTo("hello"));
@@ -42,7 +43,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_IdentifierStartingWithUnderscore_ReturnsIdentifierToken()
         {
-            var tokens = Lexer.Lex<TokenCollection>("_hello").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("_hello").ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.Identifier));
             Assert.That(tokens[0].Plaintext, Is.EqualTo("_hello"));
@@ -51,7 +52,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_IdentifierWithUnderscoreOnly_ReturnsIdentifierToken()
         {
-            var tokens = Lexer.Lex<TokenCollection>("_").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("_").ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.Identifier));
             Assert.That(tokens[0].Plaintext, Is.EqualTo("_"));
@@ -60,7 +61,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_IdentifierWithDigits_ReturnsIdentifierToken()
         {
-            var tokens = Lexer.Lex<TokenCollection>("hello123").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("hello123").ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.Identifier));
             Assert.That(tokens[0].Plaintext, Is.EqualTo("hello123"));
@@ -69,7 +70,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_IdentifierWithUnderscoreAndDigits_ReturnsIdentifierToken()
         {
-            var tokens = Lexer.Lex<TokenCollection>("_my_var_1").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("_my_var_1").ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.Identifier));
             Assert.That(tokens[0].Plaintext, Is.EqualTo("_my_var_1"));
@@ -78,7 +79,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_DigitsThenAlpha_ProducesIntLiteralThenIdentifier()
         {
-            var tokens = Lexer.Lex<TokenCollection>("123abc").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("123abc").ToList();
             Assert.That(tokens.Count, Is.EqualTo(2));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.NumberLiteral));
             Assert.That(tokens[0].Plaintext, Is.EqualTo("123"));
@@ -89,7 +90,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_MultipleIdentifiers_ReturnsAllIdentifierTokens()
         {
-            var tokens = Lexer.Lex<TokenCollection>("foo bar").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("foo bar").ToList();
             var identifiers = tokens.Where(t => t.Type == TokenType.Identifier).ToList();
             Assert.That(identifiers.Count, Is.EqualTo(2));
             Assert.That(identifiers[0].Plaintext, Is.EqualTo("foo"));
@@ -104,7 +105,7 @@ namespace Nexus.Tests
         public void Lex_ReservedKeyword_ReturnsKeywordToken(string keyword)
         {
             var expectedType = Nexus.LanguageSpecifications.ReservedKeywords[keyword];
-            var tokens = Lexer.Lex<TokenCollection>(keyword).ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>(keyword).ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
             Assert.That(tokens[0].Type, Is.EqualTo(expectedType));
             Assert.That(tokens[0].Plaintext, Is.EqualTo(keyword));
@@ -113,7 +114,7 @@ namespace Nexus.Tests
         [TestCaseSource(nameof(KeywordStrings))]
         public void Lex_KeywordPrefixedWithUnderscore_ReturnsIdentifier(string keyword)
         {
-            var tokens = Lexer.Lex<TokenCollection>("_" + keyword).ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("_" + keyword).ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.Identifier));
         }
@@ -121,7 +122,7 @@ namespace Nexus.Tests
         [TestCaseSource(nameof(KeywordStrings))]
         public void Lex_KeywordWithTrailingAlpha_ReturnsIdentifier(string keyword)
         {
-            var tokens = Lexer.Lex<TokenCollection>(keyword + "x").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>(keyword + "x").ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.Identifier));
         }
@@ -133,7 +134,7 @@ namespace Nexus.Tests
             if (keywords.Count < 2) return;
 
             var input = string.Join(" ", keywords.Select(k => k.Key));
-            var tokens = Lexer.Lex<TokenCollection>(input).ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>(input).ToList();
 
             Assert.That(tokens.Count, Is.EqualTo(keywords.Count));
             for (int i = 0; i < keywords.Count; i++)
@@ -144,7 +145,7 @@ namespace Nexus.Tests
         public void Lex_KeywordMixedWithIdentifier_ReturnsBothCorrectly(string keyword)
         {
             var expectedType = Nexus.LanguageSpecifications.ReservedKeywords[keyword];
-            var tokens = Lexer.Lex<TokenCollection>(keyword + " myVar").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>(keyword + " myVar").ToList();
             Assert.That(tokens.Count, Is.EqualTo(2));
             Assert.That(tokens[0].Type, Is.EqualTo(expectedType));
             Assert.That(tokens[1].Type, Is.EqualTo(TokenType.Identifier));
@@ -159,7 +160,7 @@ namespace Nexus.Tests
         public void Lex_ValidOperator_ReturnsCorrectOperatorToken(string op)
         {
             var expectedType = Nexus.LanguageSpecifications.Operators[op];
-            var tokens = Lexer.Lex<TokenCollection>(op).ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>(op).ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
             Assert.That(tokens[0].Type, Is.EqualTo(expectedType));
         }
@@ -167,7 +168,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_ValidOperatorSequence_ReturnsSeparateMinusToken()
         {
-            var tkns = Lexer.Lex<TokenCollection>("a+-b").ToList();
+            var tkns = Lexer.Lex<LexerTestTokenCollection>("a+-b").ToList();
             Assert.That(tkns[1].Type, Is.EqualTo(TokenType.PlusOperator));
             Assert.That(tkns[2].Type, Is.EqualTo(TokenType.MinusOperator));
         }
@@ -175,7 +176,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_OperatorBetweenIdentifiers_ReturnsThreeTokens()
         {
-            var tokens = Lexer.Lex<TokenCollection>("a+b").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("a+b").ToList();
             Assert.That(tokens.Count, Is.EqualTo(3));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.Identifier));
             Assert.That(tokens[1].Type, Is.EqualTo(TokenType.PlusOperator));
@@ -185,7 +186,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_OperatorBetweenIntLiterals_ReturnsThreeTokens()
         {
-            var tokens = Lexer.Lex<TokenCollection>("1+2").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("1+2").ToList();
             Assert.That(tokens.Count, Is.EqualTo(3));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.NumberLiteral));
             Assert.That(tokens[1].Type, Is.EqualTo(TokenType.PlusOperator));
@@ -195,14 +196,14 @@ namespace Nexus.Tests
         [Test]
         public void Lex_AssignEquals_ReturnsEqualsOperator()
         {
-            var tokens = Lexer.Lex<TokenCollection>("a=b").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("a=b").ToList();
             Assert.That(tokens[1].Type, Is.EqualTo(TokenType.EqualsOperator));
         }
 
         [Test]
         public void Lex_DoubleEquals_ReturnsEqualityOperator()
         {
-            var tokens = Lexer.Lex<TokenCollection>("a==b").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("a==b").ToList();
             Assert.That(tokens[1].Type, Is.EqualTo(TokenType.EqualityOperator));
         }
 
@@ -211,7 +212,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_OpenParen_ReturnsOpenParenToken()
         {
-            var tokens = Lexer.Lex<TokenCollection>("(").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("(").ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.OpenParen));
             Assert.That(tokens[0].Plaintext, Is.EqualTo("("));
@@ -220,7 +221,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_CloseParen_ReturnsCloseParenToken()
         {
-            var tokens = Lexer.Lex<TokenCollection>(")").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>(")").ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.CloseParen));
             Assert.That(tokens[0].Plaintext, Is.EqualTo(")"));
@@ -229,7 +230,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_ParenWrappedIdentifier_ReturnsThreeTokens()
         {
-            var tokens = Lexer.Lex<TokenCollection>("(a)").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("(a)").ToList();
             Assert.That(tokens.Count, Is.EqualTo(3));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.OpenParen));
             Assert.That(tokens[1].Type, Is.EqualTo(TokenType.Identifier));
@@ -239,7 +240,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_CurlyOpen_ReturnsCurlyOpenToken()
         {
-            var tokens = Lexer.Lex<TokenCollection>("{").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("{").ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.CurlyOpen));
             Assert.That(tokens[0].Plaintext, Is.EqualTo("{"));
@@ -248,7 +249,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_CurlyClose_ReturnsCurlyCloseToken()
         {
-            var tokens = Lexer.Lex<TokenCollection>("}").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("}").ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.CurlyClose));
             Assert.That(tokens[0].Plaintext, Is.EqualTo("}"));
@@ -257,11 +258,40 @@ namespace Nexus.Tests
         [Test]
         public void Lex_CurlyWrappedIdentifier_ReturnsThreeTokens()
         {
-            var tokens = Lexer.Lex<TokenCollection>("{a}").ToList();
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("{a}").ToList();
             Assert.That(tokens.Count, Is.EqualTo(3));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.CurlyOpen));
             Assert.That(tokens[1].Type, Is.EqualTo(TokenType.Identifier));
             Assert.That(tokens[2].Type, Is.EqualTo(TokenType.CurlyClose));
+        }
+
+        // Number literals
+
+        [Test]
+        public void Lex_IntegerLiteral_ReturnsSingleNumberLiteralToken()
+        {
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("42").ToList();
+            Assert.That(tokens.Count, Is.EqualTo(1));
+            Assert.That(tokens[0].Type, Is.EqualTo(TokenType.NumberLiteral));
+            Assert.That(tokens[0].Plaintext, Is.EqualTo("42"));
+        }
+
+        [Test]
+        public void Lex_DecimalLiteral_ReturnsNumberLiteralWithDecimal()
+        {
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("3.14").ToList();
+            Assert.That(tokens.Count, Is.EqualTo(1));
+            Assert.That(tokens[0].Type, Is.EqualTo(TokenType.NumberLiteral));
+            Assert.That(tokens[0].Plaintext, Is.EqualTo("3.14"));
+        }
+
+        [Test]
+        public void Lex_Zero_ReturnsNumberLiteralToken()
+        {
+            var tokens = Lexer.Lex<LexerTestTokenCollection>("0").ToList();
+            Assert.That(tokens.Count, Is.EqualTo(1));
+            Assert.That(tokens[0].Type, Is.EqualTo(TokenType.NumberLiteral));
+            Assert.That(tokens[0].Plaintext, Is.EqualTo("0"));
         }
 
         // Number error cases
@@ -269,13 +299,13 @@ namespace Nexus.Tests
         [Test]
         public void Lex_TrailingDot_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => Lexer.Lex<TokenCollection>("3."));
+            Assert.Throws<ArgumentException>(() => Lexer.Lex<LexerTestTokenCollection>("3."));
         }
 
         [Test]
         public void Lex_DoubleDotInFloat_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => Lexer.Lex<TokenCollection>("3.14.5"));
+            Assert.Throws<ArgumentException>(() => Lexer.Lex<LexerTestTokenCollection>("3.14.5"));
         }
 
         // Invalid character
@@ -283,7 +313,7 @@ namespace Nexus.Tests
         [Test]
         public void Lex_InvalidCharacter_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => Lexer.Lex<TokenCollection>("hello@world"));
+            Assert.Throws<ArgumentException>(() => Lexer.Lex<LexerTestTokenCollection>("hello@world"));
         }
     }
 }
