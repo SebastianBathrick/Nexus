@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Clua.ByteCode;
 using Clua.Compilation;
 using Clua.Execution.Values;

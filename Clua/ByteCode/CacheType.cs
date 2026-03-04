@@ -1,9 +1,9 @@
 namespace Clua.ByteCode
 {
     /// <summary>
-    /// The type of cache an operation will access when executed by <see cref="VirtualMachine"/>.
+    /// The type of cache an operation will access when executed by <see cref="Execution"/>.
     /// </summary>
-    public enum CacheType
+    enum CacheType
     {
         /// <summary> No cache to access. </summary>
         None,

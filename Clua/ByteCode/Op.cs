@@ -1,12 +1,19 @@
 namespace Clua.ByteCode
 {
-    readonly struct Op(OpType opType, CacheType cacheType = CacheType.None, int cacheIndex = Op.NoMappedIndex)
+    readonly struct Op
     {
         const int NoMappedIndex = -1;
 
-        public OpType OpType { get; } = opType;
-        public CacheType CacheType { get; } = cacheType;
-        public int CacheIndex { get; } = cacheIndex;
+        public readonly OpType OpType;
+        public readonly CacheType CacheType;
+        public readonly int CacheIndex;
+
+        public Op(OpType opType, CacheType cacheType = CacheType.None, int cacheIndex = NoMappedIndex)
+        {
+            OpType = opType;
+            CacheType = cacheType;
+            CacheIndex = cacheIndex;
+        }
 
         public override string ToString()
         {

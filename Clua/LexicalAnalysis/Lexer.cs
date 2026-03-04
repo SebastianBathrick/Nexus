@@ -1,4 +1,5 @@
 using Clua.Tokens;
+using System;
 
 namespace Clua.LexicalAnalysis
 {

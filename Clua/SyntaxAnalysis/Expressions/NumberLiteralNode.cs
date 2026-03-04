@@ -2,10 +2,17 @@ using System.Globalization;
 
 namespace Clua.SyntaxAnalysis.Expressions
 {
-    class NumberLiteralNode(double val) : LiteralNode
+    class NumberLiteralNode : LiteralNode
     {
-        public override double GetNumberValue() => val;
+        readonly double _val;
 
-        public override string ToString() => val.ToString(CultureInfo.InvariantCulture);
+        public NumberLiteralNode(double val)
+        {
+            _val = val;
+        }
+
+        public override double GetNumberValue() => _val;
+
+        public override string ToString() => _val.ToString(CultureInfo.InvariantCulture);
     }
 }

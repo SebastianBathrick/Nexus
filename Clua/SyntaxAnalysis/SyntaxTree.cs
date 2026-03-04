@@ -1,8 +1,13 @@
 namespace Clua.SyntaxAnalysis
 {
-    class SyntaxTree(Node topLevelBlockNode) : Node
+    class SyntaxTree : Node
     {
-        public Node TopLevelBlockNode { get; } = topLevelBlockNode;
+        public Node TopLevelBlockNode { get; }
+
+        public SyntaxTree(Node topLevelBlockNode)
+        {
+            TopLevelBlockNode = topLevelBlockNode;
+        }
 
         public override string ToString()
         {

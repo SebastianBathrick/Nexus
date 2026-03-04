@@ -1,10 +1,19 @@
-namespace Clua.SyntaxAnalysis. Expressions
+using System;
+
+namespace Clua.SyntaxAnalysis.Expressions
 {
-    class ExpressionNode(ExpressionOperator @operator, Node left, Node right) : Node
+    class ExpressionNode : Node
     {
-        public ExpressionOperator Operator { get; } = @operator;
-        public Node Left { get; } = left;
-        public Node Right { get; } = right;
+        public ExpressionOperator Operator { get; }
+        public Node Left { get; }
+        public Node Right { get; }
+
+        public ExpressionNode(ExpressionOperator @operator, Node left, Node right)
+        {
+            Operator = @operator;
+            Left = left;
+            Right = right;
+        }
 
         string GetOperatorString()
         {

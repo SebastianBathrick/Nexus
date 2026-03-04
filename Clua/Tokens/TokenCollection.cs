@@ -1,8 +1,11 @@
+using System;
+using System.Collections.Generic;
+
 namespace Clua.Tokens
 {
     class TokenCollection : ITokenCollection
     {
-        readonly List<Token> _tokens = [];
+        readonly List<Token> _tokens = new();
         int _index;
 
         public IReadOnlyList<Token> Tokens => _tokens;

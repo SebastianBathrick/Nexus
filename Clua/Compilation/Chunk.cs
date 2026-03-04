@@ -4,13 +4,22 @@ using Clua.Execution.Values;
 
 namespace Clua.Compilation
 {
-    class Chunk(Op[] instructions, CluaValue[] constsCache)
+    class Chunk
     {
-        public int Length => instructions.Length;
+        readonly Op[] _instructions;
+        readonly CluaValue[] _constsCache;
 
-        public Op this[int index] => instructions[index];
+        public int Length => _instructions.Length;
 
-        public CluaValue GetConstant(int index) => constsCache[index];
+        public Chunk(Op[] instructions, CluaValue[] constsCache)
+        {
+            _instructions = instructions;
+            _constsCache = constsCache;
+        }
+
+        public Op this[int index] => _instructions[index];
+
+        public CluaValue GetConstant(int index) => _constsCache[index];
 
         public override string ToString()
         {
@@ -18,13 +27,13 @@ namespace Clua.Compilation
 
             sb.AppendLine("[CONSTANTS]:\n");
 
-            for (var i = 0; i < constsCache.Length; i++)
-                sb.AppendLine($"[{i}] {constsCache[i]}");
+            for (var i = 0; i < _constsCache.Length; i++)
+                sb.AppendLine($"[{i}] {_constsCache[i]}");
 
             sb.AppendLine("\n[INSTRUCTIONS]:\n");
 
-            for(var i = 0; i < instructions.Length; i++)
-                sb.AppendLine($"[{i}] {instructions[i]}");
+            for (var i = 0; i < _instructions.Length; i++)
+                sb.AppendLine($"[{i}] {_instructions[i]}");
 
             return sb.ToString();
         }

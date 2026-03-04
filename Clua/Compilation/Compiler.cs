@@ -2,6 +2,7 @@ using Clua.ByteCode;
 using Clua.Execution.Values;
 using Clua.SyntaxAnalysis;
 using Clua.SyntaxAnalysis.Expressions;
+using System;
 
 namespace Clua.Compilation
 {
@@ -17,7 +18,7 @@ namespace Clua.Compilation
 
             // TODO: Add functions, control flow constructs, and more statements.
             var tempData = new TempCompilerCache();
-            GetReturnInstructions(block.Statements.First(), tempData);
+            GetReturnInstructions(block.Statements[0], tempData);
             return new Chunk(tempData.Instructions.ToArray(), tempData.Values.ToArray());
         }
 

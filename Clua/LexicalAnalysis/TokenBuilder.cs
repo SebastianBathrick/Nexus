@@ -1,12 +1,18 @@
 using System.Text;
 using Clua.Tokens;
+using System;
 
 namespace Clua.LexicalAnalysis
 {
-    class TokenBuilder(TokenType tokenType = TokenType.None)
+    class TokenBuilder
     {
         StringBuilder? _builder;
-        TokenType _tokenType = tokenType;
+        TokenType _tokenType;
+
+        public TokenBuilder(TokenType tokenType = TokenType.None)
+        {
+            _tokenType = tokenType;
+        }
 
         public bool IsValid => _tokenType != TokenType.None;
 

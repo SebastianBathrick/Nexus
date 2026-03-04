@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Clua.SyntaxAnalysis.Expressions;
 using Clua.Tokens;
 
