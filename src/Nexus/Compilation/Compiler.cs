@@ -8,6 +8,8 @@ namespace Nexus.Compilation
 {
     static class Compiler
     {
+        const int NoConstantIndex = -1;
+
         public static Chunk CompileFromSyntaxTree(Node root)
         {
             if (root is not SyntaxTree tree)
@@ -33,6 +35,16 @@ namespace Nexus.Compilation
 
         static void GetExpressionInstructions(Node node, TempCompilerCache tempCache)
         {
+            if (node is UnaryExpressionNode unary)
+            {
+                GetExpressionInstructions(unary.Operand, tempCache);
+                if (unary.Operator == ExpressionOperator.LogicalNot)
+                    tempCache.Instructions.Add(new Op(OpType.Not));
+                else
+                    throw new InvalidOperationException($"Unsupported unary operator: {unary.Operator}");
+                return;
+            }
+
             if (node is not ExpressionNode expression)
             {
                 GetPushInstruction(node, tempCache);
@@ -44,18 +56,21 @@ namespace Nexus.Compilation
             tempCache.Instructions.Add(new Op(GetOpType(expression.Operator)));
         }
 
+        static NexusValue NodeToConstant(Node node)
+        {
+            if (node is NumberLiteralNode num) return new NexusNumber(num.GetNumberValue());
+            if (node is BoolLiteralNode b) return new NexusBool(b.GetBoolValue());
+            throw new ArgumentException($"Cannot push constant for node type: {node.GetType().Name}");
+        }
+
         static void GetPushInstruction(Node node, TempCompilerCache tempCache)
         {
-            // TODO: Add comparison and logic operators
-            if (node is not NumberLiteralNode numNode)
-                throw new ArgumentException("node is not a NumberLiteralNode");
+            var value = NodeToConstant(node);
+            var constIndex = tempCache.Values.FindIndex(x => x == value);
 
-            var numVal = numNode.GetNumberValue();
-            var constIndex = tempCache.Values.FindIndex(x => x == numVal);
-
-            if (constIndex == -1)
+            if (constIndex == NoConstantIndex)
             {
-                tempCache.Values.Add(new CluaNumber(numVal));
+                tempCache.Values.Add(value);
                 constIndex = tempCache.Values.Count - 1;
             }
 
@@ -70,6 +85,14 @@ namespace Nexus.Compilation
                 ExpressionOperator.Subtraction => OpType.Subtract,
                 ExpressionOperator.Multiplication => OpType.Multiply,
                 ExpressionOperator.Division => OpType.Divide,
+                ExpressionOperator.Inequality => OpType.NotEqualTo,
+                ExpressionOperator.Equality => OpType.EqualTo,
+                ExpressionOperator.GreaterThan => OpType.GreaterThan,
+                ExpressionOperator.GreaterThanOrEqual => OpType.GreaterThanOrEqualTo,
+                ExpressionOperator.LessThan => OpType.LessThan,
+                ExpressionOperator.LessThanOrEqual => OpType.LessThanOrEqualTo,
+                ExpressionOperator.LogicalAnd => OpType.And,
+                ExpressionOperator.LogicalOr => OpType.Or,
                 _ => throw new InvalidOperationException($"Unsupported operator: {op}")
             };
         }

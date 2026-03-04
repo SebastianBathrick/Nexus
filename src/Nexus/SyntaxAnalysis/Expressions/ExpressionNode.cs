@@ -31,6 +31,7 @@ namespace Nexus.SyntaxAnalysis.Expressions
                 ExpressionOperator.LessThanOrEqual => "<=",
                 ExpressionOperator.Equality => "==",
                 ExpressionOperator.Inequality => "!=",
+                ExpressionOperator.LogicalNot => "!",
                 _ => throw new InvalidOperationException($"Unsupported operation type: {Operator}")
             };
         }
@@ -52,5 +53,6 @@ namespace Nexus.SyntaxAnalysis.Expressions
         LessThanOrEqual,
         Equality,
         Inequality,
+        LogicalNot,
     }
 }

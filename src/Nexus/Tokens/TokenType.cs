@@ -25,9 +25,9 @@ namespace Nexus.Tokens
         GreaterThanOrEqualOperator,
 
         // Logical operators
-        LogicalAndOperator,
-        LogicalOrOperator,
-        LogicalNotOperator,
+        LogicalAnd,
+        LogicalOr,
+        LogicalNot,
 
         // Delimiters
         OpenParen,

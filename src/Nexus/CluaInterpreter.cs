@@ -9,7 +9,7 @@ namespace Nexus
 {
     public static class CluaInterpreter
     {
-        public static CluaValue Run(string sourceCode)
+        public static NexusValue Run(string sourceCode)
         {
             var tokenCollection = Lexer.Lex<TokenCollection>(sourceCode);
             var syntaxTreeRoot = Parser.ParseTokens(tokenCollection);

@@ -7,11 +7,11 @@ namespace Nexus.Compilation
     class Chunk
     {
         readonly Op[] _instructions;
-        readonly CluaValue[] _constsCache;
+        readonly NexusValue[] _constsCache;
 
         public int Length => _instructions.Length;
 
-        public Chunk(Op[] instructions, CluaValue[] constsCache)
+        public Chunk(Op[] instructions, NexusValue[] constsCache)
         {
             _instructions = instructions;
             _constsCache = constsCache;
@@ -19,7 +19,7 @@ namespace Nexus.Compilation
 
         public Op this[int index] => _instructions[index];
 
-        public CluaValue GetConstant(int index) => _constsCache[index];
+        public NexusValue GetConstant(int index) => _constsCache[index];
 
         public override string ToString()
         {

@@ -9,7 +9,10 @@ namespace Nexus
         {
             { "return", TokenType.ReturnKeyword },
             { "true", TokenType.TrueKeyword },
-            { "false", TokenType.FalseKeyword }
+            { "false", TokenType.FalseKeyword },
+            { "and", TokenType.LogicalAnd },
+            { "or", TokenType.LogicalOr },
+            { "not", TokenType.LogicalNot }
         };
 
         public static readonly IReadOnlyDictionary<string, TokenType> Operators = new Dictionary<string, TokenType>
@@ -25,9 +28,9 @@ namespace Nexus
             { ">", TokenType.GreaterThanOperator },
             { "<=", TokenType.LessThanOrEqualOperator },
             { ">=", TokenType.GreaterThanOrEqualOperator },
-            { "&&", TokenType.LogicalAndOperator },
-            { "||", TokenType.LogicalOrOperator },
-            { "!", TokenType.LogicalNotOperator }
+            { "&&", TokenType.LogicalAnd },
+            { "||", TokenType.LogicalOr },
+            { "!", TokenType.LogicalNot }
         };
 
         public static readonly IReadOnlyDictionary<CharType, TokenType> Delimeters = new Dictionary<CharType, TokenType>

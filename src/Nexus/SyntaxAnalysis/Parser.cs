@@ -86,9 +86,9 @@ namespace Nexus.SyntaxAnalysis
         {
             var left = ParseLogicTerm(tkns);
 
-            while (tkns.IsOfType(TokenType.LogicalAndOperator, TokenType.LogicalOrOperator))
+            while (tkns.IsOfType(TokenType.LogicalAnd, TokenType.LogicalOr))
             {
-                var opType = tkns.ReadType() == TokenType.LogicalAndOperator ? ExpressionOperator.LogicalAnd : ExpressionOperator.LogicalOr;
+                var opType = tkns.ReadType() == TokenType.LogicalAnd ? ExpressionOperator.LogicalAnd : ExpressionOperator.LogicalOr;
                 var right = ParseLogicTerm(tkns);
                 left = new ExpressionNode(opType, left, right);
             }
@@ -155,10 +155,18 @@ namespace Nexus.SyntaxAnalysis
             {
                 case TokenType.NumberLiteral:
                     return new NumberLiteralNode(double.Parse(tkns.Read().Plaintext));
+                case TokenType.TrueKeyword:
+                    tkns.Consume();
+                    return new BoolLiteralNode(true);
+                case TokenType.FalseKeyword:
+                    tkns.Consume();
+                    return new BoolLiteralNode(false);
                 case TokenType.OpenParen:
                     return ParseNestedExpression(tkns);
                 case TokenType.MinusOperator:
                     return ParseNegatedFactor(tkns);
+                case TokenType.LogicalNot:
+                    return ParseNotFactor(tkns);
                 default:
                     throw new ArgumentException($"Invalid factor: {tkns.ReadType()}");
             }
@@ -176,6 +184,17 @@ namespace Nexus.SyntaxAnalysis
                 throw new ArgumentException($"Invalid negation of factor: {tkns.ReadType()}");
 
             return new ExpressionNode(ExpressionOperator.Multiplication, new NumberLiteralNode(-1), ParseFactor(tkns));
+        }
+
+        static Node ParseNotFactor(ITokenCollection tkns)
+        {
+            if (!tkns.IsOfTypeAndConsume(TokenType.LogicalNot))
+                throw new ArgumentException($"Expected {TokenType.LogicalNot}");
+
+            if (tkns.IsEmpty)
+                throw new ArgumentException("Unexpected end of expression after 'not' operator");
+
+            return new UnaryExpressionNode(ExpressionOperator.LogicalNot, ParseFactor(tkns));
         }
 
 

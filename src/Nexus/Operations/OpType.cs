@@ -7,6 +7,18 @@ namespace Nexus.Operations
         Multiply,
         Divide,
         Return,
+        
+        EqualTo,
+        NotEqualTo,
+        LessThan,
+        GreaterThan,
+        GreaterThanOrEqualTo,
+        LessThanOrEqualTo,
+        
+        And,
+        Or,
+        Not,
+
         PushConstant,
     }
 }
