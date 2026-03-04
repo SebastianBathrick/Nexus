@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Nexus.ByteCode;
+using Nexus.Operations;
 using Nexus.Compilation;
 using Nexus.Execution.Values;
 

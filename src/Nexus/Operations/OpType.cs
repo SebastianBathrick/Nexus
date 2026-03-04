@@ -1,4 +1,4 @@
-namespace Nexus.ByteCode
+namespace Nexus.Operations
 {
     public enum OpType
     {

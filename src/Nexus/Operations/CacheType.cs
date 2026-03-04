@@ -1,4 +1,4 @@
-namespace Nexus.ByteCode
+namespace Nexus.Operations
 {
     /// <summary>
     /// The type of cache an operation will access when executed by <see cref="Execution"/>.

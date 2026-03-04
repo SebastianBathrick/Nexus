@@ -1,4 +1,4 @@
-namespace Nexus.ByteCode
+namespace Nexus.Operations
 {
     readonly struct Op
     {

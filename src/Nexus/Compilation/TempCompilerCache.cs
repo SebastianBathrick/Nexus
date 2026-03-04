@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Nexus.ByteCode;
+using Nexus.Operations;
 using Nexus.Execution.Values;
 
 namespace Nexus.Compilation

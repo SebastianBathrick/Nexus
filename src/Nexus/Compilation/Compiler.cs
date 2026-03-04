@@ -1,5 +1,5 @@
 using System;
-using Nexus.ByteCode;
+using Nexus.Operations;
 using Nexus.Execution.Values;
 using Nexus.SyntaxAnalysis;
 using Nexus.SyntaxAnalysis.Expressions;
