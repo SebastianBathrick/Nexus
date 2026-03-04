@@ -3,19 +3,19 @@ namespace Clua.Tokens;
 enum TokenType
 {
     None,
-    IntLiteral,
-    FloatLiteral,
+    
+    NumberLiteral,
     Identifier,
-    IntKeyword,
-    FloatKeyword,
-    StringKeyword,
-    BoolKeyword,
     TrueKeyword,
     FalseKeyword,
+    
+    // Arithmetic operators
     PlusOperator,
     MinusOperator,
     MultiplyOperator,
     DivideOperator,
+    
+    // Comparison operators
     EqualsOperator,
     EqualityOperator,
     InequalityOperator,
@@ -23,11 +23,18 @@ enum TokenType
     GreaterThanOperator,
     LessThanOrEqualOperator,
     GreaterThanOrEqualOperator,
+    
+    // Logical operators
     LogicalAndOperator,
     LogicalOrOperator,
     LogicalNotOperator,
+    
+    // Delimiters
     OpenParen,
     CloseParen,
     CurlyOpen,
-    CurlyClose
+    CurlyClose,
+    
+    // Reserved keywords
+    ReturnKeyword,
 }
