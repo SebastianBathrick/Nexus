@@ -1,11 +1,17 @@
 using System;
 namespace Nexus.LexicalAnalysis
 {
+    /// <summary>
+    /// Analyzes source code, breaks it into <see cref="Token"/>s, and stores them in a <see cref="ITokenCollection"/>.
+    /// </summary>
     static class Lexer
     {
         public static ITokenCollection Lex<TTokenCollection>(string srcCode) where TTokenCollection : ITokenCollection, new()
         {
             var tknList = new TTokenCollection();
+            
+            /* During instantiation CharStream iterates over each char once in the source code and throws
+             * an exception if there is an invalid char */
             var stream = new CharStream(srcCode);
 
             while (stream.IsCharInStream())

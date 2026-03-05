@@ -251,10 +251,10 @@ public class NovaInterpreterTests
     }
 
     [Test]
-    public void Run_TrueOrTrueAndFalse_LeftAssociative_ReturnsFalse()
+    public void Run_TrueOrTrueAndFalse_AndBindsTighter_ReturnsTrue()
     {
-        // (true or true) and false => true and false => false (and/or same precedence, left-associative)
-        AssertRunBool("return true or true and false", false);
+        // true or (true and false) => true or false => true (and has higher precedence than or)
+        AssertRunBool("return true or true and false", true);
     }
 
     [Test]
@@ -471,6 +471,306 @@ public class NovaInterpreterTests
     public void Run_ZeroEqualsZero_ReturnsTrue()
     {
         AssertRunBool("return 0 == 0", true);
+    }
+
+    // is / is not keyword operators
+    [Test]
+    public void Run_IsKeyword_EqualNumbers_ReturnsTrue()
+    {
+        AssertRunBool("return 5 is 5", true);
+    }
+
+    [Test]
+    public void Run_IsKeyword_UnequalNumbers_ReturnsFalse()
+    {
+        AssertRunBool("return 5 is 6", false);
+    }
+
+    [Test]
+    public void Run_IsNotKeyword_UnequalNumbers_ReturnsTrue()
+    {
+        AssertRunBool("return 5 is not 6", true);
+    }
+
+    [Test]
+    public void Run_IsNotKeyword_EqualNumbers_ReturnsFalse()
+    {
+        AssertRunBool("return 3 is not 3", false);
+    }
+
+    [Test]
+    public void Run_IsKeyword_BoolAndCoercedNumber_ReturnsTrue()
+    {
+        AssertRunBool("return true is 1", true);
+    }
+
+    // Negation mixed with comparisons and logic
+    [Test]
+    public void Run_NotOnGreaterThanComparison_ReturnsExpected()
+    {
+        // not (3 > 5) => not false => true
+        AssertRunBool("return not (3 > 5)", true);
+    }
+
+    [Test]
+    public void Run_NotOnLessThanOrEqualComparison_ReturnsExpected()
+    {
+        // not (4 <= 3) => not false => true
+        AssertRunBool("return not (4 <= 3)", true);
+    }
+
+    [Test]
+    public void Run_NotOnInequalityComparison_ReturnsExpected()
+    {
+        // not (1 != 1) => not false => true
+        AssertRunBool("return not (1 != 1)", true);
+    }
+
+    [Test]
+    public void Run_NotTrueAndNotFalse_BothFlipped_ReturnsFalse()
+    {
+        // not true and not false => false and true => false
+        AssertRunBool("return not true and not false", false);
+    }
+
+    [Test]
+    public void Run_NotTrueOrNotFalse_ReturnsTrue()
+    {
+        // not true or not false => false or true => true
+        AssertRunBool("return not true or not false", true);
+    }
+
+    [Test]
+    public void Run_TripleNot_ReturnsInverted()
+    {
+        AssertRunBool("return not not not true", false);
+    }
+
+    // Negative numbers in comparisons
+    [Test]
+    public void Run_NegativeNumberLessThanZero_ReturnsTrue()
+    {
+        AssertRunBool("return -5 < 0", true);
+    }
+
+    [Test]
+    public void Run_NegativeNumberGreaterThanNegative_ReturnsTrue()
+    {
+        AssertRunBool("return -1 > -2", true);
+    }
+
+    [Test]
+    public void Run_NegativeEqualsNegative_ReturnsTrue()
+    {
+        AssertRunBool("return -3 == -3", true);
+    }
+
+    [Test]
+    public void Run_NegativeNumberInArithmeticThenCompare_ReturnsTrue()
+    {
+        // -2 * -3 = 6 > 5 => true
+        AssertRunBool("return -2 * -3 > 5", true);
+    }
+
+    // Mixed logic + comparison + arithmetic — deeper nesting
+    [Test]
+    public void Run_ArithmeticComparisonAndLogicChain_ReturnsTrue()
+    {
+        // (2 + 3 == 5) and (10 / 2 > 4) => true and true => true
+        AssertRunBool("return (2 + 3 == 5) and (10 / 2 > 4)", true);
+    }
+
+    [Test]
+    public void Run_OrOfTwoFalseComparisons_ReturnsFalse()
+    {
+        AssertRunBool("return (1 > 2) or (3 < 1)", false);
+    }
+
+    [Test]
+    public void Run_AndPrecedenceInChain_CorrectGrouping()
+    {
+        // false or true and false or true
+        // => false or (true and false) or true
+        // left-assoc or: ((false or false) or true) => true
+        AssertRunBool("return false or true and false or true", true);
+    }
+
+    [Test]
+    public void Run_ParensOverrideAndPrecedence_ReturnsFalse()
+    {
+        // (false or true) and false => true and false => false
+        AssertRunBool("return (false or true) and false", false);
+    }
+
+    [Test]
+    public void Run_NotOfAndExpression_ReturnsFalse()
+    {
+        // not (true and true) => not true => false
+        AssertRunBool("return not (true and true)", false);
+    }
+
+    [Test]
+    public void Run_NotOfOrExpression_ReturnsFalse()
+    {
+        // not (false or true) => not true => false
+        AssertRunBool("return not (false or true)", false);
+    }
+
+    [Test]
+    public void Run_ComplexMixedExpression_ReturnsTrue()
+    {
+        // (1 + 2) * 3 == 9 and not (4 > 5) or false
+        // => (9 == 9) and (not false) or false
+        // => true and true or false
+        // => true or false => true
+        AssertRunBool("return (1 + 2) * 3 == 9 and not (4 > 5) or false", true);
+    }
+
+    [Test]
+    public void Run_NegatedArithmeticInLogicChain_ReturnsTrue()
+    {
+        // -(2 * 3) + 10 > 0 and true => 4 > 0 and true => true and true => true
+        AssertRunBool("return -(2 * 3) + 10 > 0 and true", true);
+    }
+
+    [Test]
+    public void Run_DecimalComparisonInLogicChain_ReturnsTrue()
+    {
+        AssertRunBool("return 1.5 + 1.5 == 3.0 and 0.5 < 1.0", true);
+    }
+
+    [Test]
+    public void Run_BoolCoercionInComparisonAndLogic_ReturnsTrue()
+    {
+        // (true + true == 2) and (false + 1 == 1)
+        AssertRunBool("return (true + true == 2) and (false + 1 == 1)", true);
+    }
+
+    [Test]
+    public void Run_NegatedBoolInArithmeticComparison_ReturnsExpected()
+    {
+        // -true is -1, -1 < 0 => true
+        AssertRunBool("return -true < 0", true);
+    }
+
+    [Test]
+    public void Run_NotEqualOnBools_ReturnsTrue()
+    {
+        AssertRunBool("return true != false", true);
+    }
+
+    [Test]
+    public void Run_NotEqualOnBools_ReturnsFalseWhenSame()
+    {
+        AssertRunBool("return false != false", false);
+    }
+
+    // Deep nesting with varied operators
+    [TestCase("return ((1 + 2) * (3 + 4)) == 21", true)]
+    [TestCase("return ((10 - 3) * 2) > (6 + 7)", true)]
+    [TestCase("return ((4 * 4) - (3 * 3)) == (2 * 2 + 3)", true)]
+    [TestCase("return (((1 + 1) * 2) + ((3 - 1) * 3)) == 10", true)]
+    [TestCase("return ((8 / (2 * 2)) + (3 * (1 + 1))) == 8", true)]
+    public void Run_DeeplyNestedArithmeticInComparison(string source, bool expected)
+    {
+        AssertRunBool(source, expected);
+    }
+
+    [TestCase("return (1 < 2 and 3 < 4) and (5 < 6 and 7 < 8)", true)]
+    [TestCase("return (1 > 2 or 3 > 4) or (5 > 6 or 0 < 1)", true)]
+    [TestCase("return (1 < 2 and 3 > 4) or (5 < 6 and 7 > 6)", true)]
+    [TestCase("return (1 > 2 or 3 < 4) and (5 < 6 or 7 > 8)", true)]
+    [TestCase("return (1 > 2 and 3 > 4) or (5 > 6 and 7 > 8)", false)]
+    public void Run_NestedLogicWithComparisons(string source, bool expected)
+    {
+        AssertRunBool(source, expected);
+    }
+
+    [TestCase("return not (1 < 2 and 3 < 4)", false)]
+    [TestCase("return not (1 > 2 or 3 > 4)", true)]
+    [TestCase("return not (not true and not false)", true)]
+    [TestCase("return not (not (1 == 1))", true)]
+    [TestCase("return not ((1 + 1 == 2) and (2 + 2 == 5))", true)]
+    public void Run_NotOverNestedExpressions(string source, bool expected)
+    {
+        AssertRunBool(source, expected);
+    }
+
+    [TestCase("return ((2 + 3) * 2 == 10) and ((8 - 3) > 4)", true)]
+    [TestCase("return ((3 * 3) >= 9) or ((4 / 2) > 3)", true)]
+    [TestCase("return ((10 / 2) == 5) and ((3 + 4) != 8)", true)]
+    [TestCase("return ((2 * 2 + 1) > 4) and ((3 - 1) < 3)", true)]
+    [TestCase("return ((1 + 1) > 3) or ((2 * 3) <= 6)", true)]
+    public void Run_ArithmeticInComparisonInLogic(string source, bool expected)
+    {
+        AssertRunBool(source, expected);
+    }
+
+    [TestCase("return not (2 + 3 > 6) and not (1 == 2)", true)]
+    [TestCase("return not (4 * 2 < 7) or not (3 + 3 == 5)", true)]
+    [TestCase("return not ((3 > 2) and (2 > 1)) or (1 == 1)", true)]
+    [TestCase("return (not (1 > 2)) and (not (3 < 2))", true)]
+    [TestCase("return not (not (2 > 1) or not (3 > 2))", true)]
+    public void Run_NotMixedWithArithmeticAndLogic(string source, bool expected)
+    {
+        AssertRunBool(source, expected);
+    }
+
+    [TestCase("return (-(3 * 2) + 10 > 0) and (-(1 + 1) < 0)", true)]
+    [TestCase("return -(2 + 3) == -5", true)]
+    [TestCase("return (-2 * -3) == (-(- 6))", true)]
+    [TestCase("return (-(4 - 6)) > 0", true)]
+    [TestCase("return (-1 + -2) == -3", true)]
+    public void Run_NegationInNestedArithmeticAndComparison(string source, bool expected)
+    {
+        AssertRunBool(source, expected);
+    }
+
+    [Test]
+    public void Run_FourLevelNesting_AllOperatorTypes_ReturnsTrue()
+    {
+        // ((1 + 2) * 3 == 9 and not (4 > 5)) and ((6 / 2 >= 3) or (not false and 1 < 2))
+        // => (9 == 9 and not false) and (3 >= 3 or true and true)
+        // => (true and true) and (true or true)
+        // => true and true => true
+        AssertRunBool(
+            "return ((1 + 2) * 3 == 9 and not (4 > 5)) and ((6 / 2 >= 3) or (not false and 1 < 2))",
+            true);
+    }
+
+    [Test]
+    public void Run_FourLevelNesting_AllOperatorTypes_ReturnsFalse()
+    {
+        // ((2 * 3 == 7) or (not (1 < 2))) and ((4 + 1 > 5) or not true)
+        // => (6 == 7 or not true) and (5 > 5 or false)
+        // => (false or false) and (false or false)
+        // => false and false => false
+        AssertRunBool(
+            "return ((2 * 3 == 7) or (not (1 < 2))) and ((4 + 1 > 5) or not true)",
+            false);
+    }
+
+    [Test]
+    public void Run_NotOverDeepArithmeticComparison_ReturnsTrue()
+    {
+        // not ((2 + 3) * 2 > 11) => not (10 > 11) => not false => true
+        AssertRunBool("return not ((2 + 3) * 2 > 11)", true);
+    }
+
+    [Test]
+    public void Run_OrOfThreeAndClauses_CorrectPrecedence()
+    {
+        // (1 > 2 and 3 > 4) or (5 > 4 and 3 > 2) or (1 == 2 and true)
+        // => false or true or false => true
+        AssertRunBool("return (1 > 2 and 3 > 4) or (5 > 4 and 3 > 2) or (1 == 2 and true)", true);
+    }
+
+    [Test]
+    public void Run_CoercedBoolInDeepNesting_ReturnsTrue()
+    {
+        // ((true + true) * 2 == 4) and ((false + 1) >= 1)
+        // => (4 == 4) and (1 >= 1) => true
+        AssertRunBool("return ((true + true) * 2 == 4) and ((false + 1) >= 1)", true);
     }
 
     // Error cases

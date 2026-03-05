@@ -37,10 +37,10 @@ namespace Nexus.Logging
 
         #region ILogger Properties
 
-        public bool IsEnabled 
-        { 
-            get => MinimumLogLevel > LogLevel.None;
-            set => MinimumLogLevel = value ? MinimumLogLevel : LogLevel.None;
+        public bool IsEnabled() => MinimumLogLevel > LogLevel.None;
+        public void SetIsEnabled(bool value)
+        {
+            if (!value) MinimumLogLevel = LogLevel.None;
         }
         public LogLevel MinimumLogLevel { get; set; }
         public bool IsLabelsEnabled { get; set; }
@@ -65,7 +65,7 @@ namespace Nexus.Logging
 
             var obj = new
             {
-                IsEnabled,
+                IsEnabled = IsEnabled(),
                 MinimumLogLevel,
                 IsLabelsEnabled,
                 IsSeparatorEnabled,
@@ -80,8 +80,8 @@ namespace Nexus.Logging
             using var doc = JsonDocument.Parse(json);
             var root = doc.RootElement;
 
-            if (root.TryGetProperty(nameof(IsEnabled), out var isEnabled))
-                MinimumLogLevel = isEnabled.GetBoolean() ? MinimumLogLevel : LogLevel.None;
+            if (root.TryGetProperty("IsEnabled", out var isEnabled))
+                SetIsEnabled(isEnabled.GetBoolean());
 
             if (root.TryGetProperty(nameof(MinimumLogLevel), out var minLevel))
             {
@@ -101,44 +101,44 @@ namespace Nexus.Logging
 
         public void Verbose(string msg, params object[]? props)
         {
-            if (IsEnabled && LogLevel.Verbose >= MinimumLogLevel)
+            if (IsEnabled() && LogLevel.Verbose >= MinimumLogLevel)
                 Log(LogLevel.Verbose, msg, props);
         }
         public void Debug(string msg, params object[]? props)
         {
-            if (IsEnabled && LogLevel.Debug >= MinimumLogLevel)
+            if (IsEnabled() && LogLevel.Debug >= MinimumLogLevel)
                 Log(LogLevel.Debug, msg, props);
         }
         public void Info(string msg, params object[]? props)
         {
-            if (IsEnabled && LogLevel.Info >= MinimumLogLevel)
+            if (IsEnabled() && LogLevel.Info >= MinimumLogLevel)
                 Log(LogLevel.Info, msg, props);
         }
         public void Warning(string msg, params object[]? props)
         {
-            if (IsEnabled && LogLevel.Warning >= MinimumLogLevel)
+            if (IsEnabled() && LogLevel.Warning >= MinimumLogLevel)
                 Log(LogLevel.Warning, msg, props);
         }
 
         public void Error(string msg, params object[]? props)
         {
-            if (IsEnabled && LogLevel.Error >= MinimumLogLevel)
+            if (IsEnabled() && LogLevel.Error >= MinimumLogLevel)
                 Log(LogLevel.Error, msg, props);
         }
         public void Error(Exception ex, string msg, params object[]? props)
         {
-            if (IsEnabled && LogLevel.Error >= MinimumLogLevel)
+            if (IsEnabled() && LogLevel.Error >= MinimumLogLevel)
                 Log(LogLevel.Error, ex, msg, props);
         }
 
         public void Critical(string msg, params object[]? props)
         {
-            if (IsEnabled && LogLevel.Critical >= MinimumLogLevel)
+            if (IsEnabled() && LogLevel.Critical >= MinimumLogLevel)
                 Log(LogLevel.Critical, msg, props);
         }
         public void Critical(Exception ex, string msg, params object[]? props)
         {
-            if (IsEnabled && LogLevel.Critical >= MinimumLogLevel)
+            if (IsEnabled() && LogLevel.Critical >= MinimumLogLevel)
                 Log(LogLevel.Critical, ex, msg, props);
         }
         
@@ -285,7 +285,7 @@ namespace Nexus.Logging
 
         private void Log(LogLevel logLvl, Exception ex, string msg, params object[]? props)
         {
-            if (!IsEnabled || logLvl < MinimumLogLevel)
+            if (!IsEnabled() || logLvl < MinimumLogLevel)
                 return;
             msg = $"{msg}\n{ex.Message}\n{ex.StackTrace}";
             Log(logLvl, msg, props);
@@ -293,7 +293,7 @@ namespace Nexus.Logging
 
         private void Log(LogLevel logLvl, string msg, params object[]? props)
         {
-            if (!IsEnabled || logLvl < MinimumLogLevel)
+            if (!IsEnabled() || logLvl < MinimumLogLevel)
                 return;
 
             var messageWithProps = InsertProperties(msg, props);

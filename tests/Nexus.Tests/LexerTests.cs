@@ -197,7 +197,7 @@ namespace Nexus.Tests
         public void Lex_AssignEquals_ReturnsEqualsOperator()
         {
             var tokens = Lexer.Lex<LexerTestTokenCollection>("a=b").ToList();
-            Assert.That(tokens[1].Type, Is.EqualTo(TokenType.KeywordEquals));
+            Assert.That(tokens[1].Type, Is.EqualTo(TokenType.SymbolAssignment));
         }
 
         [Test]

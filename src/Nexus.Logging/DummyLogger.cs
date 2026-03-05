@@ -7,7 +7,8 @@ namespace Nexus.Logging
     internal class DummyLogger : ILogger
     {
         public bool IsLabelsEnabled { get; set; }
-        public bool IsEnabled { get; set; }
+        public bool IsEnabled() => false;
+        public void SetIsEnabled(bool value) { }
         public bool IsSeparatorEnabled { get; set; }
         public LogLevel MinimumLogLevel { get; set; }
         public string? LabelFormat { get; set; }

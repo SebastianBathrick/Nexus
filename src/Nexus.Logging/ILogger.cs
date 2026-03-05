@@ -7,7 +7,8 @@ namespace Nexus.Logging
         public LogLevel MinimumLogLevel { get; set; }
         
         public bool IsLabelsEnabled { get; set; }
-        public bool IsEnabled { get; set; }
+        bool IsEnabled();
+        void SetIsEnabled(bool value);
         public bool IsSeparatorEnabled { get; set; }
         
         public void SetFormat(string format);

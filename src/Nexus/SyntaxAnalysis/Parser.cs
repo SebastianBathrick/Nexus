@@ -91,8 +91,9 @@ namespace Nexus.SyntaxAnalysis
          *
          * Function Call Order:
          * 1. ParseExpression
-         * 2. ParseLogicExpression
-         * 3. ParseComparisonExpression
+         * 2. ParseOrExpression
+         * 3. ParseAndExpression
+         * 4. ParseComparisonExpression
          * 5. ParseArithmeticExpression
          * 6. ParseArithmeticTerm
          * 7. ParseFactor
@@ -102,17 +103,31 @@ namespace Nexus.SyntaxAnalysis
          *       It will continuously reach and call nested expression until the innermost expression
          *       is reached and parsed.
          */
-        static Node ParseExpression(ITokenCollection tkns) => ParseLogicExpression(tkns);
+        static Node ParseExpression(ITokenCollection tkns) => ParseOrExpression(tkns);
 
-        static Node ParseLogicExpression(ITokenCollection tkns)
+        static Node ParseOrExpression(ITokenCollection tkns)
+        {
+            var left = ParseAndExpression(tkns);
+
+            while (tkns.IsOfType(TokenType.KeywordOr))
+            {
+                tkns.Consume();
+                var right = ParseAndExpression(tkns);
+                left = new ExpressionNode(ExpressionOperator.LogicalOr, left, right);
+            }
+
+            return left;
+        }
+
+        static Node ParseAndExpression(ITokenCollection tkns)
         {
             var left = ParseComparisonExpression(tkns);
 
-            while (tkns.IsOfType(TokenType.KeywordAnd, TokenType.KeywordOr))
+            while (tkns.IsOfType(TokenType.KeywordAnd))
             {
-                var opType = GetLogicalOperationType(tkns.ReadType());
+                tkns.Consume();
                 var right = ParseComparisonExpression(tkns);
-                left = new ExpressionNode(opType, left, right);
+                left = new ExpressionNode(ExpressionOperator.LogicalAnd, left, right);
             }
 
             return left;
@@ -197,6 +212,9 @@ namespace Nexus.SyntaxAnalysis
                 case TokenType.KeywordFalse:
                     tkns.Consume();
                     return new BoolLiteralNode(false);
+                case TokenType.KeywordNot:
+                    tkns.Consume();
+                    return new UnaryExpressionNode(ExpressionOperator.LogicalNot, ParseFactor(tkns));
                 default:
                     throw new ArgumentException($"Invalid factor: {tkns.PeekType()}");
             }
@@ -223,34 +241,22 @@ namespace Nexus.SyntaxAnalysis
             if (tkns.IsEmpty)
                 throw new ArgumentException("Unexpected end of expression after '-' operator");
 
-            var tkn = tkns.Read();
-
-            switch (tkn.Type)
+            if (tkns.IsOfType(TokenType.KeywordTrue))
             {
-                case TokenType.KeywordTrue:
-                    return new NumberLiteralNode(-TrueBoolToNumberValue);
-                case TokenType.KeywordFalse:
-                    return new NumberLiteralNode(-FalseBoolToNumberValue);
-                case TokenType.NumberLiteral:
-                case TokenType.DelimiterOpenParen:
-                    return new ExpressionNode(ExpressionOperator.Multiplication, new NumberLiteralNode(-1), ParseFactor(tkns));
-                default:
-                    throw new ArgumentException($"Invalid negation of factor: {tkn.Type}");
+                tkns.Consume();
+                return new NumberLiteralNode(-TrueBoolToNumberValue);
             }
+            if (tkns.IsOfType(TokenType.KeywordFalse))
+            {
+                tkns.Consume();
+                return new NumberLiteralNode(-FalseBoolToNumberValue);
+            }
+
+            return new ExpressionNode(ExpressionOperator.Multiplication,
+                new NumberLiteralNode(-1), ParseFactor(tkns));
         }
 
         #region TokenType to ExpressionOperator Methods
-
-        static ExpressionOperator GetLogicalOperationType(TokenType tokenType)
-
-        {
-            return tokenType switch
-            {
-                TokenType.KeywordAnd => ExpressionOperator.LogicalAnd,
-                TokenType.KeywordOr => ExpressionOperator.LogicalOr,
-                _ => throw new ArgumentException($"Invalid logical operator: {tokenType}")
-            };
-        }
 
         static ExpressionOperator GetComparisonOperationType(TokenType tokenType)
         {
@@ -263,6 +269,7 @@ namespace Nexus.SyntaxAnalysis
                 TokenType.SymbolLess => ExpressionOperator.LessThan,
                 TokenType.SymbolLessEqual => ExpressionOperator.LessThanOrEqual,
                 TokenType.KeywordEquals => ExpressionOperator.Equality,
+                TokenType.SymbolNotEqual => ExpressionOperator.Inequality,
                 _ => throw new ArgumentException($"Invalid comparison operator: {tokenType}")
             };
         }

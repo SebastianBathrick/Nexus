@@ -52,8 +52,7 @@ public class LoggerSerializationTests
     {
         var logger = new CapturingLogger
         {
-            IsEnabled = false,
-            MinimumLogLevel = LogLevel.Error,
+            MinimumLogLevel = LogLevel.None,
             IsLabelsEnabled = false,
             IsSeparatorEnabled = true,
             LabelFormat = "[{Level}]:"
@@ -64,7 +63,7 @@ public class LoggerSerializationTests
         var root = doc.RootElement;
 
         Assert.That(root.GetProperty("IsEnabled").GetBoolean(), Is.False);
-        Assert.That(root.GetProperty("MinimumLogLevel").GetString(), Is.EqualTo("Error"));
+        Assert.That(root.GetProperty("MinimumLogLevel").GetString(), Is.EqualTo("None"));
         Assert.That(root.GetProperty("IsLabelsEnabled").GetBoolean(), Is.False);
         Assert.That(root.GetProperty("IsSeparatorEnabled").GetBoolean(), Is.True);
         Assert.That(root.GetProperty("LabelFormat").GetString(), Is.EqualTo("[{Level}]:"));
@@ -87,12 +86,12 @@ public class LoggerSerializationTests
     public void Deserialize_FullJson_SetsAllProperties()
     {
         var logger = new CapturingLogger();
-        const string json = """{"IsEnabled":false,"MinimumLogLevel":"Critical","IsLabelsEnabled":false,"IsSeparatorEnabled":true,"LabelFormat":"[test]:"}""";
+        const string json = """{"IsEnabled":false,"IsLabelsEnabled":false,"IsSeparatorEnabled":true,"LabelFormat":"[test]:"}""";
 
         logger.Deserialize(json);
 
-        Assert.That(logger.IsEnabled, Is.False);
-        Assert.That(logger.MinimumLogLevel, Is.EqualTo(LogLevel.Critical));
+        Assert.That(logger.IsEnabled(), Is.False);
+        Assert.That(logger.MinimumLogLevel, Is.EqualTo(LogLevel.None));
         Assert.That(logger.IsLabelsEnabled, Is.False);
         Assert.That(logger.IsSeparatorEnabled, Is.True);
         Assert.That(logger.LabelFormat, Is.EqualTo("[test]:"));
@@ -136,8 +135,8 @@ public class LoggerSerializationTests
 
         logger.Deserialize("""{"IsEnabled":false}""");
 
-        Assert.That(logger.IsEnabled, Is.False);
-        Assert.That(logger.MinimumLogLevel, Is.EqualTo(LogLevel.Warning));
+        Assert.That(logger.IsEnabled(), Is.False);
+        Assert.That(logger.MinimumLogLevel, Is.EqualTo(LogLevel.None));
         Assert.That(logger.IsLabelsEnabled, Is.False);
         Assert.That(logger.IsSeparatorEnabled, Is.True);
         Assert.That(logger.LabelFormat, Is.EqualTo("custom"));
@@ -156,7 +155,7 @@ public class LoggerSerializationTests
 
         logger.Deserialize("{}");
 
-        Assert.That(logger.IsEnabled, Is.True);
+        Assert.That(logger.IsEnabled(), Is.True);
         Assert.That(logger.MinimumLogLevel, Is.EqualTo(LogLevel.Debug));
         Assert.That(logger.IsLabelsEnabled, Is.False);
         Assert.That(logger.IsSeparatorEnabled, Is.True);
@@ -170,7 +169,7 @@ public class LoggerSerializationTests
 
         logger.Deserialize("""{"UnknownKey":"value","AnotherKey":42}""");
 
-        Assert.That(logger.IsEnabled, Is.True);
+        Assert.That(logger.IsEnabled(), Is.True);
     }
 
     [Test]
@@ -190,8 +189,7 @@ public class LoggerSerializationTests
     {
         var original = new CapturingLogger
         {
-            IsEnabled = false,
-            MinimumLogLevel = LogLevel.Warning,
+            MinimumLogLevel = LogLevel.None,
             IsLabelsEnabled = false,
             IsSeparatorEnabled = true,
             LabelFormat = "[{Level}]:"
@@ -202,7 +200,7 @@ public class LoggerSerializationTests
         var restored = new CapturingLogger();
         restored.Deserialize(json);
 
-        Assert.That(restored.IsEnabled, Is.EqualTo(original.IsEnabled));
+        Assert.That(restored.IsEnabled(), Is.EqualTo(original.IsEnabled()));
         Assert.That(restored.MinimumLogLevel, Is.EqualTo(original.MinimumLogLevel));
         Assert.That(restored.IsLabelsEnabled, Is.EqualTo(original.IsLabelsEnabled));
         Assert.That(restored.IsSeparatorEnabled, Is.EqualTo(original.IsSeparatorEnabled));

@@ -1,6 +1,6 @@
 using Nexus.Logging;
 
-var logger = new ConsoleLogger(isEnabled: true, minLogLvl: LogLevel.Verbose)
+var logger = new ConsoleLogger(minLogLvl: LogLevel.Verbose)
 {
     IsSeparatorEnabled = true
 };
