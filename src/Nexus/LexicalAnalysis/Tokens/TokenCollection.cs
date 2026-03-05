@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Nexus.Tokens
+namespace Nexus.LexicalAnalysis.Tokens
 {
     class TokenCollection : ITokenCollection
     {

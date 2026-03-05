@@ -1,14 +1,14 @@
 using System;
 using Nexus.Compilation;
-using Nexus.Execution;
-using Nexus.Execution.Values;
+using Nexus.Runtime;
+using Nexus.Runtime.Values;
 using Nexus.Operations;
 using NUnit.Framework;
 
 namespace Nexus.Tests;
 
 [TestFixture]
-public class ExecutorTests
+public class VirtualMachineTests
 {
     [Test]
     public void ExecuteChunk_PushConstantThenReturn_ReturnsThatConstant()
@@ -20,7 +20,7 @@ public class ExecutorTests
             new Op(OpType.Return)
         };
         var chunk = new Chunk(instructions, constants);
-        var result = Executor.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("42"));
     }
 
@@ -36,7 +36,7 @@ public class ExecutorTests
             new Op(OpType.Return)
         };
         var chunk = new Chunk(instructions, constants);
-        var result = Executor.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("10"));
     }
 
@@ -52,7 +52,7 @@ public class ExecutorTests
             new Op(OpType.Return)
         };
         var chunk = new Chunk(instructions, constants);
-        var result = Executor.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("7"));
     }
 
@@ -68,7 +68,7 @@ public class ExecutorTests
             new Op(OpType.Return)
         };
         var chunk = new Chunk(instructions, constants);
-        var result = Executor.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("20"));
     }
 
@@ -84,7 +84,7 @@ public class ExecutorTests
             new Op(OpType.Return)
         };
         var chunk = new Chunk(instructions, constants);
-        var result = Executor.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("5"));
     }
 
@@ -100,7 +100,7 @@ public class ExecutorTests
             new Op(OpType.Return)
         };
         var chunk = new Chunk(instructions, constants);
-        var result = Executor.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result, Is.InstanceOf<NexusBool>());
         Assert.That(result.ToString(), Is.EqualTo("true"));
     }
@@ -117,7 +117,7 @@ public class ExecutorTests
             new Op(OpType.Return)
         };
         var chunk = new Chunk(instructions, constants);
-        var result = Executor.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("true"));
     }
 
@@ -133,7 +133,7 @@ public class ExecutorTests
             new Op(OpType.Return)
         };
         var chunk = new Chunk(instructions, constants);
-        var result = Executor.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("true"));
     }
 
@@ -149,7 +149,7 @@ public class ExecutorTests
             new Op(OpType.Return)
         };
         var chunk = new Chunk(instructions, constants);
-        var result = Executor.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("true"));
     }
 
@@ -165,7 +165,7 @@ public class ExecutorTests
             new Op(OpType.Return)
         };
         var chunk = new Chunk(instructions, constants);
-        var result = Executor.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("false"));
     }
 
@@ -181,7 +181,7 @@ public class ExecutorTests
             new Op(OpType.Return)
         };
         var chunk = new Chunk(instructions, constants);
-        var result = Executor.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("true"));
     }
 
@@ -196,7 +196,7 @@ public class ExecutorTests
             new Op(OpType.Return)
         };
         var chunk = new Chunk(instructions, constants);
-        var result = Executor.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("true"));
     }
 
@@ -205,6 +205,6 @@ public class ExecutorTests
     {
         var instructions = new[] { new Op((OpType)999) };
         var chunk = new Chunk(instructions, Array.Empty<NexusValue>());
-        Assert.Throws<InvalidOperationException>(() => Executor.ExecuteChunk(chunk));
+        Assert.Throws<InvalidOperationException>(() => VirtualMachine.ExecuteChunk(chunk));
     }
 }

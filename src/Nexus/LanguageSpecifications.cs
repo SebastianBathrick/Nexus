@@ -1,44 +1,40 @@
 using System.Collections.Generic;
-using Nexus.Tokens;
+using Nexus.LexicalAnalysis.Tokens;
 
 namespace Nexus
 {
-    class LanguageSpecifications
+    static class LanguageSpecifications
     {
         public static readonly IReadOnlyDictionary<string, TokenType> ReservedKeywords = new Dictionary<string, TokenType>
         {
-            { "return", TokenType.ReturnKeyword },
-            { "true", TokenType.TrueKeyword },
-            { "false", TokenType.FalseKeyword },
-            { "and", TokenType.LogicalAnd },
-            { "or", TokenType.LogicalOr },
-            { "not", TokenType.LogicalNot }
+            { "return", TokenType.KeywordReturn },
+            { "true", TokenType.KeywordTrue },
+            { "false", TokenType.KeywordFalse },
+            { "and", TokenType.KeywordAnd },
+            { "or", TokenType.KeywordOr },
+            { "is", TokenType.KeywordEquals },
+            { "not", TokenType.KeywordNot },
         };
 
         public static readonly IReadOnlyDictionary<string, TokenType> Operators = new Dictionary<string, TokenType>
         {
-            { "+", TokenType.PlusOperator },
-            { "-", TokenType.MinusOperator },
-            { "*", TokenType.MultiplyOperator },
-            { "/", TokenType.DivideOperator },
-            { "=", TokenType.EqualsOperator },
-            { "==", TokenType.EqualityOperator },
-            { "!=", TokenType.InequalityOperator },
-            { "<", TokenType.LessThanOperator },
-            { ">", TokenType.GreaterThanOperator },
-            { "<=", TokenType.LessThanOrEqualOperator },
-            { ">=", TokenType.GreaterThanOrEqualOperator },
-            { "&&", TokenType.LogicalAnd },
-            { "||", TokenType.LogicalOr },
-            { "!", TokenType.LogicalNot }
+            { "+", TokenType.SymbolPlus },
+            { "-", TokenType.SymbolMinus },
+            { "*", TokenType.SymbolMultiply },
+            { "/", TokenType.SymbolDivide },
+            { "=", TokenType.SymbolAssignment },
+            { "<", TokenType.SymbolLess },
+            { ">", TokenType.SymbolGreater },
+            { "<=", TokenType.SymbolLessEqual },
+            { ">=", TokenType.SymbolGreaterEqual },
         };
 
         public static readonly IReadOnlyDictionary<CharType, TokenType> Delimeters = new Dictionary<CharType, TokenType>
         {
-            { CharType.OpenParen, TokenType.OpenParen },
-            { CharType.CloseParen, TokenType.CloseParen },
-            { CharType.CurlyOpen, TokenType.CurlyOpen },
-            { CharType.CurlyClose, TokenType.CurlyClose }
+            { CharType.OpenParen, TokenType.DelimiterOpenParen },
+            { CharType.CloseParen, TokenType.DelimiterCloseParen },
+            { CharType.CurlyOpen, TokenType.DelimiterCurlyOpen },
+            { CharType.CurlyClose, TokenType.DelimiterCurlyClose }
         };
 
         public static CharType GetCharType(char c)

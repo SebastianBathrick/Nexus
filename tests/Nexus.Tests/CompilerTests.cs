@@ -1,9 +1,10 @@
 using System;
 using Nexus.Compilation;
-using Nexus.Execution.Values;
+using Nexus.Runtime.Values;
 using Nexus.Operations;
 using Nexus.SyntaxAnalysis;
 using Nexus.SyntaxAnalysis.Expressions;
+using Nexus.SyntaxAnalysis.Statements;
 using NUnit.Framework;
 
 namespace Nexus.Tests;

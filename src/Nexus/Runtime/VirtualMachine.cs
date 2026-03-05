@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using Nexus.Operations;
 using Nexus.Compilation;
-using Nexus.Execution.Values;
+using Nexus.Runtime.Values;
 
-namespace Nexus.Execution
+namespace Nexus.Runtime
 {
-    static class Executor
+    static class VirtualMachine
     {
         const int ChunkStartIndex = 0;
         const int SuccessExitCode = 0;

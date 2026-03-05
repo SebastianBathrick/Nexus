@@ -1,21 +1,21 @@
 using Nexus;
-using Nexus.Execution.Values;
+using Nexus.Runtime.Values;
 using NUnit.Framework;
 
 namespace Nexus.Tests;
 
 [TestFixture]
-public class CluaInterpreterTests
+public class NovaInterpreterTests
 {
     static void AssertRunResult(string source, string expectedToString)
     {
-        var result = CluaInterpreter.Run(source);
+        var result = NovaInterpreter.Run(source);
         Assert.That(result.ToString(), Is.EqualTo(expectedToString));
     }
 
     static void AssertRunBool(string source, bool expected)
     {
-        var result = CluaInterpreter.Run(source);
+        var result = NovaInterpreter.Run(source);
         Assert.That(result, Is.InstanceOf<NexusBool>());
         Assert.That(((NexusBool)result).ToString(), Is.EqualTo(expected ? "true" : "false"));
     }
@@ -251,10 +251,10 @@ public class CluaInterpreterTests
     }
 
     [Test]
-    public void Run_TrueOrTrueAndFalse_AndBindsTighter_ReturnsTrue()
+    public void Run_TrueOrTrueAndFalse_LeftAssociative_ReturnsFalse()
     {
-        // true or (true and false) => true or false => true
-        AssertRunBool("return true or true and false", true);
+        // (true or true) and false => true and false => false (and/or same precedence, left-associative)
+        AssertRunBool("return true or true and false", false);
     }
 
     [Test]
@@ -477,13 +477,13 @@ public class CluaInterpreterTests
     [Test]
     public void Run_InvalidSyntaxUnexpectedToken_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => CluaInterpreter.Run("return 1 2"));
+        Assert.Throws<ArgumentException>(() => NovaInterpreter.Run("return 1 2"));
     }
 
     [Test]
     public void Run_EmptyInput_Throws()
     {
         // Empty input yields no statements; Compiler accesses block.Statements[0] and throws.
-        Assert.Throws<IndexOutOfRangeException>(() => CluaInterpreter.Run(""));
+        Assert.Throws<IndexOutOfRangeException>(() => NovaInterpreter.Run(""));
     }
 }

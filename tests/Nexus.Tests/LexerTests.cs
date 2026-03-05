@@ -1,6 +1,6 @@
 using Nexus;
 using Nexus.LexicalAnalysis;
-using Nexus.Tokens;
+using Nexus.LexicalAnalysis.Tokens;
 
 namespace Nexus.Tests
 {
@@ -169,8 +169,8 @@ namespace Nexus.Tests
         public void Lex_ValidOperatorSequence_ReturnsSeparateMinusToken()
         {
             var tkns = Lexer.Lex<LexerTestTokenCollection>("a+-b").ToList();
-            Assert.That(tkns[1].Type, Is.EqualTo(TokenType.PlusOperator));
-            Assert.That(tkns[2].Type, Is.EqualTo(TokenType.MinusOperator));
+            Assert.That(tkns[1].Type, Is.EqualTo(TokenType.SymbolPlus));
+            Assert.That(tkns[2].Type, Is.EqualTo(TokenType.SymbolMinus));
         }
 
         [Test]
@@ -179,7 +179,7 @@ namespace Nexus.Tests
             var tokens = Lexer.Lex<LexerTestTokenCollection>("a+b").ToList();
             Assert.That(tokens.Count, Is.EqualTo(3));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.Identifier));
-            Assert.That(tokens[1].Type, Is.EqualTo(TokenType.PlusOperator));
+            Assert.That(tokens[1].Type, Is.EqualTo(TokenType.SymbolPlus));
             Assert.That(tokens[2].Type, Is.EqualTo(TokenType.Identifier));
         }
 
@@ -189,7 +189,7 @@ namespace Nexus.Tests
             var tokens = Lexer.Lex<LexerTestTokenCollection>("1+2").ToList();
             Assert.That(tokens.Count, Is.EqualTo(3));
             Assert.That(tokens[0].Type, Is.EqualTo(TokenType.NumberLiteral));
-            Assert.That(tokens[1].Type, Is.EqualTo(TokenType.PlusOperator));
+            Assert.That(tokens[1].Type, Is.EqualTo(TokenType.SymbolPlus));
             Assert.That(tokens[2].Type, Is.EqualTo(TokenType.NumberLiteral));
         }
 
@@ -197,7 +197,7 @@ namespace Nexus.Tests
         public void Lex_AssignEquals_ReturnsEqualsOperator()
         {
             var tokens = Lexer.Lex<LexerTestTokenCollection>("a=b").ToList();
-            Assert.That(tokens[1].Type, Is.EqualTo(TokenType.EqualsOperator));
+            Assert.That(tokens[1].Type, Is.EqualTo(TokenType.KeywordEquals));
         }
 
         [Test]
@@ -214,7 +214,7 @@ namespace Nexus.Tests
         {
             var tokens = Lexer.Lex<LexerTestTokenCollection>("(").ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
-            Assert.That(tokens[0].Type, Is.EqualTo(TokenType.OpenParen));
+            Assert.That(tokens[0].Type, Is.EqualTo(TokenType.DelimiterOpenParen));
             Assert.That(tokens[0].Plaintext, Is.EqualTo("("));
         }
 
@@ -223,7 +223,7 @@ namespace Nexus.Tests
         {
             var tokens = Lexer.Lex<LexerTestTokenCollection>(")").ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
-            Assert.That(tokens[0].Type, Is.EqualTo(TokenType.CloseParen));
+            Assert.That(tokens[0].Type, Is.EqualTo(TokenType.DelimiterCloseParen));
             Assert.That(tokens[0].Plaintext, Is.EqualTo(")"));
         }
 
@@ -232,9 +232,9 @@ namespace Nexus.Tests
         {
             var tokens = Lexer.Lex<LexerTestTokenCollection>("(a)").ToList();
             Assert.That(tokens.Count, Is.EqualTo(3));
-            Assert.That(tokens[0].Type, Is.EqualTo(TokenType.OpenParen));
+            Assert.That(tokens[0].Type, Is.EqualTo(TokenType.DelimiterOpenParen));
             Assert.That(tokens[1].Type, Is.EqualTo(TokenType.Identifier));
-            Assert.That(tokens[2].Type, Is.EqualTo(TokenType.CloseParen));
+            Assert.That(tokens[2].Type, Is.EqualTo(TokenType.DelimiterCloseParen));
         }
 
         [Test]
@@ -242,7 +242,7 @@ namespace Nexus.Tests
         {
             var tokens = Lexer.Lex<LexerTestTokenCollection>("{").ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
-            Assert.That(tokens[0].Type, Is.EqualTo(TokenType.CurlyOpen));
+            Assert.That(tokens[0].Type, Is.EqualTo(TokenType.DelimiterCurlyOpen));
             Assert.That(tokens[0].Plaintext, Is.EqualTo("{"));
         }
 
@@ -251,7 +251,7 @@ namespace Nexus.Tests
         {
             var tokens = Lexer.Lex<LexerTestTokenCollection>("}").ToList();
             Assert.That(tokens.Count, Is.EqualTo(1));
-            Assert.That(tokens[0].Type, Is.EqualTo(TokenType.CurlyClose));
+            Assert.That(tokens[0].Type, Is.EqualTo(TokenType.DelimiterCurlyClose));
             Assert.That(tokens[0].Plaintext, Is.EqualTo("}"));
         }
 
@@ -260,9 +260,9 @@ namespace Nexus.Tests
         {
             var tokens = Lexer.Lex<LexerTestTokenCollection>("{a}").ToList();
             Assert.That(tokens.Count, Is.EqualTo(3));
-            Assert.That(tokens[0].Type, Is.EqualTo(TokenType.CurlyOpen));
+            Assert.That(tokens[0].Type, Is.EqualTo(TokenType.DelimiterCurlyOpen));
             Assert.That(tokens[1].Type, Is.EqualTo(TokenType.Identifier));
-            Assert.That(tokens[2].Type, Is.EqualTo(TokenType.CurlyClose));
+            Assert.That(tokens[2].Type, Is.EqualTo(TokenType.DelimiterCurlyClose));
         }
 
         // Number literals

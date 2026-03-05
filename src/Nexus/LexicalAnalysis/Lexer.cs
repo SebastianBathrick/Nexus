@@ -1,5 +1,5 @@
 using System;
-using Nexus.Tokens;
+using Nexus.LexicalAnalysis.Tokens;
 
 namespace Nexus.LexicalAnalysis
 {

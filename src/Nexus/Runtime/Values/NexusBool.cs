@@ -1,4 +1,4 @@
-namespace Nexus.Execution.Values
+namespace Nexus.Runtime.Values
 {
     public class NexusBool : NexusValue
     {

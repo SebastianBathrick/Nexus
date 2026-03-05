@@ -1,7 +1,7 @@
 using System.Globalization;
 using System;
 
-namespace Nexus.Execution.Values
+namespace Nexus.Runtime.Values
 {
     public class NexusNumber : NexusValue
     {

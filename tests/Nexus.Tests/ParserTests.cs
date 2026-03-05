@@ -1,8 +1,9 @@
 using System;
 using Nexus.LexicalAnalysis;
+using Nexus.LexicalAnalysis.Tokens;
 using Nexus.SyntaxAnalysis;
 using Nexus.SyntaxAnalysis.Expressions;
-using Nexus.Tokens;
+using Nexus.SyntaxAnalysis.Statements;
 using NUnit.Framework;
 
 namespace Nexus.Tests;
@@ -13,7 +14,7 @@ public class ParserTests
     static Node Parse(string source)
     {
         // Use real TokenCollection from Nexus.Tokens (internal, visible via InternalsVisibleTo).
-        var tokenCollection = Lexer.Lex<Nexus.Tokens.TokenCollection>(source);
+        var tokenCollection = Lexer.Lex<TokenCollection>(source);
         return Parser.ParseTokens(tokenCollection);
     }
 

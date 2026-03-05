@@ -1,4 +1,4 @@
-namespace Nexus.Tokens
+namespace Nexus.LexicalAnalysis.Tokens
 {
     readonly struct Token
     {

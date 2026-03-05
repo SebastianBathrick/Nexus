@@ -1,8 +1,7 @@
 using System.Text;
-using Nexus.Operations;
-using Nexus.Execution.Values;
+using Nexus.Runtime.Values;
 
-namespace Nexus.Compilation
+namespace Nexus.Operations
 {
     class Chunk
     {
