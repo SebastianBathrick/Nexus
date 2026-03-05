@@ -12,7 +12,7 @@ namespace Nexus.SyntaxAnalysis
 
         #region Top-Level/Block Parsing Methods
 
-        public static Node ParseTokens(ITokenCollection tkns)
+        public static Node ParseTokens(TokenCollection tkns)
         {
             var topLvlBlock = ParseBlock(tkns);
 
@@ -22,7 +22,7 @@ namespace Nexus.SyntaxAnalysis
             return new SyntaxTree(topLvlBlock);
         }
 
-        public static Node ParseBlock(ITokenCollection tkns)
+        public static Node ParseBlock(TokenCollection tkns)
         {
             var statements = new List<Node>();
 
@@ -41,7 +41,7 @@ namespace Nexus.SyntaxAnalysis
 
         #region Statement Parsing Methods
 
-        static bool TryParseStatement(ITokenCollection tkns, out Node? statementNode)
+        static bool TryParseStatement(TokenCollection tkns, out Node? statementNode)
         {
             if (tkns.IsEmpty)
             {
@@ -61,7 +61,7 @@ namespace Nexus.SyntaxAnalysis
             }
         }
 
-        static Node ParseReturnStatement(ITokenCollection tkns)
+        static Node ParseReturnStatement(TokenCollection tkns)
         {
             if (!tkns.IsOfTypeAndConsume(TokenType.KeywordReturn))
                 throw new ArgumentException($"Expected {TokenType.KeywordReturn}");
@@ -103,9 +103,9 @@ namespace Nexus.SyntaxAnalysis
          *       It will continuously reach and call nested expression until the innermost expression
          *       is reached and parsed.
          */
-        static Node ParseExpression(ITokenCollection tkns) => ParseOrExpression(tkns);
+        static Node ParseExpression(TokenCollection tkns) => ParseOrExpression(tkns);
 
-        static Node ParseOrExpression(ITokenCollection tkns)
+        static Node ParseOrExpression(TokenCollection tkns)
         {
             var left = ParseAndExpression(tkns);
 
@@ -119,7 +119,7 @@ namespace Nexus.SyntaxAnalysis
             return left;
         }
 
-        static Node ParseAndExpression(ITokenCollection tkns)
+        static Node ParseAndExpression(TokenCollection tkns)
         {
             var left = ParseComparisonExpression(tkns);
 
@@ -133,7 +133,7 @@ namespace Nexus.SyntaxAnalysis
             return left;
         }
 
-        static Node ParseComparisonExpression(ITokenCollection tkns)
+        static Node ParseComparisonExpression(TokenCollection tkns)
         {
             var left = ParseArithmeticExpression(tkns);
 
@@ -165,7 +165,7 @@ namespace Nexus.SyntaxAnalysis
             return left;
         }
 
-        static Node ParseArithmeticExpression(ITokenCollection tkns)
+        static Node ParseArithmeticExpression(TokenCollection tkns)
         {
             var left = ParseArithmeticTerm(tkns);
 
@@ -179,7 +179,7 @@ namespace Nexus.SyntaxAnalysis
             return left;
         }
 
-        static Node ParseArithmeticTerm(ITokenCollection tkns)
+        static Node ParseArithmeticTerm(TokenCollection tkns)
         {
             var left = ParseFactor(tkns);
 
@@ -193,7 +193,7 @@ namespace Nexus.SyntaxAnalysis
             return left;
         }
 
-        static Node ParseFactor(ITokenCollection tkns)
+        static Node ParseFactor(TokenCollection tkns)
         {
             if (tkns.IsEmpty)
                 throw new ArgumentException("Unexpected end of expression");
@@ -220,7 +220,7 @@ namespace Nexus.SyntaxAnalysis
             }
         }
 
-        static Node ParseNestedExpression(ITokenCollection tkns)
+        static Node ParseNestedExpression(TokenCollection tkns)
         {
             // Consume the opening parenthesis
             tkns.Consume();
@@ -233,7 +233,7 @@ namespace Nexus.SyntaxAnalysis
             return expr;
         }
 
-        static Node ParseNegatedFactor(ITokenCollection tkns)
+        static Node ParseNegatedFactor(TokenCollection tkns)
         {
             // TODO: Add identifiers later
             tkns.Consume(); // Consume the '-' operator

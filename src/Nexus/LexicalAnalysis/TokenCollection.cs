@@ -2,14 +2,12 @@ using System;
 using System.Collections.Generic;
 namespace Nexus.LexicalAnalysis
 {
-    class TokenCollection : ITokenCollection
+    class TokenCollection
     {
         readonly List<Token> _tokens = new();
         int _index;
 
         public IReadOnlyList<Token> Tokens => _tokens;
-
-        #region ITokenCollection Members
 
         public bool IsEmpty => _index >= _tokens.Count;
 
@@ -45,12 +43,19 @@ namespace Nexus.LexicalAnalysis
             return true;
         }
 
+        public void Consume() => Read();
+
         public bool IsOfType(TokenType tokenType) => _index < _tokens.Count && _tokens[_index].Type == tokenType;
+
+        public bool IsOfType(params TokenType[] tokenTypes)
+        {
+            foreach (var t in tokenTypes)
+                if (IsOfType(t)) return true;
+            return false;
+        }
 
         public IReadOnlyList<Token> ToList() =>
             // Ensure to copy the list to prevent external modification of the internal list
             new List<Token>(_tokens);
-
-        #endregion
     }
 }

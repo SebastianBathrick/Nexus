@@ -10,7 +10,7 @@ namespace Nexus
     {
         public static NexusValue Run(string sourceCode)
         {
-            var tokenCollection = Lexer.Lex<TokenCollection>(sourceCode);
+            var tokenCollection = Lexer.Lex(sourceCode);
             Log.Debug(tokenCollection.ToString());
             var syntaxTreeRoot = Parser.ParseTokens(tokenCollection);
             Log.Debug(syntaxTreeRoot.ToString());
