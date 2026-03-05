@@ -3,16 +3,22 @@ namespace Nexus.Logging.Tests;
 [TestFixture]
 public class LoggerExceptionTests
 {
-    private static Exception CreateException()
+    static Exception CreateException()
     {
-        try { throw new InvalidOperationException("test error"); }
-        catch (Exception ex) { return ex; }
+        try
+        {
+            throw new InvalidOperationException("test error");
+        }
+        catch (Exception ex)
+        {
+            return ex;
+        }
     }
 
     [Test]
     public void Error_WithException_OutputContainsExceptionMessage()
     {
-        var logger = new CapturingLogger() { IsLabelsEnabled = false };
+        var logger = new CapturingLogger { IsLabelsEnabled = false };
         var ex = CreateException();
 
         logger.Error(ex, "Outer");
@@ -23,7 +29,7 @@ public class LoggerExceptionTests
     [Test]
     public void Error_WithException_OutputContainsStackTrace()
     {
-        var logger = new CapturingLogger() { IsLabelsEnabled = false };
+        var logger = new CapturingLogger { IsLabelsEnabled = false };
         var ex = CreateException();
 
         logger.Error(ex, "Outer");
@@ -34,7 +40,7 @@ public class LoggerExceptionTests
     [Test]
     public void Critical_WithException_OutputContainsExceptionMessage()
     {
-        var logger = new CapturingLogger() { IsLabelsEnabled = false };
+        var logger = new CapturingLogger { IsLabelsEnabled = false };
         var ex = CreateException();
 
         logger.Critical(ex, "Outer");
@@ -45,7 +51,7 @@ public class LoggerExceptionTests
     [Test]
     public void Error_WithExceptionAndProps_SubstitutesProps()
     {
-        var logger = new CapturingLogger() { IsLabelsEnabled = false };
+        var logger = new CapturingLogger { IsLabelsEnabled = false };
         var ex = CreateException();
 
         logger.Error(ex, "Failed in {op}", "DatabaseConnect");

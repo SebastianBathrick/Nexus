@@ -1,5 +1,3 @@
-using Nexus.Logging;
-
 namespace Nexus.Logging.Tests;
 
 [TestFixture]
@@ -106,12 +104,14 @@ public class LoggerInsertPropertiesTests
         Assert.That(result, Is.EqualTo(expected));
     }
 
-    private static IEnumerable<TestCaseData> NullPropsTestCases()
+    static IEnumerable<TestCaseData> NullPropsTestCases()
     {
         yield return new TestCaseData("hello {x}", null, "hello {x}")
             .SetName("NullPropsArray_LeavesPlaceholder");
+
         yield return new TestCaseData("{name}", null, "{name}")
             .SetName("NullPropsArray_SinglePlaceholder");
+
         yield return new TestCaseData("{a} {b} {c}", null, "{a} {b} {c}")
             .SetName("NullPropsArray_MultiplePlaceholders");
     }
@@ -123,10 +123,11 @@ public class LoggerInsertPropertiesTests
         Assert.That(result, Is.EqualTo(expected));
     }
 
-    private static IEnumerable<TestCaseData> EmptyPropsTestCases()
+    static IEnumerable<TestCaseData> EmptyPropsTestCases()
     {
         yield return new TestCaseData("hello {x}", new object[] { }, "hello {x}")
             .SetName("EmptyPropsArray_LeavesPlaceholder");
+
         yield return new TestCaseData("{tag}", new object[] { }, "{tag}")
             .SetName("EmptyPropsArray_SinglePlaceholder");
     }
@@ -138,12 +139,14 @@ public class LoggerInsertPropertiesTests
         Assert.That(result, Is.EqualTo(expected));
     }
 
-    private static IEnumerable<TestCaseData> NullPropValueTestCases()
+    static IEnumerable<TestCaseData> NullPropValueTestCases()
     {
         yield return new TestCaseData("{x}", new object?[] { null }, "null")
             .SetName("NullPropValue_SinglePlaceholder");
+
         yield return new TestCaseData("{a} {b}", new object?[] { "value", null }, "value null")
             .SetName("NullPropValue_SecondPropNull");
+
         yield return new TestCaseData("{first} {second} {third}", new object?[] { null, "mid", null }, "null mid null")
             .SetName("NullPropValue_FirstAndThirdNull");
     }
@@ -188,27 +191,27 @@ public class LoggerInsertPropertiesTests
     }
 }
 
-internal class LoggerTestHelper : Logger
+class LoggerTestHelper : Logger
 {
-    public static new string InsertProperties(string msg, params object[]? props)
+    public new static string InsertProperties(string msg, params object[]? props)
         => new LoggerTestHelper().InsertPropertiesPublic(msg, props);
-    
-    private string InsertPropertiesPublic(string msg, params object[]? props)
+
+    string InsertPropertiesPublic(string msg, params object[]? props)
         => base.InsertProperties(msg, props);
-    
+
     protected override void OutputFormattedMessage(string msg)
     {
     }
 }
 
-internal class CustomTypeWithNullToString
+class CustomTypeWithNullToString
 {
     public override string? ToString() => null;
 }
 
-internal class CustomTypeWithToString
+class CustomTypeWithToString
 {
-    private readonly string _value;
+    readonly string _value;
 
     public CustomTypeWithToString(string value)
     {

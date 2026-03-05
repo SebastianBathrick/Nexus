@@ -1,13 +1,12 @@
-namespace Nexus.Logging
+namespace Nexus.Logging;
+
+public enum LogLevel : uint
 {
-    public enum LogLevel : uint
-    {
-        None,
-        Verbose,
-        Debug,
-        Info,
-        Warning,
-        Error,
-        Critical
-    }
+    None,
+    Verbose,
+    Debug,
+    Info,
+    Warning,
+    Error,
+    Critical
 }

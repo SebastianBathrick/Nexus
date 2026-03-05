@@ -50,7 +50,9 @@ namespace Nexus.LexicalAnalysis
         public bool IsOfType(params TokenType[] tokenTypes)
         {
             foreach (var t in tokenTypes)
-                if (IsOfType(t)) return true;
+                if (IsOfType(t))
+                    return true;
+
             return false;
         }
 

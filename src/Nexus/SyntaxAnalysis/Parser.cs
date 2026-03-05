@@ -246,6 +246,7 @@ namespace Nexus.SyntaxAnalysis
                 tkns.Consume();
                 return new NumberLiteralNode(-TrueBoolToNumberValue);
             }
+
             if (tkns.IsOfType(TokenType.KeywordFalse))
             {
                 tkns.Consume();

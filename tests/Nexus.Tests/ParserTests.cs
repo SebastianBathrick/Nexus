@@ -1,10 +1,7 @@
-using System;
 using Nexus.LexicalAnalysis;
 using Nexus.SyntaxAnalysis;
 using Nexus.SyntaxAnalysis.Expressions;
 using Nexus.SyntaxAnalysis.Statements;
-using NUnit.Framework;
-
 namespace Nexus.Tests;
 
 [TestFixture]

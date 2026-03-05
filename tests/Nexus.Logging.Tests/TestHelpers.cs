@@ -1,11 +1,13 @@
 namespace Nexus.Logging.Tests;
 
-internal class CapturingLogger : Logger
+class CapturingLogger : Logger
 {
-    public List<string> CapturedMessages { get; } = new();
-
     public CapturingLogger(bool isEnabled = true, LogLevel minLogLvl = LogLevel.Verbose)
-        : base(isEnabled ? minLogLvl : LogLevel.None) { }
+        : base(isEnabled ? minLogLvl : LogLevel.None)
+    {
+    }
+
+    public List<string> CapturedMessages { get; } = new();
 
     protected override void OutputFormattedMessage(string msg)
         => CapturedMessages.Add(msg);

@@ -1,9 +1,5 @@
-using System;
-using Nexus.Compilation;
 using Nexus.Runtime;
 using Nexus.Runtime.Values;
-using NUnit.Framework;
-
 namespace Nexus.Tests;
 
 [TestFixture]
@@ -18,6 +14,7 @@ public class VirtualMachineTests
             new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
             new Instruction(InstructionType.Return)
         };
+
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("42"));
@@ -34,6 +31,7 @@ public class VirtualMachineTests
             new Instruction(InstructionType.Add),
             new Instruction(InstructionType.Return)
         };
+
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("10"));
@@ -50,6 +48,7 @@ public class VirtualMachineTests
             new Instruction(InstructionType.Subtract),
             new Instruction(InstructionType.Return)
         };
+
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("7"));
@@ -66,6 +65,7 @@ public class VirtualMachineTests
             new Instruction(InstructionType.Multiply),
             new Instruction(InstructionType.Return)
         };
+
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("20"));
@@ -82,6 +82,7 @@ public class VirtualMachineTests
             new Instruction(InstructionType.Divide),
             new Instruction(InstructionType.Return)
         };
+
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("5"));
@@ -98,6 +99,7 @@ public class VirtualMachineTests
             new Instruction(InstructionType.EqualTo),
             new Instruction(InstructionType.Return)
         };
+
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result, Is.InstanceOf<NexusBool>());
@@ -115,6 +117,7 @@ public class VirtualMachineTests
             new Instruction(InstructionType.NotEqualTo),
             new Instruction(InstructionType.Return)
         };
+
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("true"));
@@ -131,6 +134,7 @@ public class VirtualMachineTests
             new Instruction(InstructionType.LessThan),
             new Instruction(InstructionType.Return)
         };
+
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("true"));
@@ -147,6 +151,7 @@ public class VirtualMachineTests
             new Instruction(InstructionType.GreaterThan),
             new Instruction(InstructionType.Return)
         };
+
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("true"));
@@ -163,6 +168,7 @@ public class VirtualMachineTests
             new Instruction(InstructionType.And),
             new Instruction(InstructionType.Return)
         };
+
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("false"));
@@ -179,6 +185,7 @@ public class VirtualMachineTests
             new Instruction(InstructionType.Or),
             new Instruction(InstructionType.Return)
         };
+
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("true"));
@@ -194,6 +201,7 @@ public class VirtualMachineTests
             new Instruction(InstructionType.Not),
             new Instruction(InstructionType.Return)
         };
+
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
         Assert.That(result.ToString(), Is.EqualTo("true"));

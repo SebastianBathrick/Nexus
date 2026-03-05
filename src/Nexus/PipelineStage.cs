@@ -1,20 +1,20 @@
-using Nexus.Logging;
 using System.Diagnostics;
+using Nexus.Logging;
 namespace Nexus
 {
-    public abstract class PipelineStage<TInput, TYOutput, TULog> 
+    public abstract class PipelineStage<TInput, TYOutput, TULog>
         where TInput : notnull where TYOutput : class, new() where TULog : ILogger, new()
     {
-        readonly Stopwatch _stopwatch = new();
         readonly string _stageName;
-
-        public bool IsDebugMode { get; set; } = false;
+        readonly Stopwatch _stopwatch = new();
         public readonly TULog Log = new();
 
         public PipelineStage(string stageName)
         {
             _stageName = stageName;
         }
+
+        public bool IsDebugMode { get; set; } = false;
 
         public TYOutput Execute(TInput input)
         {
@@ -34,7 +34,7 @@ namespace Nexus
 
             return output;
         }
-        
+
         protected abstract TYOutput OnExecute(TInput input);
     }
 }

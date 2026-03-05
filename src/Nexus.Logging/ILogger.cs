@@ -1,30 +1,35 @@
-using System;
+namespace Nexus.Logging;
 
-namespace Nexus.Logging
+public interface ILogger
 {
-    public interface ILogger
-    {
-        public LogLevel MinimumLogLevel { get; set; }
-        
-        public bool IsLabelsEnabled { get; set; }
-        bool IsEnabled();
-        void SetIsEnabled(bool value);
-        public bool IsSeparatorEnabled { get; set; }
-        
-        public void SetFormat(string format);
+    public LogLevel MinimumLogLevel { get; set; }
 
-        string Serialize();
-        void Deserialize(string json);
+    public bool IsLabelsEnabled { get; set; }
+    public bool IsSeparatorEnabled { get; set; }
 
-        void Verbose(string msg, params object[]? props);
-        void Debug(string msg, params object[]? props);
-        void Info(string msg, params object[]? props);
-        void Warning(string msg, params object[]? props);
+    bool IsEnabled();
 
-        void Error(string msg, params object[]? props);
-        void Error(Exception ex, string msg, params object[]? props);
-        
-        void Critical(string msg, params object[]? props);
-        void Critical(Exception ex, string msg, params object[]? props);
-    }
+    void SetIsEnabled(bool value);
+
+    public void SetFormat(string format);
+
+    string Serialize();
+
+    void Deserialize(string json);
+
+    void Verbose(string msg, params object[]? props);
+
+    void Debug(string msg, params object[]? props);
+
+    void Info(string msg, params object[]? props);
+
+    void Warning(string msg, params object[]? props);
+
+    void Error(string msg, params object[]? props);
+
+    void Error(Exception ex, string msg, params object[]? props);
+
+    void Critical(string msg, params object[]? props);
+
+    void Critical(Exception ex, string msg, params object[]? props);
 }

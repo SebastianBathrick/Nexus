@@ -6,7 +6,7 @@ public class LoggerEnabledTests
     [Test]
     public void IsEnabled_False_AllMethods_ProduceNoOutput()
     {
-        var logger = new CapturingLogger(isEnabled: false);
+        var logger = new CapturingLogger(false);
         var ex = new Exception("test");
 
         logger.Verbose("msg");
@@ -24,7 +24,7 @@ public class LoggerEnabledTests
     [Test]
     public void IsEnabled_True_Info_ProducesOutput()
     {
-        var logger = new CapturingLogger(isEnabled: true);
+        var logger = new CapturingLogger(true);
 
         logger.Info("hello");
 
@@ -34,7 +34,7 @@ public class LoggerEnabledTests
     [Test]
     public void IsLabelsEnabled_False_OutputIsRawMessage()
     {
-        var logger = new CapturingLogger(isEnabled: true) { IsLabelsEnabled = false };
+        var logger = new CapturingLogger(true) { IsLabelsEnabled = false };
 
         logger.Info("hello world");
 
@@ -44,7 +44,7 @@ public class LoggerEnabledTests
     [Test]
     public void IsLabelsEnabled_True_OutputContainsLabel()
     {
-        var logger = new CapturingLogger(isEnabled: true) { IsLabelsEnabled = true };
+        var logger = new CapturingLogger(true) { IsLabelsEnabled = true };
 
         logger.Info("hello");
 
@@ -54,7 +54,7 @@ public class LoggerEnabledTests
     [Test]
     public void SetFormat_ChangesLabelPrefix()
     {
-        var logger = new CapturingLogger(isEnabled: true);
+        var logger = new CapturingLogger(true);
         logger.SetFormat("[{Level}]:");
 
         logger.Info("hello");
@@ -65,7 +65,7 @@ public class LoggerEnabledTests
     [Test]
     public void SetFormat_EmptyString_OutputIsRawMessage()
     {
-        var logger = new CapturingLogger(isEnabled: true);
+        var logger = new CapturingLogger(true);
         logger.SetFormat("");
 
         logger.Info("hello");

@@ -1,15 +1,14 @@
-namespace Nexus.Logging
-{
-    public class ConsoleLogger : Logger
-    {
-        public ConsoleLogger(LogLevel minLogLvl = LogLevel.Info)
-            : base(minLogLvl)
-        {
-        }
+namespace Nexus.Logging;
 
-        protected override void OutputFormattedMessage(string msg)
-        {
-            Console.WriteLine(msg);
-        }
+public class ConsoleLogger : Logger
+{
+    public ConsoleLogger(LogLevel minLogLvl = LogLevel.Info)
+        : base(minLogLvl)
+    {
+    }
+
+    protected override void OutputFormattedMessage(string msg)
+    {
+        Console.WriteLine(msg);
     }
 }

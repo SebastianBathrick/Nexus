@@ -1,7 +1,4 @@
-using System;
 using Nexus.Runtime.Values;
-using NUnit.Framework;
-
 namespace Nexus.Tests;
 
 [TestFixture]
@@ -97,7 +94,7 @@ public class NexusNumberTests
     {
         var n = new NexusNumber(1);
 #pragma warning disable CS8602 // n is never null; Equals(null) is the case under test
-        Assert.That(n.Equals((object?)null), Is.False);
+        Assert.That(n.Equals(null), Is.False);
         Assert.That(n.Equals("not a value"), Is.False);
 #pragma warning restore CS8602
     }
@@ -175,7 +172,7 @@ public class NexusBoolTests
     public void NexusBool_EqualsNull_ReturnsFalse()
     {
         var b = new NexusBool(true);
-        Assert.That(b.Equals((object?)null), Is.False);
+        Assert.That(b.Equals(null), Is.False);
     }
 
     [Test]

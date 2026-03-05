@@ -1,6 +1,5 @@
 ﻿using Nexus;
-
-var res =NovaInterpreter.Run("return (1 + 2 * (5.3 - -3) - 10 / (2 * 8 + 4 - 3 * 80 * -(2-1.203))) / -2");
+var res = NovaInterpreter.Run("return (1 + 2 * (5.3 - -3) - 10 / (2 * 8 + 4 - 3 * 80 * -(2-1.203))) / -2");
 Console.WriteLine(res);
 
 res = NovaInterpreter.Run("return true and false or true");

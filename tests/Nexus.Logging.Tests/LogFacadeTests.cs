@@ -4,7 +4,7 @@ namespace Nexus.Logging.Tests;
 public class LogFacadeTests
 {
     [TearDown]
-    public void TearDown() => Log.SetLogger(new CapturingLogger(isEnabled: false));
+    public void TearDown() => Log.SetLogger(new CapturingLogger(false));
 
     [Test]
     public void Default_DoesNotThrow()
@@ -15,7 +15,7 @@ public class LogFacadeTests
     [Test]
     public void SetLogger_Info_DelegatesToLogger()
     {
-        var logger = new CapturingLogger() { IsLabelsEnabled = false };
+        var logger = new CapturingLogger { IsLabelsEnabled = false };
         Log.SetLogger(logger);
 
         Log.Info("hello");
@@ -27,7 +27,7 @@ public class LogFacadeTests
     [Test]
     public void SetLogger_AllMethods_Delegate()
     {
-        var logger = new CapturingLogger() { IsLabelsEnabled = false };
+        var logger = new CapturingLogger { IsLabelsEnabled = false };
         Log.SetLogger(logger);
 
         var ex = new Exception("err");
@@ -45,8 +45,8 @@ public class LogFacadeTests
     [Test]
     public void SetLogger_Replace_UsesNewLogger()
     {
-        var first = new CapturingLogger() { IsLabelsEnabled = false };
-        var second = new CapturingLogger() { IsLabelsEnabled = false };
+        var first = new CapturingLogger { IsLabelsEnabled = false };
+        var second = new CapturingLogger { IsLabelsEnabled = false };
 
         Log.SetLogger(first);
         Log.SetLogger(second);
