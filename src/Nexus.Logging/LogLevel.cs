@@ -1,7 +1,8 @@
 namespace Nexus.Logging
 {
-    public enum LogLevel
+    public enum LogLevel : uint
     {
+        None,
         Verbose,
         Debug,
         Info,

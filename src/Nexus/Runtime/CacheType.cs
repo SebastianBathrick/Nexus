@@ -1,7 +1,7 @@
-namespace Nexus.Operations
+namespace Nexus.Runtime
 {
     /// <summary>
-    /// The type of cache an operation will access when executed by <see cref="Runtime"/>.
+    ///     The type of cache an operation will access when executed by <see cref="Runtime" />.
     /// </summary>
     enum CacheType
     {

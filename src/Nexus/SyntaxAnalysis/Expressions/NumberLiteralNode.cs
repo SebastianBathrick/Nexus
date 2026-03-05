@@ -1,5 +1,4 @@
 using System.Globalization;
-
 namespace Nexus.SyntaxAnalysis.Expressions
 {
     class NumberLiteralNode : LiteralNode

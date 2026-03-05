@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Nexus.Operations;
-using Nexus.Compilation;
 using Nexus.Runtime.Values;
-
 namespace Nexus.Runtime
 {
     static class VirtualMachine
@@ -15,6 +12,7 @@ namespace Nexus.Runtime
         {
             if (v is NexusBool) return v != new NexusBool(false);
             if (v is NexusNumber) return v != new NexusNumber(0);
+
             return true;
         }
 
@@ -29,61 +27,61 @@ namespace Nexus.Runtime
 
                 switch (op.OpType)
                 {
-                    case OpType.PushConstant:
+                    case InstructionType.PushConstant:
                         valStack.Push(chunk.GetConstant(op.CacheIndex));
                         break;
-                    case OpType.Add:
+                    case InstructionType.Add:
                         NexusValue rAdd = valStack.Pop(), lAdd = valStack.Pop();
                         valStack.Push(lAdd + rAdd);
                         break;
-                    case OpType.Subtract:
+                    case InstructionType.Subtract:
                         NexusValue rSub = valStack.Pop(), lSub = valStack.Pop();
                         valStack.Push(lSub - rSub);
                         break;
-                    case OpType.Multiply:
+                    case InstructionType.Multiply:
                         NexusValue rMul = valStack.Pop(), lMul = valStack.Pop();
                         valStack.Push(lMul * rMul);
                         break;
-                    case OpType.Divide:
+                    case InstructionType.Divide:
                         NexusValue rDiv = valStack.Pop(), lDiv = valStack.Pop();
                         valStack.Push(lDiv / rDiv);
                         break;
-                    case OpType.EqualTo:
+                    case InstructionType.EqualTo:
                         NexusValue rEq = valStack.Pop(), lEq = valStack.Pop();
                         valStack.Push(new NexusBool(lEq == rEq));
                         break;
-                    case OpType.NotEqualTo:
+                    case InstructionType.NotEqualTo:
                         NexusValue rNe = valStack.Pop(), lNe = valStack.Pop();
                         valStack.Push(new NexusBool(lNe != rNe));
                         break;
-                    case OpType.Not:
+                    case InstructionType.Not:
                         valStack.Push(new NexusBool(!IsTruthy(valStack.Pop())));
                         break;
-                    case OpType.LessThan:
+                    case InstructionType.LessThan:
                         NexusValue rLt = valStack.Pop(), lLt = valStack.Pop();
                         valStack.Push(new NexusBool(lLt < rLt));
                         break;
-                    case OpType.GreaterThan:
+                    case InstructionType.GreaterThan:
                         NexusValue rGt = valStack.Pop(), lGt = valStack.Pop();
                         valStack.Push(new NexusBool(lGt > rGt));
                         break;
-                    case OpType.GreaterThanOrEqualTo:
+                    case InstructionType.GreaterThanOrEqualTo:
                         NexusValue rGe = valStack.Pop(), lGe = valStack.Pop();
                         valStack.Push(new NexusBool(lGe >= rGe));
                         break;
-                    case OpType.LessThanOrEqualTo:
+                    case InstructionType.LessThanOrEqualTo:
                         NexusValue rLe = valStack.Pop(), lLe = valStack.Pop();
                         valStack.Push(new NexusBool(lLe <= rLe));
                         break;
-                    case OpType.And:
+                    case InstructionType.And:
                         NexusValue rAnd = valStack.Pop(), lAnd = valStack.Pop();
                         valStack.Push(new NexusBool(IsTruthy(lAnd) && IsTruthy(rAnd)));
                         break;
-                    case OpType.Or:
+                    case InstructionType.Or:
                         NexusValue rOr = valStack.Pop(), lOr = valStack.Pop();
                         valStack.Push(new NexusBool(IsTruthy(lOr) || IsTruthy(rOr)));
                         break;
-                    case OpType.Return:
+                    case InstructionType.Return:
                         return valStack.Pop();
                     default:
                         throw new InvalidOperationException($"Unknown operation: {op.OpType}");

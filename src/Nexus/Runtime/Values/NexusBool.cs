@@ -1,3 +1,4 @@
+using System;
 namespace Nexus.Runtime.Values
 {
     public class NexusBool : NexusValue
@@ -11,14 +12,14 @@ namespace Nexus.Runtime.Values
 
         double ToDouble() => _val ? 1.0 : 0.0;
 
-        NexusNumber AsNumber() => new NexusNumber(ToDouble());
+        NexusNumber AsNumber() => new(ToDouble());
 
         NexusValue RightAsNumber(NexusValue right) => right is NexusBool rightBool ? rightBool.AsNumber() : right;
 
         protected override NexusValue Add(NexusValue right)
         {
             if (right is not NexusNumber && right is not NexusBool)
-                throw new System.InvalidOperationException($"Cannot add NexusBool and {right.GetType().Name}.");
+                throw new InvalidOperationException($"Cannot add NexusBool and {right.GetType().Name}.");
 
             return AsNumber() + RightAsNumber(right);
         }
@@ -26,7 +27,7 @@ namespace Nexus.Runtime.Values
         protected override NexusValue Subtract(NexusValue right)
         {
             if (right is not NexusNumber && right is not NexusBool)
-                throw new System.InvalidOperationException($"Cannot subtract NexusBool and {right.GetType().Name}.");
+                throw new InvalidOperationException($"Cannot subtract NexusBool and {right.GetType().Name}.");
 
             return AsNumber() - RightAsNumber(right);
         }
@@ -34,7 +35,7 @@ namespace Nexus.Runtime.Values
         protected override NexusValue Multiply(NexusValue right)
         {
             if (right is not NexusNumber && right is not NexusBool)
-                throw new System.InvalidOperationException($"Cannot multiply NexusBool and {right.GetType().Name}.");
+                throw new InvalidOperationException($"Cannot multiply NexusBool and {right.GetType().Name}.");
 
             return AsNumber() * RightAsNumber(right);
         }
@@ -42,7 +43,7 @@ namespace Nexus.Runtime.Values
         protected override NexusValue Divide(NexusValue right)
         {
             if (right is not NexusNumber && right is not NexusBool)
-                throw new System.InvalidOperationException($"Cannot divide NexusBool and {right.GetType().Name}.");
+                throw new InvalidOperationException($"Cannot divide NexusBool and {right.GetType().Name}.");
 
             return AsNumber() / RightAsNumber(right);
         }
@@ -51,6 +52,7 @@ namespace Nexus.Runtime.Values
         {
             if (right is NexusBool rightBool) return _val == rightBool._val;
             if (right is NexusNumber) return AsNumber() == right;
+
             return false;
         }
 
@@ -59,29 +61,32 @@ namespace Nexus.Runtime.Values
         protected override bool LessThan(NexusValue right)
         {
             if (right is not NexusNumber && right is not NexusBool)
-                throw new System.InvalidOperationException($"Cannot compare NexusBool and {right.GetType().Name}.");
+                throw new InvalidOperationException($"Cannot compare NexusBool and {right.GetType().Name}.");
+
             return AsNumber() < RightAsNumber(right);
         }
 
         protected override bool GreaterThan(NexusValue right)
         {
             if (right is not NexusNumber && right is not NexusBool)
-                throw new System.InvalidOperationException($"Cannot compare NexusBool and {right.GetType().Name}.");
+                throw new InvalidOperationException($"Cannot compare NexusBool and {right.GetType().Name}.");
+
             return AsNumber() > RightAsNumber(right);
         }
 
         protected override bool LessThanOrEqualTo(NexusValue right)
         {
             if (right is not NexusNumber && right is not NexusBool)
-                throw new System.InvalidOperationException($"Cannot compare NexusBool and {right.GetType().Name}.");
+                throw new InvalidOperationException($"Cannot compare NexusBool and {right.GetType().Name}.");
+
             return AsNumber() <= RightAsNumber(right);
         }
 
         protected override bool GreaterThanOrEqualTo(NexusValue right)
         {
             if (right is not NexusNumber && right is not NexusBool)
-                throw new System.InvalidOperationException($"Cannot compare NexusBool and {right.GetType().Name}.");
-            
+                throw new InvalidOperationException($"Cannot compare NexusBool and {right.GetType().Name}.");
+
             return AsNumber() >= RightAsNumber(right);
         }
 

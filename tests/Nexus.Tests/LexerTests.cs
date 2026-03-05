@@ -1,6 +1,6 @@
 using Nexus;
 using Nexus.LexicalAnalysis;
-using Nexus.LexicalAnalysis.Tokens;
+using Nexus.LexicalAnalysis;
 
 namespace Nexus.Tests
 {

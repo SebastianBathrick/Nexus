@@ -1,7 +1,7 @@
 using System;
 using Nexus.Compilation;
+using Nexus.Runtime;
 using Nexus.Runtime.Values;
-using Nexus.Operations;
 using Nexus.SyntaxAnalysis;
 using Nexus.SyntaxAnalysis.Expressions;
 using Nexus.SyntaxAnalysis.Statements;
@@ -23,9 +23,9 @@ public class CompilerTests
         var chunk = Compiler.CompileFromSyntaxTree(tree);
 
         Assert.That(chunk.Length, Is.EqualTo(2));
-        Assert.That(chunk[0].OpType, Is.EqualTo(OpType.PushConstant));
+        Assert.That(chunk[0].OpType, Is.EqualTo(InstructionType.PushConstant));
         Assert.That(chunk[0].CacheIndex, Is.EqualTo(0));
-        Assert.That(chunk[1].OpType, Is.EqualTo(OpType.Return));
+        Assert.That(chunk[1].OpType, Is.EqualTo(InstructionType.Return));
         Assert.That(chunk.GetConstant(0).ToString(), Is.EqualTo("42"));
     }
 
@@ -42,10 +42,10 @@ public class CompilerTests
         var chunk = Compiler.CompileFromSyntaxTree(tree);
 
         Assert.That(chunk.Length, Is.EqualTo(4));
-        Assert.That(chunk[0].OpType, Is.EqualTo(OpType.PushConstant));
-        Assert.That(chunk[1].OpType, Is.EqualTo(OpType.PushConstant));
-        Assert.That(chunk[2].OpType, Is.EqualTo(OpType.Add));
-        Assert.That(chunk[3].OpType, Is.EqualTo(OpType.Return));
+        Assert.That(chunk[0].OpType, Is.EqualTo(InstructionType.PushConstant));
+        Assert.That(chunk[1].OpType, Is.EqualTo(InstructionType.PushConstant));
+        Assert.That(chunk[2].OpType, Is.EqualTo(InstructionType.Add));
+        Assert.That(chunk[3].OpType, Is.EqualTo(InstructionType.Return));
     }
 
     [Test]
@@ -61,8 +61,8 @@ public class CompilerTests
         var chunk = Compiler.CompileFromSyntaxTree(tree);
 
         Assert.That(chunk.Length, Is.EqualTo(4));
-        Assert.That(chunk[2].OpType, Is.EqualTo(OpType.LessThan));
-        Assert.That(chunk[3].OpType, Is.EqualTo(OpType.Return));
+        Assert.That(chunk[2].OpType, Is.EqualTo(InstructionType.LessThan));
+        Assert.That(chunk[3].OpType, Is.EqualTo(InstructionType.Return));
     }
 
     [Test]
@@ -78,8 +78,8 @@ public class CompilerTests
         var chunk = Compiler.CompileFromSyntaxTree(tree);
 
         Assert.That(chunk.Length, Is.EqualTo(4));
-        Assert.That(chunk[2].OpType, Is.EqualTo(OpType.And));
-        Assert.That(chunk[3].OpType, Is.EqualTo(OpType.Return));
+        Assert.That(chunk[2].OpType, Is.EqualTo(InstructionType.And));
+        Assert.That(chunk[3].OpType, Is.EqualTo(InstructionType.Return));
     }
 
     [Test]

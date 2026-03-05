@@ -1,7 +1,6 @@
 using System;
 using System.Text;
-
-namespace Nexus.LexicalAnalysis.Tokens
+namespace Nexus.LexicalAnalysis
 {
     class TokenBuilder
     {

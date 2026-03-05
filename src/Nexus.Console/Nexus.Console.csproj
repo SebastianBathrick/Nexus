@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Nexus\Nexus.csproj" />
+        <ProjectReference Include="..\Nexus\Nexus.csproj"/>
     </ItemGroup>
 
 </Project>

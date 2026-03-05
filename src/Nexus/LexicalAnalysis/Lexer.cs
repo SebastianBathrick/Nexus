@@ -1,6 +1,4 @@
 using System;
-using Nexus.LexicalAnalysis.Tokens;
-
 namespace Nexus.LexicalAnalysis
 {
     static class Lexer

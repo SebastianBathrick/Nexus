@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using Nexus.LexicalAnalysis.Tokens;
-
+using Nexus.LexicalAnalysis;
 namespace Nexus
 {
     static class LanguageSpecifications
@@ -13,7 +12,7 @@ namespace Nexus
             { "and", TokenType.KeywordAnd },
             { "or", TokenType.KeywordOr },
             { "is", TokenType.KeywordEquals },
-            { "not", TokenType.KeywordNot },
+            { "not", TokenType.KeywordNot }
         };
 
         public static readonly IReadOnlyDictionary<string, TokenType> Operators = new Dictionary<string, TokenType>
@@ -27,6 +26,8 @@ namespace Nexus
             { ">", TokenType.SymbolGreater },
             { "<=", TokenType.SymbolLessEqual },
             { ">=", TokenType.SymbolGreaterEqual },
+            { "==", TokenType.KeywordEquals },
+            { "!=", TokenType.SymbolNotEqual }
         };
 
         public static readonly IReadOnlyDictionary<CharType, TokenType> Delimeters = new Dictionary<CharType, TokenType>
@@ -45,8 +46,10 @@ namespace Nexus
                 '0' or '1' or '2' or '3' or '4' or '5' or '6' or '7' or '8' or '9' => CharType.Numeric,
 
                 // aA-zZ
-                'a' or 'b' or 'c' or 'd' or 'e' or 'f' or 'g' or 'h' or 'i' or 'j' or 'k' or 'l' or 'm' or 'n' or 'o' or 'p' or 'q' or 'r' or 's' or 't' or 'u' or 'v' or 'w'
-                    or 'x' or 'y' or 'z' or 'A' or 'B' or 'C' or 'D' or 'E' or 'F' or 'G' or 'H' or 'I' or 'J' or 'K' or 'L' or 'M' or 'N' or 'O' or 'P' or 'Q' or 'R' or 'S'
+                'a' or 'b' or 'c' or 'd' or 'e' or 'f' or 'g' or 'h' or 'i' or 'j' or 'k' or 'l' or 'm' or 'n' or 'o' or 'p' or 'q' or 'r' or 's' or 't' or 'u' or 'v'
+                    or 'w'
+                    or 'x' or 'y' or 'z' or 'A' or 'B' or 'C' or 'D' or 'E' or 'F' or 'G' or 'H' or 'I' or 'J' or 'K' or 'L' or 'M' or 'N' or 'O' or 'P' or 'Q' or 'R'
+                    or 'S'
                     or 'T' or 'U' or 'V' or 'W' or 'X' or 'Y' or 'Z' => CharType.Alpha,
 
                 // Whitespace characters (Same valid whitespace as C compiler)

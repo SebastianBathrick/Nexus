@@ -1,4 +1,4 @@
-namespace Nexus.LexicalAnalysis.Tokens
+namespace Nexus.LexicalAnalysis
 {
     enum TokenType
     {
@@ -8,7 +8,7 @@ namespace Nexus.LexicalAnalysis.Tokens
         Identifier,
         KeywordTrue,
         KeywordFalse,
-        
+
         // Statements
         SymbolAssignment,
 
@@ -17,14 +17,15 @@ namespace Nexus.LexicalAnalysis.Tokens
         SymbolMinus,
         SymbolMultiply,
         SymbolDivide,
-        
+
         SymbolLess,
         SymbolGreater,
         SymbolLessEqual,
         SymbolGreaterEqual,
 
-        // Comparison keywords
+        // Comparison keywords / operators
         KeywordEquals,
+        SymbolNotEqual,
 
 
         // Logical Keywords
@@ -37,8 +38,8 @@ namespace Nexus.LexicalAnalysis.Tokens
         DelimiterCloseParen,
         DelimiterCurlyOpen,
         DelimiterCurlyClose,
-        
+
         // Reserved keywords
-        KeywordReturn,
+        KeywordReturn
     }
 }

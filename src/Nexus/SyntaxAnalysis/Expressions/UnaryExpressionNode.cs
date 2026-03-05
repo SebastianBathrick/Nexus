@@ -1,17 +1,15 @@
-using System;
-
 namespace Nexus.SyntaxAnalysis.Expressions
 {
     class UnaryExpressionNode : Node
     {
-        public ExpressionOperator Operator { get; }
-        public Node Operand { get; }
-
         public UnaryExpressionNode(ExpressionOperator @operator, Node operand)
         {
             Operator = @operator;
             Operand = operand;
         }
+
+        public ExpressionOperator Operator { get; }
+        public Node Operand { get; }
 
         public override string ToString() => Operator switch
         {

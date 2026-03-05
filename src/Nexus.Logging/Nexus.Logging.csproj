@@ -6,12 +6,12 @@
         <Nullable>enable</Nullable>
         <PackageId>Nexus.Logging</PackageId>
         <RootNamespace>Nexus.Logging</RootNamespace>
-<ImplicitUsings>enable</ImplicitUsings>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
 
     <ItemGroup>
-        <PackageReference Include="System.Text.Json" Version="9.0.0" />
+        <PackageReference Include="System.Text.Json" Version="9.0.0"/>
     </ItemGroup>
 
 </Project>

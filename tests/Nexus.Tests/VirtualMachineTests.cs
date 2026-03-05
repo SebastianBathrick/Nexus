@@ -2,7 +2,6 @@ using System;
 using Nexus.Compilation;
 using Nexus.Runtime;
 using Nexus.Runtime.Values;
-using Nexus.Operations;
 using NUnit.Framework;
 
 namespace Nexus.Tests;
@@ -16,8 +15,8 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(42) };
         var instructions = new[]
         {
-            new Op(OpType.PushConstant, CacheType.Constant, 0),
-            new Op(OpType.Return)
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
+            new Instruction(InstructionType.Return)
         };
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
@@ -30,10 +29,10 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(3), new NexusNumber(7) };
         var instructions = new[]
         {
-            new Op(OpType.PushConstant, CacheType.Constant, 0),
-            new Op(OpType.PushConstant, CacheType.Constant, 1),
-            new Op(OpType.Add),
-            new Op(OpType.Return)
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.Add),
+            new Instruction(InstructionType.Return)
         };
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
@@ -46,10 +45,10 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(10), new NexusNumber(3) };
         var instructions = new[]
         {
-            new Op(OpType.PushConstant, CacheType.Constant, 0),
-            new Op(OpType.PushConstant, CacheType.Constant, 1),
-            new Op(OpType.Subtract),
-            new Op(OpType.Return)
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.Subtract),
+            new Instruction(InstructionType.Return)
         };
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
@@ -62,10 +61,10 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(4), new NexusNumber(5) };
         var instructions = new[]
         {
-            new Op(OpType.PushConstant, CacheType.Constant, 0),
-            new Op(OpType.PushConstant, CacheType.Constant, 1),
-            new Op(OpType.Multiply),
-            new Op(OpType.Return)
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.Multiply),
+            new Instruction(InstructionType.Return)
         };
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
@@ -78,10 +77,10 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(20), new NexusNumber(4) };
         var instructions = new[]
         {
-            new Op(OpType.PushConstant, CacheType.Constant, 0),
-            new Op(OpType.PushConstant, CacheType.Constant, 1),
-            new Op(OpType.Divide),
-            new Op(OpType.Return)
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.Divide),
+            new Instruction(InstructionType.Return)
         };
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
@@ -94,10 +93,10 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(1), new NexusNumber(1) };
         var instructions = new[]
         {
-            new Op(OpType.PushConstant, CacheType.Constant, 0),
-            new Op(OpType.PushConstant, CacheType.Constant, 1),
-            new Op(OpType.EqualTo),
-            new Op(OpType.Return)
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.EqualTo),
+            new Instruction(InstructionType.Return)
         };
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
@@ -111,10 +110,10 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(1), new NexusNumber(2) };
         var instructions = new[]
         {
-            new Op(OpType.PushConstant, CacheType.Constant, 0),
-            new Op(OpType.PushConstant, CacheType.Constant, 1),
-            new Op(OpType.NotEqualTo),
-            new Op(OpType.Return)
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.NotEqualTo),
+            new Instruction(InstructionType.Return)
         };
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
@@ -127,10 +126,10 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(1), new NexusNumber(2) };
         var instructions = new[]
         {
-            new Op(OpType.PushConstant, CacheType.Constant, 0),
-            new Op(OpType.PushConstant, CacheType.Constant, 1),
-            new Op(OpType.LessThan),
-            new Op(OpType.Return)
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.LessThan),
+            new Instruction(InstructionType.Return)
         };
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
@@ -143,10 +142,10 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(3), new NexusNumber(2) };
         var instructions = new[]
         {
-            new Op(OpType.PushConstant, CacheType.Constant, 0),
-            new Op(OpType.PushConstant, CacheType.Constant, 1),
-            new Op(OpType.GreaterThan),
-            new Op(OpType.Return)
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.GreaterThan),
+            new Instruction(InstructionType.Return)
         };
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
@@ -159,10 +158,10 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusBool(true), new NexusBool(false) };
         var instructions = new[]
         {
-            new Op(OpType.PushConstant, CacheType.Constant, 0),
-            new Op(OpType.PushConstant, CacheType.Constant, 1),
-            new Op(OpType.And),
-            new Op(OpType.Return)
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.And),
+            new Instruction(InstructionType.Return)
         };
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
@@ -175,10 +174,10 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusBool(true), new NexusBool(false) };
         var instructions = new[]
         {
-            new Op(OpType.PushConstant, CacheType.Constant, 0),
-            new Op(OpType.PushConstant, CacheType.Constant, 1),
-            new Op(OpType.Or),
-            new Op(OpType.Return)
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.Or),
+            new Instruction(InstructionType.Return)
         };
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
@@ -191,9 +190,9 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusBool(false) };
         var instructions = new[]
         {
-            new Op(OpType.PushConstant, CacheType.Constant, 0),
-            new Op(OpType.Not),
-            new Op(OpType.Return)
+            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
+            new Instruction(InstructionType.Not),
+            new Instruction(InstructionType.Return)
         };
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteChunk(chunk);
@@ -203,7 +202,7 @@ public class VirtualMachineTests
     [Test]
     public void ExecuteChunk_UnknownOpType_ThrowsInvalidOperationException()
     {
-        var instructions = new[] { new Op((OpType)999) };
+        var instructions = new[] { new Instruction((InstructionType)999) };
         var chunk = new Chunk(instructions, Array.Empty<NexusValue>());
         Assert.Throws<InvalidOperationException>(() => VirtualMachine.ExecuteChunk(chunk));
     }

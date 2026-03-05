@@ -1,22 +1,21 @@
 using System.Text;
 using Nexus.Runtime.Values;
-
-namespace Nexus.Operations
+namespace Nexus.Runtime
 {
     class Chunk
     {
-        readonly Op[] _instructions;
         readonly NexusValue[] _constsCache;
+        readonly Instruction[] _instructions;
 
-        public int Length => _instructions.Length;
-
-        public Chunk(Op[] instructions, NexusValue[] constsCache)
+        public Chunk(Instruction[] instructions, NexusValue[] constsCache)
         {
             _instructions = instructions;
             _constsCache = constsCache;
         }
 
-        public Op this[int index] => _instructions[index];
+        public int Length => _instructions.Length;
+
+        public Instruction this[int index] => _instructions[index];
 
         public NexusValue GetConstant(int index) => _constsCache[index];
 

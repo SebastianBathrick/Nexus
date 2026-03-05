@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\src\Nexus.Logging\Nexus.Logging.csproj" />
+        <ProjectReference Include="..\..\..\src\Nexus.Logging\Nexus.Logging.csproj"/>
     </ItemGroup>
 
 </Project>

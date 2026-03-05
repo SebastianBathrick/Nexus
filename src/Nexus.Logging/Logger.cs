@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -10,8 +9,7 @@ namespace Nexus.Logging
     {
         #region Constants
 
-        const bool InitialIsEnabled = false;
-        const LogLevel InitialMinimumLogLevel = LogLevel.Info;
+        const LogLevel InitialMinimumLogLevel = LogLevel.None;
 
         private const string DefaultLabelFormat = "[{LogLevel} | {Timestamp:MM-dd HH:mm:ss}]:";
         
@@ -28,9 +26,8 @@ namespace Nexus.Logging
 
         #region Constructor
 
-        public Logger(bool isEnabled = InitialIsEnabled, LogLevel minLogLvl = InitialMinimumLogLevel)
+        public Logger(LogLevel minLogLvl = InitialMinimumLogLevel)
         {
-            IsEnabled = isEnabled;
             MinimumLogLevel = minLogLvl;
             IsLabelsEnabled = true;
             LabelFormat = DefaultLabelFormat;
@@ -40,7 +37,11 @@ namespace Nexus.Logging
 
         #region ILogger Properties
 
-        public bool IsEnabled { get; set; }
+        public bool IsEnabled 
+        { 
+            get => MinimumLogLevel > LogLevel.None;
+            set => MinimumLogLevel = value ? MinimumLogLevel : LogLevel.None;
+        }
         public LogLevel MinimumLogLevel { get; set; }
         public bool IsLabelsEnabled { get; set; }
         public bool IsSeparatorEnabled { get; set; }
@@ -80,7 +81,7 @@ namespace Nexus.Logging
             var root = doc.RootElement;
 
             if (root.TryGetProperty(nameof(IsEnabled), out var isEnabled))
-                IsEnabled = isEnabled.GetBoolean();
+                MinimumLogLevel = isEnabled.GetBoolean() ? MinimumLogLevel : LogLevel.None;
 
             if (root.TryGetProperty(nameof(MinimumLogLevel), out var minLevel))
             {
@@ -315,7 +316,5 @@ namespace Nexus.Logging
         }
 
         #endregion
-
-
     }
 }

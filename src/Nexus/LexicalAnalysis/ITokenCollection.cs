@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-
-namespace Nexus.LexicalAnalysis.Tokens
+namespace Nexus.LexicalAnalysis
 {
     interface ITokenCollection
     {
@@ -21,10 +20,7 @@ namespace Nexus.LexicalAnalysis.Tokens
 
         public bool IsOfType(TokenType tokenType);
 
-        public bool IsOfType(params TokenType[] tokenTypes)
-        {
-            return tokenTypes.Any(IsOfType);
-        }
+        public bool IsOfType(params TokenType[] tokenTypes) => tokenTypes.Any(IsOfType);
 
         public IReadOnlyList<Token> ToList();
     }

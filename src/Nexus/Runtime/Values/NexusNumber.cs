@@ -1,6 +1,5 @@
-using System.Globalization;
 using System;
-
+using System.Globalization;
 namespace Nexus.Runtime.Values
 {
     public class NexusNumber : NexusValue
@@ -21,6 +20,7 @@ namespace Nexus.Runtime.Values
         {
             if (v is NexusNumber n) return n._val;
             if (v is NexusBool b) return b == new NexusBool(true) ? 1.0 : 0.0;
+
             throw new InvalidOperationException($"Cannot coerce {v.GetType().Name} to number.");
         }
 
@@ -28,6 +28,7 @@ namespace Nexus.Runtime.Values
         {
             if (right is not NexusNumber && right is not NexusBool)
                 throw new InvalidOperationException($"Cannot add NexusNumber and {right.GetType().Name}.");
+
             return new NexusNumber(_val + AsDouble(right));
         }
 
@@ -35,6 +36,7 @@ namespace Nexus.Runtime.Values
         {
             if (right is not NexusNumber && right is not NexusBool)
                 throw new InvalidOperationException($"Cannot subtract NexusNumber and {right.GetType().Name}.");
+
             return new NexusNumber(_val - AsDouble(right));
         }
 
@@ -42,6 +44,7 @@ namespace Nexus.Runtime.Values
         {
             if (right is not NexusNumber && right is not NexusBool)
                 throw new InvalidOperationException($"Cannot multiply NexusNumber and {right.GetType().Name}.");
+
             return new NexusNumber(_val * AsDouble(right));
         }
 
@@ -49,6 +52,7 @@ namespace Nexus.Runtime.Values
         {
             if (right is not NexusNumber && right is not NexusBool)
                 throw new InvalidOperationException($"Cannot divide NexusNumber and {right.GetType().Name}.");
+
             return new NexusNumber(_val / AsDouble(right));
         }
 
@@ -56,6 +60,7 @@ namespace Nexus.Runtime.Values
         {
             if (right is NexusNumber rNum) return _val.Equals(rNum._val);
             if (right is NexusBool) return _val.Equals(AsDouble(right));
+
             return false;
         }
 
@@ -65,6 +70,7 @@ namespace Nexus.Runtime.Values
         {
             if (right is not NexusNumber && right is not NexusBool)
                 throw new InvalidOperationException($"Cannot compare NexusNumber with {right.GetType().Name}.");
+
             return _val < AsDouble(right);
         }
 
@@ -72,6 +78,7 @@ namespace Nexus.Runtime.Values
         {
             if (right is not NexusNumber && right is not NexusBool)
                 throw new InvalidOperationException($"Cannot compare NexusNumber with {right.GetType().Name}.");
+
             return _val > AsDouble(right);
         }
 
@@ -79,6 +86,7 @@ namespace Nexus.Runtime.Values
         {
             if (right is not NexusNumber && right is not NexusBool)
                 throw new InvalidOperationException($"Cannot compare NexusNumber with {right.GetType().Name}.");
+
             return _val <= AsDouble(right);
         }
 
@@ -86,6 +94,7 @@ namespace Nexus.Runtime.Values
         {
             if (right is not NexusNumber && right is not NexusBool)
                 throw new InvalidOperationException($"Cannot compare NexusNumber with {right.GetType().Name}.");
+
             return _val >= AsDouble(right);
         }
 

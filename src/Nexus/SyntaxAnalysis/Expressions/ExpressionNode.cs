@@ -1,19 +1,18 @@
 using System;
-
 namespace Nexus.SyntaxAnalysis.Expressions
 {
     class ExpressionNode : Node
     {
-        public ExpressionOperator Operator { get; }
-        public Node Left { get; }
-        public Node Right { get; }
-
         public ExpressionNode(ExpressionOperator @operator, Node left, Node right)
         {
             Operator = @operator;
             Left = left;
             Right = right;
         }
+
+        public ExpressionOperator Operator { get; }
+        public Node Left { get; }
+        public Node Right { get; }
 
         string GetOperatorString()
         {
@@ -39,7 +38,7 @@ namespace Nexus.SyntaxAnalysis.Expressions
         public override string ToString() => $"({Left} {GetOperatorString()} {Right})";
     }
 
-    enum ExpressionOperator
+    enum ExpressionOperator : uint
     {
         Addition,
         Subtraction,
@@ -53,6 +52,6 @@ namespace Nexus.SyntaxAnalysis.Expressions
         LessThanOrEqual,
         Equality,
         Inequality,
-        LogicalNot,
+        LogicalNot
     }
 }

@@ -1,14 +1,14 @@
-namespace Nexus.Operations
+namespace Nexus.Runtime
 {
-    readonly struct Op
+    readonly struct Instruction
     {
         const int NoMappedIndex = -1;
 
-        public readonly OpType OpType;
+        public readonly InstructionType OpType;
         public readonly CacheType CacheType;
         public readonly int CacheIndex;
 
-        public Op(OpType opType, CacheType cacheType = CacheType.None, int cacheIndex = NoMappedIndex)
+        public Instruction(InstructionType opType, CacheType cacheType = CacheType.None, int cacheIndex = NoMappedIndex)
         {
             OpType = opType;
             CacheType = cacheType;

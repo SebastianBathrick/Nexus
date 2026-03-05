@@ -1,6 +1,6 @@
 using System;
 using Nexus.LexicalAnalysis;
-using Nexus.LexicalAnalysis.Tokens;
+using Nexus.LexicalAnalysis;
 using Nexus.SyntaxAnalysis;
 using Nexus.SyntaxAnalysis.Expressions;
 using Nexus.SyntaxAnalysis.Statements;

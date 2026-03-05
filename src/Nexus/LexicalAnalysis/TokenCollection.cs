@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-
-namespace Nexus.LexicalAnalysis.Tokens
+namespace Nexus.LexicalAnalysis
 {
     class TokenCollection : ITokenCollection
     {
@@ -46,16 +45,11 @@ namespace Nexus.LexicalAnalysis.Tokens
             return true;
         }
 
-        public bool IsOfType(TokenType tokenType)
-        {
-            return _index < _tokens.Count && _tokens[_index].Type == tokenType;
-        }
+        public bool IsOfType(TokenType tokenType) => _index < _tokens.Count && _tokens[_index].Type == tokenType;
 
-        public IReadOnlyList<Token> ToList()
-        {
+        public IReadOnlyList<Token> ToList() =>
             // Ensure to copy the list to prevent external modification of the internal list
-            return new List<Token>(_tokens);
-        }
+            new List<Token>(_tokens);
 
         #endregion
     }
