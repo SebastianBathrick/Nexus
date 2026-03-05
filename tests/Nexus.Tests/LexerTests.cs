@@ -204,7 +204,7 @@ namespace Nexus.Tests
         public void Lex_DoubleEquals_ReturnsEqualityOperator()
         {
             var tokens = Lexer.Lex<LexerTestTokenCollection>("a==b").ToList();
-            Assert.That(tokens[1].Type, Is.EqualTo(TokenType.EqualityOperator));
+            Assert.That(tokens[1].Type, Is.EqualTo(TokenType.KeywordEquals));
         }
 
         // Delimiters

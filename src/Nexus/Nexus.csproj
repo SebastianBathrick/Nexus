@@ -8,6 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Nexus.Logging\Nexus.Logging.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>Nexus.Tests</_Parameter1>
         </AssemblyAttribute>
