@@ -1,85 +1,110 @@
 using System;
+using System.Collections.Generic;
 using Nexus.Runtime;
 using Nexus.Runtime.Values;
 using Nexus.SyntaxAnalysis;
 using Nexus.SyntaxAnalysis.Expressions;
 using Nexus.SyntaxAnalysis.Statements;
+using Nexus.SyntaxAnalysis.Expressions.Literals;
+
 namespace Nexus.Compilation
 {
-    static class Compiler
+    class Compiler
     {
         const int NoConstantIndex = -1;
 
-        public static Chunk CompileFromSyntaxTree(Node root)
+        List<Instruction> _instructions = new List<Instruction>();
+        List<NexusValue> _constantList = new List<NexusValue>();
+
+        public Chunk CompileFromSyntaxTree(Node root)
         {
             if (root is not SyntaxTree tree)
                 throw new ArgumentException($"{nameof(root)} is not a {nameof(SyntaxTree)}");
 
-            if (tree.TopLevelBlockNode is not BlockNode block)
+            if (tree.TopLevelBlockNode is not BlockNode blockNode)
                 throw new ArgumentException($"{nameof(tree.TopLevelBlockNode)} is not a {nameof(BlockNode)}");
 
-            // TODO: Add functions, control flow constructs, and more statements.
-            var tempData = new TempCompilerCache();
-            GetReturnInstructions(block.Statements[0], tempData);
-            return new Chunk(tempData.Instructions.ToArray(), tempData.Values.ToArray());
+            return CreateChunk(blockNode);
         }
 
-        static void GetReturnInstructions(Node node, TempCompilerCache tempCache)
+        Chunk CreateChunk(BlockNode blockNode)
+        {
+            // Reset the state from previous compilation
+            _instructions = new();
+            _constantList = new();
+
+            foreach (var node in blockNode.Statements)
+            {
+                if (node is ReturnNode returnNode)
+                    ToReturnInstructions(returnNode);
+                else if (node is AssignmentNode assignmentNode)
+                    ToAssignmentInstructions(assignmentNode);
+                else
+                    throw new ArgumentException($"Unsupported node type: {node.GetType().Name}");
+            }
+
+            return new(_instructions.ToArray(), _constantList.ToArray());
+        }
+
+        void ToAssignmentInstructions(AssignmentNode node)
+        {
+            ToExpressionInstructions(node.Expression);
+            _instructions.Add(new Instruction(InstructionType.Assign));
+        }
+
+        void ToReturnInstructions(Node node)
         {
             if (node is not ReturnNode returnNode)
                 throw new ArgumentException("node is not a ReturnNode");
 
-            GetExpressionInstructions(returnNode.Expression, tempCache);
-            tempCache.Instructions.Add(new Instruction(InstructionType.Return));
+            ToExpressionInstructions(returnNode.Expression);
+            _instructions.Add(new Instruction(InstructionType.Return));
         }
 
-        static void GetExpressionInstructions(Node node, TempCompilerCache tempCache)
+        void ToPushInstruction(Node node)
+        {
+            if (node is LiteralNode)
+            {
+                var constantIndex = _constantList.Count;
+                var cacheType = CacheType.Constant;
+                AddToConstantList(node);
+
+                _instructions.Add(new(InstructionType.PushConstant, cacheType, constantIndex));
+            }
+        }
+
+
+        #region Expression Methods
+
+        void ToExpressionInstructions(Node node)
         {
             if (node is UnaryExpressionNode unary)
             {
-                GetExpressionInstructions(unary.Operand, tempCache);
-                if (unary.Operator == ExpressionOperator.LogicalNot)
-                    tempCache.Instructions.Add(new Instruction(InstructionType.Not));
-                else
-                    throw new InvalidOperationException($"Unsupported unary operator: {unary.Operator}");
-
+                ToUnaryExpressionInstructions(unary);
                 return;
             }
 
             if (node is not ExpressionNode expression)
             {
-                GetPushInstruction(node, tempCache);
+                ToPushInstruction(node);
                 return;
             }
 
-            GetExpressionInstructions(expression.Left, tempCache);
-            GetExpressionInstructions(expression.Right, tempCache);
-            tempCache.Instructions.Add(new Instruction(GetOpType(expression.Operator)));
+            ToExpressionInstructions(expression.Left);
+            ToExpressionInstructions(expression.Right);
+            _instructions.Add(new Instruction(ToOpType(expression.Operator)));
         }
 
-        static NexusValue NodeToConstant(Node node)
+        void ToUnaryExpressionInstructions(UnaryExpressionNode node)
         {
-            if (node is NumberLiteralNode num) return new NexusNumber(num.GetNumberValue());
-            if (node is BoolLiteralNode b) return new NexusBool(b.GetBoolValue());
-
-            throw new ArgumentException($"Cannot push constant for node type: {node.GetType().Name}");
+            ToExpressionInstructions(node.Operand);
+            if (node.Operator == ExpressionOperator.LogicalNot)
+                _instructions.Add(new Instruction(InstructionType.Not));
+            else
+                throw new InvalidOperationException($"Unsupported unary operator: {node.Operator}");
         }
 
-        static void GetPushInstruction(Node node, TempCompilerCache tempCache)
-        {
-            var value = NodeToConstant(node);
-            var constIndex = tempCache.Values.FindIndex(x => x == value);
-
-            if (constIndex == NoConstantIndex)
-            {
-                tempCache.Values.Add(value);
-                constIndex = tempCache.Values.Count - 1;
-            }
-
-            tempCache.Instructions.Add(new Instruction(InstructionType.PushConstant, CacheType.Constant, constIndex));
-        }
-
-        static InstructionType GetOpType(ExpressionOperator op)
+        static InstructionType ToOpType(ExpressionOperator op)
         {
             return op switch
             {
@@ -98,5 +123,26 @@ namespace Nexus.Compilation
                 _ => throw new InvalidOperationException($"Unsupported operator: {op}")
             };
         }
+
+        #endregion
+
+        #region List Methods
+
+        NexusValue AddToConstantList(Node node)
+        {
+            NexusValue val;
+
+            if (node is NumberLiteralNode numNode)
+                val = new NexusNumber(numNode.GetNumberValue());
+            else if (node is BoolLiteralNode boolNode)
+                val = new NexusBool(boolNode.GetBoolValue());
+            else
+                throw new ArgumentException($"Cannot push constant for node type: {node.GetType().Name}");
+
+            _constantList.Add(val);
+            return val;
+        }
+
+        #endregion
     }
 }

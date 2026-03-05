@@ -5,8 +5,8 @@ namespace Nexus.Runtime
 {
     static class VirtualMachine
     {
+        public const int SuccessExitCode = 0;
         const int ChunkStartIndex = 0;
-        const int SuccessExitCode = 0;
 
         static bool IsTruthy(NexusValue v)
         {
@@ -90,7 +90,7 @@ namespace Nexus.Runtime
                 chunkIndex++;
             }
 
-            // Temporarily return value at top of stack if it exists, otherwise return 0
+            // If no exit code was returned on the top-level then return the success exit code
             return new NexusNumber(SuccessExitCode);
         }
     }

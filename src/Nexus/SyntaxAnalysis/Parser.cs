@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Nexus.LexicalAnalysis;
 using Nexus.SyntaxAnalysis.Expressions;
+using Nexus.SyntaxAnalysis.Expressions.Literals;
 using Nexus.SyntaxAnalysis.Statements;
 namespace Nexus.SyntaxAnalysis
 {
@@ -55,6 +56,9 @@ namespace Nexus.SyntaxAnalysis
                 case TokenType.KeywordReturn:
                     statementNode = ParseReturnStatement(tkns);
                     return true;
+                case TokenType.SymbolAssignment:
+                    statementNode = ParseAssignmentStatement(tkns);
+                    return true;
                 default:
                     statementNode = null;
                     return false;
@@ -67,6 +71,19 @@ namespace Nexus.SyntaxAnalysis
                 throw new ArgumentException($"Expected {TokenType.KeywordReturn}");
 
             return new ReturnNode(ParseExpression(tkns));
+        }
+
+        static Node ParseAssignmentStatement(TokenCollection tkns)
+        {
+            if (!tkns.IsOfType(TokenType.Identifier))
+                throw new ArgumentException($"Expected {TokenType.Identifier}");
+
+            var identifier = tkns.Read().Plaintext;
+
+            if (!tkns.IsOfTypeAndConsume(TokenType.SymbolAssignment))
+                throw new ArgumentException($"Expected {TokenType.SymbolAssignment}");
+
+            return new AssignmentNode(identifier, ParseExpression(tkns));
         }
 
         #endregion

@@ -40,6 +40,7 @@ namespace Nexus.LexicalAnalysis
         DelimiterCurlyClose,
 
         // Reserved keywords
-        KeywordReturn
+        KeywordReturn,
+        KeywordIf,
     }
 }

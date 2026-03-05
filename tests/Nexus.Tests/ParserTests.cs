@@ -1,6 +1,7 @@
 using Nexus.LexicalAnalysis;
 using Nexus.SyntaxAnalysis;
 using Nexus.SyntaxAnalysis.Expressions;
+using Nexus.SyntaxAnalysis.Expressions.Literals;
 using Nexus.SyntaxAnalysis.Statements;
 namespace Nexus.Tests;
 

@@ -14,7 +14,7 @@ namespace Nexus
             Log.Debug(tokenCollection.ToString());
             var syntaxTreeRoot = Parser.ParseTokens(tokenCollection);
             Log.Debug(syntaxTreeRoot.ToString());
-            var entryPointChunk = Compiler.CompileFromSyntaxTree(syntaxTreeRoot);
+            var entryPointChunk = new Compiler().CompileFromSyntaxTree(syntaxTreeRoot);
             Log.Debug(entryPointChunk.ToString());
             return VirtualMachine.ExecuteChunk(entryPointChunk);
         }

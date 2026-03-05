@@ -19,6 +19,7 @@ namespace Nexus.Runtime
         Or,
         Not,
 
-        PushConstant
+        PushConstant,
+        Assign
     }
 }

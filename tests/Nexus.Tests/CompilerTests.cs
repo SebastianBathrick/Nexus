@@ -2,6 +2,7 @@ using Nexus.Compilation;
 using Nexus.Runtime;
 using Nexus.SyntaxAnalysis;
 using Nexus.SyntaxAnalysis.Expressions;
+using Nexus.SyntaxAnalysis.Expressions.Literals;
 using Nexus.SyntaxAnalysis.Statements;
 namespace Nexus.Tests;
 
@@ -16,7 +17,7 @@ public class CompilerTests
         var block = new BlockNode(new Node[] { returnNode });
         var tree = new SyntaxTree(block);
 
-        var chunk = Compiler.CompileFromSyntaxTree(tree);
+        var chunk = new Compiler().CompileFromSyntaxTree(tree);
 
         Assert.That(chunk.Length, Is.EqualTo(2));
         Assert.That(chunk[0].OpType, Is.EqualTo(InstructionType.PushConstant));
@@ -35,7 +36,7 @@ public class CompilerTests
         var block = new BlockNode(new Node[] { returnNode });
         var tree = new SyntaxTree(block);
 
-        var chunk = Compiler.CompileFromSyntaxTree(tree);
+        var chunk = new Compiler().CompileFromSyntaxTree(tree);
 
         Assert.That(chunk.Length, Is.EqualTo(4));
         Assert.That(chunk[0].OpType, Is.EqualTo(InstructionType.PushConstant));
@@ -54,7 +55,7 @@ public class CompilerTests
         var block = new BlockNode(new Node[] { returnNode });
         var tree = new SyntaxTree(block);
 
-        var chunk = Compiler.CompileFromSyntaxTree(tree);
+        var chunk = new Compiler().CompileFromSyntaxTree(tree);
 
         Assert.That(chunk.Length, Is.EqualTo(4));
         Assert.That(chunk[2].OpType, Is.EqualTo(InstructionType.LessThan));
@@ -71,7 +72,7 @@ public class CompilerTests
         var block = new BlockNode(new Node[] { returnNode });
         var tree = new SyntaxTree(block);
 
-        var chunk = Compiler.CompileFromSyntaxTree(tree);
+        var chunk = new Compiler().CompileFromSyntaxTree(tree);
 
         Assert.That(chunk.Length, Is.EqualTo(4));
         Assert.That(chunk[2].OpType, Is.EqualTo(InstructionType.And));
@@ -82,6 +83,6 @@ public class CompilerTests
     public void CompileFromSyntaxTree_NonSyntaxTreeRoot_ThrowsArgumentException()
     {
         var block = new BlockNode(Array.Empty<Node>());
-        Assert.Throws<ArgumentException>(() => Compiler.CompileFromSyntaxTree(block));
+        Assert.Throws<ArgumentException>(() => new Compiler().CompileFromSyntaxTree(block));
     }
 }

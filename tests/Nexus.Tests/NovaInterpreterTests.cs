@@ -1,3 +1,4 @@
+using Nexus.Runtime;
 using Nexus.Runtime.Values;
 namespace Nexus.Tests;
 
@@ -778,9 +779,10 @@ public class NovaInterpreterTests
     }
 
     [Test]
-    public void Run_EmptyInput_Throws()
+    public void Run_EmptyInput_ReturnsSuccessCode()
     {
-        // Empty input yields no statements; Compiler accesses block.Statements[0] and throws.
-        Assert.Throws<IndexOutOfRangeException>(() => NovaInterpreter.Run(""));
+        var result = NovaInterpreter.Run("");
+        Assert.That(result, Is.InstanceOf<NexusNumber>());
+        Assert.That(result.ToString(), Is.EqualTo(VirtualMachine.SuccessExitCode.ToString()));
     }
 }

@@ -1,4 +1,4 @@
-namespace Nexus.SyntaxAnalysis.Expressions
+namespace Nexus.SyntaxAnalysis.Expressions.Literals
 {
     class BoolLiteralNode : LiteralNode
     {

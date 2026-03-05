@@ -2,9 +2,9 @@ namespace Nexus.SyntaxAnalysis.Expressions
 {
     class UnaryExpressionNode : Node
     {
-        public UnaryExpressionNode(ExpressionOperator @operator, Node operand)
+        public UnaryExpressionNode(ExpressionOperator expressionOperator, Node operand)
         {
-            Operator = @operator;
+            Operator = expressionOperator;
             Operand = operand;
         }
 
