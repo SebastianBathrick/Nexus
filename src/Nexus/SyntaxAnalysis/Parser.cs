@@ -56,7 +56,7 @@ namespace Nexus.SyntaxAnalysis
                 case TokenType.KeywordReturn:
                     statementNode = ParseReturnStatement(tkns);
                     return true;
-                case TokenType.SymbolAssignment:
+                case TokenType.Identifier:
                     statementNode = ParseAssignmentStatement(tkns);
                     return true;
                 default:
