@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <PackageId>Nexus.Logging</PackageId>
+        <RootNamespace>Nexus.Logging</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <PackageReference Include="System.Text.Json" Version="9.0.0"/>
+    </ItemGroup>
+
+</Project>
