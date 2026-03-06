@@ -1,4 +1,4 @@
-namespace Nexus.Runtime.Values
+namespace Nexus.Execution.Values
 {
     /// <summary>
     ///     Represents a value in the Nexus programming language created during compilation and used

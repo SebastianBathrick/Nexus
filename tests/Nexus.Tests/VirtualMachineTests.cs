@@ -1,5 +1,7 @@
-using Nexus.Runtime;
-using Nexus.Runtime.Values;
+using Nexus.Compilation;
+using Nexus.Execution;
+using Nexus.Execution.Values;
+
 namespace Nexus.Tests;
 
 [TestFixture]

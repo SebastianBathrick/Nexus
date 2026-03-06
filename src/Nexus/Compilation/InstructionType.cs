@@ -1,4 +1,4 @@
-namespace Nexus.Runtime
+namespace Nexus.Compilation
 {
     public enum InstructionType : uint
     {

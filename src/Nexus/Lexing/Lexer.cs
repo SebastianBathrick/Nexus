@@ -1,5 +1,7 @@
 using System;
-namespace Nexus.LexicalAnalysis
+using Nexus.LexicalAnalysis;
+
+namespace Nexus.Lexing
 {
     /// <summary>
     ///     Analyzes source code, breaks it into <see cref="Token" />s, and stores them in a <see cref="TokenCollection" />.

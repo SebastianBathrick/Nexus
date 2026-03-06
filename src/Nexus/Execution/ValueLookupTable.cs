@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Nexus.Runtime.Values;
+using Nexus.Execution.Values;
 
-namespace Nexus.Runtime
+namespace Nexus.Execution
 {
     class ValueLookupTable
     {
