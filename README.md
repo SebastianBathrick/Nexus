@@ -14,7 +14,7 @@ Nexus is a dynamically typed language with the following primitives:
 
 <b>text</b>: 2 byte Unicode characters and a 4 byte address.
 
-<b>function</b>: A callable function that optionally can accept values and/or return optional values.
+<b>function</b>: A callable function that optionally can accept values and/or optionally return values.
 
 <b>table</b>: Data structure that can indexed elements of multiple types that can also be referenced if given names. Code can also access an element using dot notation + its name or its name inside a string runtime.
 
