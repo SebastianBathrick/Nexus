@@ -230,7 +230,7 @@ public class ParserTests
         Assert.That(((AssignmentNode)block.Statements[1]).Identifier, Is.EqualTo("y"));
     }
 
-[Test]
+    [Test]
     public void ParseTokens_UnexpectedTokenAfterExpression_ThrowsArgumentException()
     {
         Assert.Throws<ArgumentException>(() => Parse("return 1 2"));
