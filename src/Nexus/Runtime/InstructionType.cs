@@ -20,6 +20,7 @@ namespace Nexus.Runtime
         Not,
 
         PushConstant,
+        Declare,
         Assign
     }
 }

@@ -16,6 +16,10 @@ namespace Nexus.Compilation
         List<Instruction> _instructions = new List<Instruction>();
         List<NexusValue> _constantList = new List<NexusValue>();
 
+        Dictionary<string, int> _varIndexMap = new Dictionary<string, int>();
+        List<string> _currChunkVarNames = new List<string>();
+        int _nextVarCacheIndex = 0;
+        
         public Chunk CompileFromSyntaxTree(Node root)
         {
             if (root is not SyntaxTree tree)
@@ -36,72 +40,94 @@ namespace Nexus.Compilation
             foreach (var node in blockNode.Statements)
             {
                 if (node is ReturnNode returnNode)
-                    ToReturnInstructions(returnNode);
+                    AddReturnInstructions(returnNode);
                 else if (node is AssignmentNode assignmentNode)
-                    ToAssignmentInstructions(assignmentNode);
+                    AddAssignmentInstructions(assignmentNode);
                 else
                     throw new ArgumentException($"Unsupported node type: {node.GetType().Name}");
             }
 
+            // Removes variables to avoid name conflicts with declarations made after this chunk (e.g. control structure or function blocks)
+            foreach (var varName in _currChunkVarNames)
+                _varIndexMap.Remove(varName);
+
             return new(_instructions.ToArray(), _constantList.ToArray());
         }
 
-        void ToAssignmentInstructions(AssignmentNode node)
+        void AddAssignmentInstructions(AssignmentNode node)
         {
-            ToExpressionInstructions(node.Expression);
-            _instructions.Add(new Instruction(InstructionType.Assign));
+            // Execution: The expression will be evaluated and the result will be pushed to the value stack
+            AddExpressionInstructions(node.Expression);
+
+            // Execution: If the variable has not been declared yet, declare it and add it to the variable cache
+            if (!_varIndexMap.TryGetValue(node.Identifier, out var vmCacheIndex))
+            {
+                vmCacheIndex = _nextVarCacheIndex++;
+                _varIndexMap[node.Identifier] = vmCacheIndex;
+
+                // Add to use as a key for _varIndexMap when removing this chunk's variables
+                _currChunkVarNames.Add(node.Identifier);
+                _instructions.Add(new Instruction(InstructionType.Declare, CacheType.Variable, vmCacheIndex));
+            }
+
+            /* Execution: Pop expression result from the value stack, use the variable cache index to reference the variable,
+             * and assign the expression result to the variable */
+            _instructions.Add(new Instruction(InstructionType.Assign, CacheType.Variable, vmCacheIndex));
         }
 
-        void ToReturnInstructions(Node node)
+        void AddReturnInstructions(Node node)
         {
             if (node is not ReturnNode returnNode)
                 throw new ArgumentException("node is not a ReturnNode");
 
-            ToExpressionInstructions(returnNode.Expression);
+            
+
+            AddExpressionInstructions(returnNode.Expression);
             _instructions.Add(new Instruction(InstructionType.Return));
         }
 
-        void ToPushInstruction(Node node)
-        {
-            if (node is LiteralNode)
-            {
-                var constantIndex = _constantList.Count;
-                var cacheType = CacheType.Constant;
-                AddToConstantList(node);
 
-                _instructions.Add(new(InstructionType.PushConstant, cacheType, constantIndex));
-            }
-        }
 
 
         #region Expression Methods
 
-        void ToExpressionInstructions(Node node)
+        void AddExpressionInstructions(Node node)
         {
             if (node is UnaryExpressionNode unary)
             {
-                ToUnaryExpressionInstructions(unary);
+                AddUnaryExpressionInstructions(unary);
                 return;
             }
 
             if (node is not ExpressionNode expression)
             {
-                ToPushInstruction(node);
+                AddPushInstruction(node);
                 return;
             }
 
-            ToExpressionInstructions(expression.Left);
-            ToExpressionInstructions(expression.Right);
+            AddExpressionInstructions(expression.Left);
+            AddExpressionInstructions(expression.Right);
             _instructions.Add(new Instruction(ToOpType(expression.Operator)));
         }
 
-        void ToUnaryExpressionInstructions(UnaryExpressionNode node)
+        void AddUnaryExpressionInstructions(UnaryExpressionNode node)
         {
-            ToExpressionInstructions(node.Operand);
+            AddExpressionInstructions(node.Operand);
             if (node.Operator == ExpressionOperator.LogicalNot)
                 _instructions.Add(new Instruction(InstructionType.Not));
             else
                 throw new InvalidOperationException($"Unsupported unary operator: {node.Operator}");
+        }
+
+        void AddPushInstruction(Node node)
+        {
+            if (node is LiteralNode literal)
+            {
+                var value = ParseLiteral(literal);
+                _constantList.Add(value);
+                _instructions.Add(new Instruction(InstructionType.PushConstant, CacheType.Constant,
+                    _constantList.Count - 1));
+            }
         }
 
         static InstructionType ToOpType(ExpressionOperator op)
@@ -123,12 +149,13 @@ namespace Nexus.Compilation
                 _ => throw new InvalidOperationException($"Unsupported operator: {op}")
             };
         }
+        
 
         #endregion
 
         #region List Methods
 
-        NexusValue AddToConstantList(Node node)
+        NexusValue ParseLiteral(LiteralNode node)
         {
             NexusValue val;
 
@@ -139,7 +166,6 @@ namespace Nexus.Compilation
             else
                 throw new ArgumentException($"Cannot push constant for node type: {node.GetType().Name}");
 
-            _constantList.Add(val);
             return val;
         }
 

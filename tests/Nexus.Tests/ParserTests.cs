@@ -186,7 +186,51 @@ public class ParserTests
         Assert.That(expr.Right, Is.InstanceOf<ExpressionNode>());
     }
 
+    // Assignments
+
     [Test]
+    public void ParseTokens_AssignNumberLiteral_ReturnsAssignmentNodeWithIdentifierAndLiteral()
+    {
+        var root = Parse("x = 42");
+        var block = (BlockNode)((SyntaxTree)root).TopLevelBlockNode;
+        Assert.That(block.Statements.Length, Is.EqualTo(1));
+        var assignment = (AssignmentNode)block.Statements[0];
+        Assert.That(assignment.Identifier, Is.EqualTo("x"));
+        Assert.That(assignment.Expression, Is.InstanceOf<NumberLiteralNode>());
+    }
+
+    [Test]
+    public void ParseTokens_AssignBoolLiteral_ReturnsAssignmentNodeWithBoolExpression()
+    {
+        var root = Parse("x = true");
+        var block = (BlockNode)((SyntaxTree)root).TopLevelBlockNode;
+        var assignment = (AssignmentNode)block.Statements[0];
+        Assert.That(assignment.Identifier, Is.EqualTo("x"));
+        Assert.That(assignment.Expression, Is.InstanceOf<BoolLiteralNode>());
+    }
+
+    [Test]
+    public void ParseTokens_AssignArithmeticExpression_ReturnsAssignmentNodeWithExpressionNode()
+    {
+        var root = Parse("x = 1 + 2");
+        var block = (BlockNode)((SyntaxTree)root).TopLevelBlockNode;
+        var assignment = (AssignmentNode)block.Statements[0];
+        Assert.That(assignment.Identifier, Is.EqualTo("x"));
+        Assert.That(assignment.Expression, Is.InstanceOf<ExpressionNode>());
+        Assert.That(((ExpressionNode)assignment.Expression).Operator, Is.EqualTo(ExpressionOperator.Addition));
+    }
+
+    [Test]
+    public void ParseTokens_MultipleAssignments_ParsesAllStatements()
+    {
+        var root = Parse("x = 1\ny = 2");
+        var block = (BlockNode)((SyntaxTree)root).TopLevelBlockNode;
+        Assert.That(block.Statements.Length, Is.EqualTo(2));
+        Assert.That(((AssignmentNode)block.Statements[0]).Identifier, Is.EqualTo("x"));
+        Assert.That(((AssignmentNode)block.Statements[1]).Identifier, Is.EqualTo("y"));
+    }
+
+[Test]
     public void ParseTokens_UnexpectedTokenAfterExpression_ThrowsArgumentException()
     {
         Assert.Throws<ArgumentException>(() => Parse("return 1 2"));
