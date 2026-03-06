@@ -11,12 +11,14 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(42) };
         var instructions = new[]
         {
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
-            new Instruction(InstructionType.Return)
+            new Instruction(InstructionType.EnterScope),
+            new Instruction(InstructionType.PushConstant,0),
+            new Instruction(InstructionType.Return),
+            new Instruction(InstructionType.ExitScope)
         };
 
         var chunk = new Chunk(instructions, constants);
-        var result = VirtualMachine.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteTopLevel(chunk);
         Assert.That(result.ToString(), Is.EqualTo("42"));
     }
 
@@ -26,14 +28,16 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(3), new NexusNumber(7) };
         var instructions = new[]
         {
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.EnterScope),
+            new Instruction(InstructionType.PushConstant,0),
+            new Instruction(InstructionType.PushConstant,1),
             new Instruction(InstructionType.Add),
-            new Instruction(InstructionType.Return)
+            new Instruction(InstructionType.Return),
+            new Instruction(InstructionType.ExitScope)
         };
 
         var chunk = new Chunk(instructions, constants);
-        var result = VirtualMachine.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteTopLevel(chunk);
         Assert.That(result.ToString(), Is.EqualTo("10"));
     }
 
@@ -43,14 +47,16 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(10), new NexusNumber(3) };
         var instructions = new[]
         {
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.EnterScope),
+            new Instruction(InstructionType.PushConstant,0),
+            new Instruction(InstructionType.PushConstant,1),
             new Instruction(InstructionType.Subtract),
-            new Instruction(InstructionType.Return)
+            new Instruction(InstructionType.Return),
+            new Instruction(InstructionType.ExitScope)
         };
 
         var chunk = new Chunk(instructions, constants);
-        var result = VirtualMachine.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteTopLevel(chunk);
         Assert.That(result.ToString(), Is.EqualTo("7"));
     }
 
@@ -60,14 +66,16 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(4), new NexusNumber(5) };
         var instructions = new[]
         {
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.EnterScope),
+            new Instruction(InstructionType.PushConstant,0),
+            new Instruction(InstructionType.PushConstant,1),
             new Instruction(InstructionType.Multiply),
-            new Instruction(InstructionType.Return)
+            new Instruction(InstructionType.Return),
+            new Instruction(InstructionType.ExitScope)
         };
 
         var chunk = new Chunk(instructions, constants);
-        var result = VirtualMachine.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteTopLevel(chunk);
         Assert.That(result.ToString(), Is.EqualTo("20"));
     }
 
@@ -77,14 +85,16 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(20), new NexusNumber(4) };
         var instructions = new[]
         {
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.EnterScope),
+            new Instruction(InstructionType.PushConstant,0),
+            new Instruction(InstructionType.PushConstant,1),
             new Instruction(InstructionType.Divide),
-            new Instruction(InstructionType.Return)
+            new Instruction(InstructionType.Return),
+            new Instruction(InstructionType.ExitScope)
         };
 
         var chunk = new Chunk(instructions, constants);
-        var result = VirtualMachine.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteTopLevel(chunk);
         Assert.That(result.ToString(), Is.EqualTo("5"));
     }
 
@@ -94,14 +104,16 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(1), new NexusNumber(1) };
         var instructions = new[]
         {
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.EnterScope),
+            new Instruction(InstructionType.PushConstant,0),
+            new Instruction(InstructionType.PushConstant,1),
             new Instruction(InstructionType.EqualTo),
-            new Instruction(InstructionType.Return)
+            new Instruction(InstructionType.Return),
+            new Instruction(InstructionType.ExitScope)
         };
 
         var chunk = new Chunk(instructions, constants);
-        var result = VirtualMachine.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteTopLevel(chunk);
         Assert.That(result, Is.InstanceOf<NexusBool>());
         Assert.That(result.ToString(), Is.EqualTo("true"));
     }
@@ -112,14 +124,16 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(1), new NexusNumber(2) };
         var instructions = new[]
         {
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.EnterScope),
+            new Instruction(InstructionType.PushConstant,0),
+            new Instruction(InstructionType.PushConstant,1),
             new Instruction(InstructionType.NotEqualTo),
-            new Instruction(InstructionType.Return)
+            new Instruction(InstructionType.Return),
+            new Instruction(InstructionType.ExitScope)
         };
 
         var chunk = new Chunk(instructions, constants);
-        var result = VirtualMachine.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteTopLevel(chunk);
         Assert.That(result.ToString(), Is.EqualTo("true"));
     }
 
@@ -129,14 +143,16 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(1), new NexusNumber(2) };
         var instructions = new[]
         {
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.EnterScope),
+            new Instruction(InstructionType.PushConstant,0),
+            new Instruction(InstructionType.PushConstant,1),
             new Instruction(InstructionType.LessThan),
-            new Instruction(InstructionType.Return)
+            new Instruction(InstructionType.Return),
+            new Instruction(InstructionType.ExitScope)
         };
 
         var chunk = new Chunk(instructions, constants);
-        var result = VirtualMachine.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteTopLevel(chunk);
         Assert.That(result.ToString(), Is.EqualTo("true"));
     }
 
@@ -146,14 +162,16 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusNumber(3), new NexusNumber(2) };
         var instructions = new[]
         {
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.EnterScope),
+            new Instruction(InstructionType.PushConstant,0),
+            new Instruction(InstructionType.PushConstant,1),
             new Instruction(InstructionType.GreaterThan),
-            new Instruction(InstructionType.Return)
+            new Instruction(InstructionType.Return),
+            new Instruction(InstructionType.ExitScope)
         };
 
         var chunk = new Chunk(instructions, constants);
-        var result = VirtualMachine.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteTopLevel(chunk);
         Assert.That(result.ToString(), Is.EqualTo("true"));
     }
 
@@ -163,14 +181,16 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusBool(true), new NexusBool(false) };
         var instructions = new[]
         {
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.EnterScope),
+            new Instruction(InstructionType.PushConstant,0),
+            new Instruction(InstructionType.PushConstant,1),
             new Instruction(InstructionType.And),
-            new Instruction(InstructionType.Return)
+            new Instruction(InstructionType.Return),
+            new Instruction(InstructionType.ExitScope)
         };
 
         var chunk = new Chunk(instructions, constants);
-        var result = VirtualMachine.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteTopLevel(chunk);
         Assert.That(result.ToString(), Is.EqualTo("false"));
     }
 
@@ -180,14 +200,16 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusBool(true), new NexusBool(false) };
         var instructions = new[]
         {
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 1),
+            new Instruction(InstructionType.EnterScope),
+            new Instruction(InstructionType.PushConstant,0),
+            new Instruction(InstructionType.PushConstant,1),
             new Instruction(InstructionType.Or),
-            new Instruction(InstructionType.Return)
+            new Instruction(InstructionType.Return),
+            new Instruction(InstructionType.ExitScope)
         };
 
         var chunk = new Chunk(instructions, constants);
-        var result = VirtualMachine.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteTopLevel(chunk);
         Assert.That(result.ToString(), Is.EqualTo("true"));
     }
 
@@ -197,13 +219,15 @@ public class VirtualMachineTests
         var constants = new NexusValue[] { new NexusBool(false) };
         var instructions = new[]
         {
-            new Instruction(InstructionType.PushConstant, CacheType.Constant, 0),
+            new Instruction(InstructionType.EnterScope),
+            new Instruction(InstructionType.PushConstant,0),
             new Instruction(InstructionType.Not),
-            new Instruction(InstructionType.Return)
+            new Instruction(InstructionType.Return),
+            new Instruction(InstructionType.ExitScope)
         };
 
         var chunk = new Chunk(instructions, constants);
-        var result = VirtualMachine.ExecuteChunk(chunk);
+        var result = VirtualMachine.ExecuteTopLevel(chunk);
         Assert.That(result.ToString(), Is.EqualTo("true"));
     }
 
@@ -212,6 +236,6 @@ public class VirtualMachineTests
     {
         var instructions = new[] { new Instruction((InstructionType)999) };
         var chunk = new Chunk(instructions, Array.Empty<NexusValue>());
-        Assert.Throws<InvalidOperationException>(() => VirtualMachine.ExecuteChunk(chunk));
+        Assert.Throws<InvalidOperationException>(() => VirtualMachine.ExecuteTopLevel(chunk));
     }
 }

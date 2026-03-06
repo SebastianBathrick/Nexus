@@ -3,17 +3,17 @@ using Nexus.Runtime.Values;
 namespace Nexus.Tests;
 
 [TestFixture]
-public class NovaInterpreterTests
+public class NexusInterpreterTests
 {
     static void AssertRunResult(string source, string expectedToString)
     {
-        var result = NovaInterpreter.Run(source);
+        var result = NexusInterpreter.Run(source);
         Assert.That(result.ToString(), Is.EqualTo(expectedToString));
     }
 
     static void AssertRunBool(string source, bool expected)
     {
-        var result = NovaInterpreter.Run(source);
+        var result = NexusInterpreter.Run(source);
         Assert.That(result, Is.InstanceOf<NexusBool>());
         Assert.That(((NexusBool)result).ToString(), Is.EqualTo(expected ? "true" : "false"));
     }
@@ -775,13 +775,13 @@ public class NovaInterpreterTests
     [Test]
     public void Run_InvalidSyntaxUnexpectedToken_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => NovaInterpreter.Run("return 1 2"));
+        Assert.Throws<ArgumentException>(() => NexusInterpreter.Run("return 1 2"));
     }
 
     [Test]
     public void Run_EmptyInput_ReturnsSuccessCode()
     {
-        var result = NovaInterpreter.Run("");
+        var result = NexusInterpreter.Run("");
         Assert.That(result, Is.InstanceOf<NexusNumber>());
         Assert.That(result.ToString(), Is.EqualTo(VirtualMachine.SuccessExitCode.ToString()));
     }

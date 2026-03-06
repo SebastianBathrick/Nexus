@@ -9,18 +9,36 @@ using Nexus.SyntaxAnalysis.Expressions.Literals;
 
 namespace Nexus.Compilation
 {
-    class Compiler
+    class ChunkCompiler
     {
-        const int NoConstantIndex = -1;
+        const int FirstVariableId = 0;
 
-        List<Instruction> _instructions = new List<Instruction>();
-        List<NexusValue> _constantList = new List<NexusValue>();
+        public Chunk Chunk => _compiledChunk ?? throw new InvalidOperationException("No chunk has been compiled");
 
-        Dictionary<string, int> _varIndexMap = new Dictionary<string, int>();
-        List<string> _currChunkVarNames = new List<string>();
-        int _nextVarCacheIndex = 0;
-        
-        public Chunk CompileFromSyntaxTree(Node root)
+        // Used as an is-dirty flag to avoid accidental reuse of instances       
+        readonly BlockNode _blockNode;         
+        Chunk? _compiledChunk;
+        readonly List<Instruction> _instructions = new();
+        readonly List<NexusValue> _constantList = new();
+
+        // Replaces variable names with integers for easier serialization
+        readonly Dictionary<string, int> _varNumIdMap = new();
+
+        // The VM will use integers in-place of their identifiers to locate variables from previous stack frames (tables will work differently)
+        int _varId = FirstVariableId;
+
+        private ChunkCompiler(BlockNode blockNode, KeyValuePair<string, int>[]? parentVars = null)
+        {
+            _blockNode = blockNode;
+
+            if (parentVars == null)
+                return;
+            
+            foreach (var pair in parentVars)
+                _varNumIdMap[pair.Key] = pair.Value;
+        }
+
+        public static Chunk CompileTopLevel(Node root)
         {
             if (root is not SyntaxTree tree)
                 throw new ArgumentException($"{nameof(root)} is not a {nameof(SyntaxTree)}");
@@ -28,30 +46,39 @@ namespace Nexus.Compilation
             if (tree.TopLevelBlockNode is not BlockNode blockNode)
                 throw new ArgumentException($"{nameof(tree.TopLevelBlockNode)} is not a {nameof(BlockNode)}");
 
-            return CreateChunk(blockNode);
+            var rootCompiler = new ChunkCompiler(blockNode);
+            rootCompiler.Compile();
+            return rootCompiler.Chunk;
         }
 
-        Chunk CreateChunk(BlockNode blockNode)
+        void Compile()
         {
-            // Reset the state from previous compilation
-            _instructions = new();
-            _constantList = new();
+            if (_compiledChunk is not null)
+                throw new InvalidOperationException("A chunk has already been compiled");
 
-            foreach (var node in blockNode.Statements)
+            // Indicates that there is a new block that could possibly contain new variable declarations
+            _instructions.Add(new Instruction(InstructionType.EnterScope));
+
+            foreach (var node in _blockNode.Statements)
             {
                 if (node is ReturnNode returnNode)
+                {
                     AddReturnInstructions(returnNode);
-                else if (node is AssignmentNode assignmentNode)
+                    break; // Any remaining statements will be unreachable, so we ignore them
+                }
+
+                if (node is AssignmentNode assignmentNode)
+                {
                     AddAssignmentInstructions(assignmentNode);
-                else
-                    throw new ArgumentException($"Unsupported node type: {node.GetType().Name}");
+                    continue;
+                }
+
+                throw new ArgumentException($"Unsupported node type: {node.GetType().Name}");
             }
 
-            // Removes variables to avoid name conflicts with declarations made after this chunk (e.g. control structure or function blocks)
-            foreach (var varName in _currChunkVarNames)
-                _varIndexMap.Remove(varName);
-
-            return new(_instructions.ToArray(), _constantList.ToArray());
+            // After a chunk is executed, all variables declared within the chunk will be removed
+            _instructions.Add(new Instruction(InstructionType.ExitScope));
+            _compiledChunk = new(_instructions.ToArray(), _constantList.ToArray());
         }
 
         void AddAssignmentInstructions(AssignmentNode node)
@@ -60,19 +87,16 @@ namespace Nexus.Compilation
             AddExpressionInstructions(node.Expression);
 
             // Execution: If the variable has not been declared yet, declare it and add it to the variable cache
-            if (!_varIndexMap.TryGetValue(node.Identifier, out var vmCacheIndex))
+            if (!_varNumIdMap.TryGetValue(node.Identifier, out var vmCacheIndex))
             {
-                vmCacheIndex = _nextVarCacheIndex++;
-                _varIndexMap[node.Identifier] = vmCacheIndex;
-
-                // Add to use as a key for _varIndexMap when removing this chunk's variables
-                _currChunkVarNames.Add(node.Identifier);
-                _instructions.Add(new Instruction(InstructionType.Declare, CacheType.Variable, vmCacheIndex));
+                vmCacheIndex = _varId++;
+                _varNumIdMap[node.Identifier] = vmCacheIndex;
+                _instructions.Add(new Instruction(InstructionType.Declare, vmCacheIndex));
             }
 
-            /* Execution: Pop expression result from the value stack, use the variable cache index to reference the variable,
-             * and assign the expression result to the variable */
-            _instructions.Add(new Instruction(InstructionType.Assign, CacheType.Variable, vmCacheIndex));
+            /* Execution: Pop expression result from the value stack, use the variable ID to reference the variable,
+             * and assign the result to the variable */
+            _instructions.Add(new Instruction(InstructionType.Assign, vmCacheIndex));
         }
 
         void AddReturnInstructions(Node node)
@@ -80,14 +104,9 @@ namespace Nexus.Compilation
             if (node is not ReturnNode returnNode)
                 throw new ArgumentException("node is not a ReturnNode");
 
-            
-
             AddExpressionInstructions(returnNode.Expression);
             _instructions.Add(new Instruction(InstructionType.Return));
         }
-
-
-
 
         #region Expression Methods
 
@@ -125,9 +144,11 @@ namespace Nexus.Compilation
             {
                 var value = ParseLiteral(literal);
                 _constantList.Add(value);
-                _instructions.Add(new Instruction(InstructionType.PushConstant, CacheType.Constant,
-                    _constantList.Count - 1));
+                _instructions.Add(new Instruction(InstructionType.PushConstant, _constantList.Count - 1));
+                return;
             }
+
+            throw new ArgumentException($"Cannot push constant for node type: {node.GetType().Name}");
         }
 
         static InstructionType ToOpType(ExpressionOperator op)
@@ -149,7 +170,6 @@ namespace Nexus.Compilation
                 _ => throw new InvalidOperationException($"Unsupported operator: {op}")
             };
         }
-        
 
         #endregion
 

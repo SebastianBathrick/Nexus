@@ -21,6 +21,9 @@ namespace Nexus.Runtime
 
         PushConstant,
         Declare,
-        Assign
+        Assign,
+
+        EnterScope,
+        ExitScope,
     }
 }

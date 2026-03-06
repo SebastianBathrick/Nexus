@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using Nexus.Runtime.Values;
 namespace Nexus.Runtime
 {
-    static class VirtualMachine
+    class VirtualMachine
     {
         public const int SuccessExitCode = 0;
         const int ChunkStartIndex = 0;
+
+        ValueLookupTable _valLookup = new();
 
         static bool IsTruthy(NexusValue v)
         {
@@ -16,10 +18,17 @@ namespace Nexus.Runtime
             return true;
         }
 
-        public static NexusValue ExecuteChunk(Chunk chunk)
+        public static NexusValue ExecuteTopLevel(Chunk chunk)
+        {
+            var instance = new VirtualMachine();
+            return instance.ExecuteChunk(chunk) ?? new NexusNumber(SuccessExitCode);
+        }
+
+        public NexusValue? ExecuteChunk(Chunk chunk)
         {
             var chunkIndex = ChunkStartIndex;
             var valStack = new Stack<NexusValue>();
+            NexusValue returnVal = null;
 
             while (chunkIndex < chunk.Length)
             {
@@ -27,8 +36,23 @@ namespace Nexus.Runtime
 
                 switch (op.OpType)
                 {
+                    #region Scope Instructions
+
+                    case InstructionType.EnterScope:
+                        _valLookup.EnterScope();
+                        break;
+                    case InstructionType.ExitScope:
+                        // This case is if the scope executed all instructions without returning
+                        _valLookup.ExitScope();
+
+                        // If null chunk represents a control structure block or void function
+                        return returnVal;
+                    #endregion
+
+                    #region Expression Instructions
+
                     case InstructionType.PushConstant:
-                        valStack.Push(chunk.GetConstant(op.CacheIndex));
+                        valStack.Push(chunk.GetConstant(op.CacheId));
                         break;
                     case InstructionType.Add:
                         NexusValue rAdd = valStack.Pop(), lAdd = valStack.Pop();
@@ -81,8 +105,24 @@ namespace Nexus.Runtime
                         NexusValue rOr = valStack.Pop(), lOr = valStack.Pop();
                         valStack.Push(new NexusBool(IsTruthy(lOr) || IsTruthy(rOr)));
                         break;
+                    
+                    #endregion
+
+                    #region Statement Instructions
+
                     case InstructionType.Return:
-                        return valStack.Pop();
+                         // Store it, because the following instruction is ExitScope which will return the value
+                         returnVal = valStack.Pop();
+                        break;
+                    case InstructionType.Declare:
+                        _valLookup.AddIdentifier(op.CacheId);
+                        break;
+                    case InstructionType.Assign:
+                        _valLookup.SetValue(op.CacheId, valStack.Pop());
+                        break;
+                    
+                    #endregion
+                    
                     default:
                         throw new InvalidOperationException($"Unknown operation: {op.OpType}");
                 }

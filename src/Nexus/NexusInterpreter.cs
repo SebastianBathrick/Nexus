@@ -6,7 +6,7 @@ using Nexus.Runtime.Values;
 using Nexus.SyntaxAnalysis;
 namespace Nexus
 {
-    public static class NovaInterpreter
+    public static class NexusInterpreter
     {
         public static NexusValue Run(string sourceCode)
         {
@@ -14,9 +14,9 @@ namespace Nexus
             Log.Debug(tokenCollection.ToString());
             var syntaxTreeRoot = Parser.ParseTokens(tokenCollection);
             Log.Debug(syntaxTreeRoot.ToString());
-            var entryPointChunk = new Compiler().CompileFromSyntaxTree(syntaxTreeRoot);
-            Log.Debug(entryPointChunk.ToString());
-            return VirtualMachine.ExecuteChunk(entryPointChunk);
+            var topLevel = ChunkCompiler.CompileTopLevel(syntaxTreeRoot);
+            Log.Debug(topLevel.ToString());
+            return VirtualMachine.ExecuteTopLevel(topLevel);
         }
     }
 }

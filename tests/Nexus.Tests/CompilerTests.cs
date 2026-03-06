@@ -17,12 +17,14 @@ public class CompilerTests
         var block = new BlockNode(new Node[] { returnNode });
         var tree = new SyntaxTree(block);
 
-        var chunk = new Compiler().CompileFromSyntaxTree(tree);
+        var chunk = ChunkCompiler.CompileTopLevel(tree);
 
-        Assert.That(chunk.Length, Is.EqualTo(2));
-        Assert.That(chunk[0].OpType, Is.EqualTo(InstructionType.PushConstant));
-        Assert.That(chunk[0].CacheIndex, Is.EqualTo(0));
-        Assert.That(chunk[1].OpType, Is.EqualTo(InstructionType.Return));
+        Assert.That(chunk.Length, Is.EqualTo(4));
+        Assert.That(chunk[0].OpType, Is.EqualTo(InstructionType.EnterScope));
+        Assert.That(chunk[1].OpType, Is.EqualTo(InstructionType.PushConstant));
+        Assert.That(chunk[1].CacheId, Is.EqualTo(0));
+        Assert.That(chunk[2].OpType, Is.EqualTo(InstructionType.Return));
+        Assert.That(chunk[3].OpType, Is.EqualTo(InstructionType.ExitScope));
         Assert.That(chunk.GetConstant(0).ToString(), Is.EqualTo("42"));
     }
 
@@ -36,13 +38,15 @@ public class CompilerTests
         var block = new BlockNode(new Node[] { returnNode });
         var tree = new SyntaxTree(block);
 
-        var chunk = new Compiler().CompileFromSyntaxTree(tree);
+        var chunk = ChunkCompiler.CompileTopLevel(tree);
 
-        Assert.That(chunk.Length, Is.EqualTo(4));
-        Assert.That(chunk[0].OpType, Is.EqualTo(InstructionType.PushConstant));
+        Assert.That(chunk.Length, Is.EqualTo(6));
+        Assert.That(chunk[0].OpType, Is.EqualTo(InstructionType.EnterScope));
         Assert.That(chunk[1].OpType, Is.EqualTo(InstructionType.PushConstant));
-        Assert.That(chunk[2].OpType, Is.EqualTo(InstructionType.Add));
-        Assert.That(chunk[3].OpType, Is.EqualTo(InstructionType.Return));
+        Assert.That(chunk[2].OpType, Is.EqualTo(InstructionType.PushConstant));
+        Assert.That(chunk[3].OpType, Is.EqualTo(InstructionType.Add));
+        Assert.That(chunk[4].OpType, Is.EqualTo(InstructionType.Return));
+        Assert.That(chunk[5].OpType, Is.EqualTo(InstructionType.ExitScope));
     }
 
     [Test]
@@ -55,11 +59,13 @@ public class CompilerTests
         var block = new BlockNode(new Node[] { returnNode });
         var tree = new SyntaxTree(block);
 
-        var chunk = new Compiler().CompileFromSyntaxTree(tree);
+        var chunk = ChunkCompiler.CompileTopLevel(tree);
 
-        Assert.That(chunk.Length, Is.EqualTo(4));
-        Assert.That(chunk[2].OpType, Is.EqualTo(InstructionType.LessThan));
-        Assert.That(chunk[3].OpType, Is.EqualTo(InstructionType.Return));
+        Assert.That(chunk.Length, Is.EqualTo(6));
+        Assert.That(chunk[0].OpType, Is.EqualTo(InstructionType.EnterScope));
+        Assert.That(chunk[3].OpType, Is.EqualTo(InstructionType.LessThan));
+        Assert.That(chunk[4].OpType, Is.EqualTo(InstructionType.Return));
+        Assert.That(chunk[5].OpType, Is.EqualTo(InstructionType.ExitScope));
     }
 
     [Test]
@@ -72,17 +78,19 @@ public class CompilerTests
         var block = new BlockNode(new Node[] { returnNode });
         var tree = new SyntaxTree(block);
 
-        var chunk = new Compiler().CompileFromSyntaxTree(tree);
+        var chunk = ChunkCompiler.CompileTopLevel(tree);
 
-        Assert.That(chunk.Length, Is.EqualTo(4));
-        Assert.That(chunk[2].OpType, Is.EqualTo(InstructionType.And));
-        Assert.That(chunk[3].OpType, Is.EqualTo(InstructionType.Return));
+        Assert.That(chunk.Length, Is.EqualTo(6));
+        Assert.That(chunk[0].OpType, Is.EqualTo(InstructionType.EnterScope));
+        Assert.That(chunk[3].OpType, Is.EqualTo(InstructionType.And));
+        Assert.That(chunk[4].OpType, Is.EqualTo(InstructionType.Return));
+        Assert.That(chunk[5].OpType, Is.EqualTo(InstructionType.ExitScope));
     }
 
     [Test]
     public void CompileFromSyntaxTree_NonSyntaxTreeRoot_ThrowsArgumentException()
     {
         var block = new BlockNode(Array.Empty<Node>());
-        Assert.Throws<ArgumentException>(() => new Compiler().CompileFromSyntaxTree(block));
+        Assert.Throws<ArgumentException>(() => ChunkCompiler.CompileTopLevel(block));
     }
 }
