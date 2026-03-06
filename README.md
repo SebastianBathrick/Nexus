@@ -1,5 +1,5 @@
 # Nexus - An Embeddable Programming Language 
-Nexus is an easy-to-learn programming language designed to be embedded into other applications via its dependency-free C# library. The syntax and features are inspired by Lua. Nexus shares many features with Lua, especially its data types such as tables. 
+Nexus is an easy-to-learn programming language designed to be embedded into other applications via its dependency-free C# library. The syntax and features are inspired by Lua. Nexus shares many features with Lua, especially its data types such as tables. The library is in **early development** and many of the language's features have not yet been implemented (about 1/2 through week 1 as of writing this README).
 
 
 
