@@ -6,7 +6,7 @@
         <LangVersion>14</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>Clua.CLI</RootNamespace>
+        <RootNamespace>Clua.Cli</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
