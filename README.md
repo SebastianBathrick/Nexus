@@ -109,3 +109,5 @@ while myVar is 21
 
 }
 ```
+### More feature docs & examples coming soon: functions + tables
+# README Work-In-Progress & Subject to Change
