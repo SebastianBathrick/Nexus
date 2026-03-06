@@ -4,6 +4,8 @@ namespace Nexus.Logging
 {
     public interface ILogger
     {
+        const string NullPropertyLiteral = "NULL";
+
         LogLevel MinimumLogLevel { get; set; }
 
         bool IsLabelsEnabled { get; set; }
@@ -15,20 +17,20 @@ namespace Nexus.Logging
 
         void SetFormat(string format);
 
-        void Verbose(string msg, params object[]? props);
+        void Verbose(string msg, params object?[] props);
 
-        void Debug(string msg, params object[]? props);
+        void Debug(string msg, params object?[] props);
 
-        void Info(string msg, params object[]? props);
+        void Info(string msg, params object?[] props);
 
-        void Warning(string msg, params object[]? props);
+        void Warning(string msg, params object?[] props);
 
-        void Error(string msg, params object[]? props);
+        void Error(string msg, params object?[] props);
 
-        void Error(Exception ex, string msg, params object[]? props);
+        void Error(Exception ex, string msg, params object?[] props);
 
-        void Critical(string msg, params object[]? props);
+        void Critical(string msg, params object?[] props);
 
-        void Critical(Exception ex, string msg, params object[]? props);
+        void Critical(Exception ex, string msg, params object?[] props);
     }
 }

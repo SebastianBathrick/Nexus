@@ -28,7 +28,6 @@ public abstract class Logger : ILogger
     const string LevelPlaceholder = "Level";
     const string TimestampPlaceholder = "Timestamp";
 
-    const string NullLiteral = "null";
     const char OpenBrace = '{';
     const char CloseBrace = '}';
     const char FormatSeparator = ':';
@@ -58,49 +57,49 @@ public abstract class Logger : ILogger
         LabelFormat = format;
     }
 
-    public void Verbose(string msg, params object[]? props)
+    public void Verbose(string msg, params object?[] props)
     {
         if (IsEnabled() && LogLevel.Verbose >= MinimumLogLevel)
             Log(LogLevel.Verbose, msg, props);
     }
 
-    public void Debug(string msg, params object[]? props)
+    public void Debug(string msg, params object?[] props)
     {
         if (IsEnabled() && LogLevel.Debug >= MinimumLogLevel)
             Log(LogLevel.Debug, msg, props);
     }
 
-    public void Info(string msg, params object[]? props)
+    public void Info(string msg, params object?[] props)
     {
         if (IsEnabled() && LogLevel.Info >= MinimumLogLevel)
             Log(LogLevel.Info, msg, props);
     }
 
-    public void Warning(string msg, params object[]? props)
+    public void Warning(string msg, params object?[] props)
     {
         if (IsEnabled() && LogLevel.Warning >= MinimumLogLevel)
             Log(LogLevel.Warning, msg, props);
     }
 
-    public void Error(string msg, params object[]? props)
+    public void Error(string msg, params object?[] props)
     {
         if (IsEnabled() && LogLevel.Error >= MinimumLogLevel)
             Log(LogLevel.Error, msg, props);
     }
 
-    public void Error(Exception ex, string msg, params object[]? props)
+    public void Error(Exception ex, string msg, params object?[] props)
     {
         if (IsEnabled() && LogLevel.Error >= MinimumLogLevel)
             Log(LogLevel.Error, ex, msg, props);
     }
 
-    public void Critical(string msg, params object[]? props)
+    public void Critical(string msg, params object?[] props)
     {
         if (IsEnabled() && LogLevel.Critical >= MinimumLogLevel)
             Log(LogLevel.Critical, msg, props);
     }
 
-    public void Critical(Exception ex, string msg, params object[]? props)
+    public void Critical(Exception ex, string msg, params object?[] props)
     {
         if (IsEnabled() && LogLevel.Critical >= MinimumLogLevel)
             Log(LogLevel.Critical, ex, msg, props);
@@ -112,7 +111,7 @@ public abstract class Logger : ILogger
 
     protected abstract void OutputFormattedMessage(string msg);
 
-    protected string InsertProperties(string msg, params object[]? props)
+    protected string InsertProperties(string msg, params object?[] props)
     {
         if (props == null || props.Length == 0)
             return msg;
@@ -153,14 +152,14 @@ public abstract class Logger : ILogger
             if (foundIndex >= 0 && foundIndex < props.Length)
             {
                 var prop = props[foundIndex];
-                sb.Append(prop?.ToString() ?? NullLiteral);
+                sb.Append(prop?.ToString() ?? ILogger.NullPropertyLiteral);
             }
             else if (propIndex < props.Length)
             {
                 var prop = props[propIndex];
                 bound.Add((tagName, propIndex));
                 propIndex++;
-                sb.Append(prop?.ToString() ?? NullLiteral);
+                sb.Append(prop?.ToString() ?? ILogger.NullPropertyLiteral);
             }
             else
             {
@@ -244,7 +243,7 @@ public abstract class Logger : ILogger
 
     #region Private Methods
 
-    void Log(LogLevel logLvl, Exception ex, string msg, params object[]? props)
+    void Log(LogLevel logLvl, Exception ex, string msg, params object?[] props)
     {
         if (!IsEnabled() || logLvl < MinimumLogLevel)
             return;
@@ -253,7 +252,7 @@ public abstract class Logger : ILogger
         Log(logLvl, msg, props);
     }
 
-    void Log(LogLevel logLvl, string msg, params object[]? props)
+    void Log(LogLevel logLvl, string msg, params object?[] props)
     {
         if (!IsEnabled() || logLvl < MinimumLogLevel)
             return;

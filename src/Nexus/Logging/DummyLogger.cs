@@ -23,35 +23,35 @@ namespace Nexus.Logging
         {
         }
 
-        public void Verbose(string msg, params object[]? props)
+        public void Verbose(string msg, params object?[] props)
         {
         }
 
-        public void Debug(string msg, params object[]? props)
+        public void Debug(string msg, params object?[] props)
         {
         }
 
-        public void Info(string msg, params object[]? props)
+        public void Info(string msg, params object?[] props)
         {
         }
 
-        public void Warning(string msg, params object[]? props)
+        public void Warning(string msg, params object?[] props)
         {
         }
 
-        public void Error(string msg, params object[]? props)
+        public void Error(string msg, params object?[] props)
         {
         }
 
-        public void Error(Exception ex, string msg, params object[]? props)
+        public void Error(Exception ex, string msg, params object?[] props)
         {
         }
 
-        public void Critical(string msg, params object[]? props)
+        public void Critical(string msg, params object?[] props)
         {
         }
 
-        public void Critical(Exception ex, string msg, params object[]? props)
+        public void Critical(Exception ex, string msg, params object?[] props)
         {
         }
     }

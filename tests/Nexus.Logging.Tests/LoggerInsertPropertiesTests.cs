@@ -141,13 +141,13 @@ public class LoggerInsertPropertiesTests
 
     static IEnumerable<TestCaseData> NullPropValueTestCases()
     {
-        yield return new TestCaseData("{x}", new object?[] { null }, "null")
+        yield return new TestCaseData("{x}", new object?[] { null }, ILogger.NullPropertyLiteral)
             .SetName("NullPropValue_SinglePlaceholder");
 
-        yield return new TestCaseData("{a} {b}", new object?[] { "value", null }, "value null")
+        yield return new TestCaseData("{a} {b}", new object?[] { "value", null }, $"value {ILogger.NullPropertyLiteral}")
             .SetName("NullPropValue_SecondPropNull");
 
-        yield return new TestCaseData("{first} {second} {third}", new object?[] { null, "mid", null }, "null mid null")
+        yield return new TestCaseData("{first} {second} {third}", new object?[] { null, "mid", null }, $"{ILogger.NullPropertyLiteral} mid {ILogger.NullPropertyLiteral}")
             .SetName("NullPropValue_FirstAndThirdNull");
     }
 
@@ -156,7 +156,7 @@ public class LoggerInsertPropertiesTests
     {
         var customObj = new CustomTypeWithNullToString();
         var result = LoggerTestHelper.InsertProperties("{value}", customObj);
-        Assert.That(result, Is.EqualTo("null"));
+        Assert.That(result, Is.EqualTo(ILogger.NullPropertyLiteral));
     }
 
     [Test]
