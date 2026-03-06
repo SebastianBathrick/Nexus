@@ -75,14 +75,18 @@ public class ParserTests
     }
 
     [Test]
-    public void ParseTokens_ReturnUnaryMinus_ParsesSuccessfully()
+    public void ParseTokens_ReturnNegativeNumber_ParsesAsMultiplicationByNegativeOne()
     {
         var root = Parse("return -5");
-        Assert.That(root, Is.InstanceOf<SyntaxTree>());
         var tree = (SyntaxTree)root;
         var block = (BlockNode)tree.TopLevelBlockNode;
         var returnNode = (ReturnNode)block.Statements[0];
-        Assert.That(returnNode.Expression, Is.InstanceOf<ExpressionNode>());
+        var expr = (ExpressionNode)returnNode.Expression;
+        Assert.That(expr.Operator, Is.EqualTo(ExpressionOperator.Multiplication));
+        Assert.That(expr.Left, Is.InstanceOf<NumberLiteralNode>());
+        Assert.That(((NumberLiteralNode)expr.Left).GetNumberValue(), Is.EqualTo(-1));
+        Assert.That(expr.Right, Is.InstanceOf<NumberLiteralNode>());
+        Assert.That(((NumberLiteralNode)expr.Right).GetNumberValue(), Is.EqualTo(5));
     }
 
     [Test]
@@ -246,5 +250,143 @@ public class ParserTests
     public void ParseTokens_InvalidFactor_ThrowsArgumentException()
     {
         Assert.Throws<ArgumentException>(() => Parse("return * 1"));
+    }
+
+    [Test]
+    public void ParseTokens_ReturnMissingExpression_ThrowsArgumentException()
+    {
+        Assert.Throws<ArgumentException>(() => Parse("return"));
+    }
+
+    // Literals
+
+    [Test]
+    public void ParseTokens_ReturnBoolLiteralTrue_ReturnsBoolLiteralNode()
+    {
+        var root = Parse("return true");
+        var returnNode = (ReturnNode)((BlockNode)((SyntaxTree)root).TopLevelBlockNode).Statements[0];
+        Assert.That(returnNode.Expression, Is.InstanceOf<BoolLiteralNode>());
+        Assert.That(((BoolLiteralNode)returnNode.Expression).GetBoolValue(), Is.True);
+    }
+
+    [Test]
+    public void ParseTokens_ReturnBoolLiteralFalse_ReturnsBoolLiteralNode()
+    {
+        var root = Parse("return false");
+        var returnNode = (ReturnNode)((BlockNode)((SyntaxTree)root).TopLevelBlockNode).Statements[0];
+        Assert.That(returnNode.Expression, Is.InstanceOf<BoolLiteralNode>());
+        Assert.That(((BoolLiteralNode)returnNode.Expression).GetBoolValue(), Is.False);
+    }
+
+    [Test]
+    public void ParseTokens_ReturnIdentifier_ReturnsIdentifierNode()
+    {
+        var root = Parse("return x");
+        var returnNode = (ReturnNode)((BlockNode)((SyntaxTree)root).TopLevelBlockNode).Statements[0];
+        Assert.That(returnNode.Expression, Is.InstanceOf<IdentifierNode>());
+        Assert.That(((IdentifierNode)returnNode.Expression).Identifier, Is.EqualTo("x"));
+    }
+
+    [Test]
+    public void ParseTokens_NegatedTrue_ParsesAsNegativeOneLiteral()
+    {
+        var root = Parse("return -true");
+        var returnNode = (ReturnNode)((BlockNode)((SyntaxTree)root).TopLevelBlockNode).Statements[0];
+        Assert.That(returnNode.Expression, Is.InstanceOf<NumberLiteralNode>());
+        Assert.That(((NumberLiteralNode)returnNode.Expression).GetNumberValue(), Is.EqualTo(-1));
+    }
+
+    // Arithmetic operators
+
+    [Test]
+    public void ParseTokens_ReturnSubtractionExpression_ParsesAsSubtraction()
+    {
+        var root = Parse("return 5 - 2");
+        var returnNode = (ReturnNode)((BlockNode)((SyntaxTree)root).TopLevelBlockNode).Statements[0];
+        var expr = (ExpressionNode)returnNode.Expression;
+        Assert.That(expr.Operator, Is.EqualTo(ExpressionOperator.Subtraction));
+    }
+
+    [Test]
+    public void ParseTokens_ReturnMultiplicationExpression_ParsesAsMultiplication()
+    {
+        var root = Parse("return 3 * 4");
+        var returnNode = (ReturnNode)((BlockNode)((SyntaxTree)root).TopLevelBlockNode).Statements[0];
+        var expr = (ExpressionNode)returnNode.Expression;
+        Assert.That(expr.Operator, Is.EqualTo(ExpressionOperator.Multiplication));
+    }
+
+    [Test]
+    public void ParseTokens_ReturnDivisionExpression_ParsesAsDivision()
+    {
+        var root = Parse("return 6 / 2");
+        var returnNode = (ReturnNode)((BlockNode)((SyntaxTree)root).TopLevelBlockNode).Statements[0];
+        var expr = (ExpressionNode)returnNode.Expression;
+        Assert.That(expr.Operator, Is.EqualTo(ExpressionOperator.Division));
+    }
+
+    // Comparison operators
+
+    [Test]
+    public void ParseTokens_GreaterThanOperator_ParsesAsGreaterThan()
+    {
+        var root = Parse("return 2 > 1");
+        var returnNode = (ReturnNode)((BlockNode)((SyntaxTree)root).TopLevelBlockNode).Statements[0];
+        var expr = (ExpressionNode)returnNode.Expression;
+        Assert.That(expr.Operator, Is.EqualTo(ExpressionOperator.GreaterThan));
+    }
+
+    [Test]
+    public void ParseTokens_GreaterThanOrEqualOperator_ParsesAsGreaterThanOrEqual()
+    {
+        var root = Parse("return 2 >= 2");
+        var returnNode = (ReturnNode)((BlockNode)((SyntaxTree)root).TopLevelBlockNode).Statements[0];
+        var expr = (ExpressionNode)returnNode.Expression;
+        Assert.That(expr.Operator, Is.EqualTo(ExpressionOperator.GreaterThanOrEqual));
+    }
+
+    [Test]
+    public void ParseTokens_LessThanOrEqualOperator_ParsesAsLessThanOrEqual()
+    {
+        var root = Parse("return 1 <= 2");
+        var returnNode = (ReturnNode)((BlockNode)((SyntaxTree)root).TopLevelBlockNode).Statements[0];
+        var expr = (ExpressionNode)returnNode.Expression;
+        Assert.That(expr.Operator, Is.EqualTo(ExpressionOperator.LessThanOrEqual));
+    }
+
+    // Logical operators
+
+    [Test]
+    public void ParseTokens_ReturnLogicalOr_ReturnsExpressionNodeWithLogicalOr()
+    {
+        var root = Parse("return true or false");
+        var returnNode = (ReturnNode)((BlockNode)((SyntaxTree)root).TopLevelBlockNode).Statements[0];
+        var expr = (ExpressionNode)returnNode.Expression;
+        Assert.That(expr.Operator, Is.EqualTo(ExpressionOperator.LogicalOr));
+    }
+
+    // Assignments
+
+    [Test]
+    public void ParseTokens_AssignIdentifier_ReturnsIdentifierNode()
+    {
+        var root = Parse("y = x");
+        var block = (BlockNode)((SyntaxTree)root).TopLevelBlockNode;
+        var assignment = (AssignmentNode)block.Statements[0];
+        Assert.That(assignment.Identifier, Is.EqualTo("y"));
+        Assert.That(assignment.Expression, Is.InstanceOf<IdentifierNode>());
+        Assert.That(((IdentifierNode)assignment.Expression).Identifier, Is.EqualTo("x"));
+    }
+
+    // Block
+
+    [Test]
+    public void ParseTokens_MixedBlock_ParsesAllStatements()
+    {
+        var root = Parse("x = 1\nreturn x");
+        var block = (BlockNode)((SyntaxTree)root).TopLevelBlockNode;
+        Assert.That(block.Statements.Length, Is.EqualTo(2));
+        Assert.That(block.Statements[0], Is.InstanceOf<AssignmentNode>());
+        Assert.That(block.Statements[1], Is.InstanceOf<ReturnNode>());
     }
 }

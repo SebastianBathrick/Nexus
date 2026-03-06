@@ -224,6 +224,8 @@ namespace Nexus.Parsing
                     return ParseNestedExpression(tkns);
                 case TokenType.SymbolMinus:
                     return ParseNegatedFactor(tkns);
+                case TokenType.Identifier:
+                    return new IdentifierNode(tkns.Read().Plaintext);
                 case TokenType.KeywordTrue:
                     tkns.Consume();
                     return new BoolLiteralNode(true);
