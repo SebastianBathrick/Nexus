@@ -13,8 +13,8 @@ namespace Nexus.Parsing.Expressions
 
         public override string ToString() => Operator switch
         {
-            ExpressionOperator.LogicalNot => $"(!{Operand})",
-            _ => $"({Operator} {Operand})"
+            ExpressionOperator.LogicalNot => $"UnaryExpressionNode(!{Operand})",
+            _ => $"UnaryExpressionNode({Operator} {Operand})"
         };
     }
 }

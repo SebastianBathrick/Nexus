@@ -13,6 +13,6 @@ namespace Nexus.Parsing.Expressions
 
         public override double GetNumberValue() => _val ? 1.0 : 0.0;
 
-        public override string ToString() => _val ? "true" : "false";
+        public override string ToString() => $"BoolLiteralNode({(_val ? "true" : "false")})";
     }
 }

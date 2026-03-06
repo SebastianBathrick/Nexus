@@ -9,6 +9,6 @@ namespace Nexus.Parsing.Expressions
             Identifier = identifier;
         }
 
-        public override string ToString() => Identifier;
+        public override string ToString() => $"IdentifierNode({Identifier})";
     }
 }

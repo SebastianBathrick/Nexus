@@ -14,5 +14,8 @@ namespace Nexus.Lexing
             Type = type;
             _plaintext = plaintext;
         }
+
+        public override string ToString() =>
+            _plaintext != null ? $"Token({Type} \"{_plaintext}\")" : $"Token({Type})";
     }
 }

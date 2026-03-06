@@ -26,11 +26,11 @@ namespace Nexus.Execution
             return instance.ExecuteChunk(chunk) ?? new NexusNumber(SuccessExitCode);
         }
 
-        public NexusValue? ExecuteChunk(Chunk chunk)
+        NexusValue? ExecuteChunk(Chunk chunk)
         {
             var chunkIndex = ChunkStartIndex;
             var valStack = new Stack<NexusValue>();
-            NexusValue returnVal = null;
+            NexusValue? returnVal = null;
 
             while (chunkIndex < chunk.Length)
             {
@@ -133,6 +133,7 @@ namespace Nexus.Execution
             }
 
             // If no exit code was returned on the top-level then return the success exit code
+            returnVal ??= new NexusNumber(SuccessExitCode);
             return new NexusNumber(SuccessExitCode);
         }
     }

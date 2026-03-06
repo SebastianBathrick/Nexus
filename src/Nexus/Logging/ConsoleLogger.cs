@@ -4,6 +4,10 @@ namespace Nexus.Logging
 {
     public class ConsoleLogger : Logger
     {
+        public ConsoleLogger()
+        {
+        }
+
         public ConsoleLogger(LogLevel minLogLvl = LogLevel.Info)
             : base(minLogLvl)
         {

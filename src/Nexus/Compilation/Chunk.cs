@@ -24,15 +24,15 @@ namespace Nexus.Compilation
         {
             var sb = new StringBuilder();
 
-            sb.AppendLine("[CONSTANTS]:\n");
+            sb.AppendLine("\tCONSTANTS:");
 
             for (var i = 0; i < _constsCache.Length; i++)
-                sb.AppendLine($"[{i}] {_constsCache[i]}");
+                sb.AppendLine($"\t\t[{i}] {_constsCache[i]}");
 
-            sb.AppendLine("\n[INSTRUCTIONS]:\n");
+            sb.AppendLine("\tINSTRUCTIONS:");
 
             for (var i = 0; i < _instructions.Length; i++)
-                sb.AppendLine($"[{i}] {_instructions[i]}");
+                sb.AppendLine($"\t\t[{i}] {_instructions[i]}");
 
             return sb.ToString();
         }

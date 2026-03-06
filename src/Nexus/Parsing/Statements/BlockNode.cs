@@ -13,10 +13,11 @@ namespace Nexus.Parsing.Statements
 
         public override string ToString()
         {
-            var sb = new StringBuilder();
+            var sb = new StringBuilder("\tBlockNode(\n");
             foreach (var node in Statements)
-                sb.AppendLine(node.ToString());
-
+                sb.AppendLine($"\t\t{node}");
+            
+            sb.AppendLine("\t)");
             return sb.ToString();
         }
     }

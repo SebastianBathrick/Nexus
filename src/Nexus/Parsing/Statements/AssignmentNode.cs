@@ -13,6 +13,6 @@ namespace Nexus.Parsing.Statements
             IsImplicitDeclaration = false;
         }
 
-        public override string ToString() => $"{Identifier} = {Expression}";
+        public override string ToString() => $"AssignmentNode({Identifier} = {Expression})";
     }
 }

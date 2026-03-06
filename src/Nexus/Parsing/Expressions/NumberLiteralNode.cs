@@ -13,6 +13,6 @@ namespace Nexus.Parsing.Expressions
 
         public override double GetNumberValue() => _val;
 
-        public override string ToString() => _val.ToString(CultureInfo.InvariantCulture);
+        public override string ToString() => $"NumberLiteralNode({_val.ToString(CultureInfo.InvariantCulture)})";
     }
 }

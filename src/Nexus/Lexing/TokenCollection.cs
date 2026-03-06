@@ -60,5 +60,8 @@ namespace Nexus.Lexing
         public IReadOnlyList<Token> ToList() =>
             // Ensure to copy the list to prevent external modification of the internal list
             new List<Token>(_tokens);
+
+        public override string ToString() =>
+            _tokens.Count == 0 ? "[NO TOKENS]" : $"[{string.Join(", ", _tokens)}]";
     }
 }

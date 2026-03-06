@@ -35,7 +35,7 @@ namespace Nexus.Parsing.Expressions
             };
         }
 
-        public override string ToString() => $"({Left} {GetOperatorString()} {Right})";
+        public override string ToString() => $"ExpressionNode({Left} {GetOperatorString()} {Right})";
     }
 
 }
