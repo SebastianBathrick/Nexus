@@ -14,8 +14,10 @@ namespace Nexus.Execution
 
         static bool IsTruthy(NexusValue v)
         {
-            if (v is NexusBool) return v != new NexusBool(false);
-            if (v is NexusNumber) return v != new NexusNumber(0);
+            if (v is NexusBool) 
+                return v != new NexusBool(false);
+            if (v is NexusNumber) 
+                return v != new NexusNumber(0);
 
             return true;
         }
@@ -38,8 +40,7 @@ namespace Nexus.Execution
 
                 switch (op.OpType)
                 {
-                    #region Scope Instructions
-
+                    // [Scope Instructions]================================================================================
                     case InstructionType.EnterScope:
                         _valLookup.EnterScope();
                         break;
@@ -49,10 +50,8 @@ namespace Nexus.Execution
 
                         // If null chunk represents a control structure block or void function
                         return returnVal;
-                    #endregion
 
-                    #region Expression Instructions
-
+                    // [Expression Instructions]================================================================================
                     case InstructionType.PushConstant:
                         valStack.Push(chunk.GetConstant(op.CacheId));
                         break;
@@ -107,11 +106,8 @@ namespace Nexus.Execution
                         NexusValue rOr = valStack.Pop(), lOr = valStack.Pop();
                         valStack.Push(new NexusBool(IsTruthy(lOr) || IsTruthy(rOr)));
                         break;
-                    
-                    #endregion
 
-                    #region Statement Instructions
-
+                    // [Statement Instructions]================================================================================
                     case InstructionType.Return:
                          // Store it, because the following instruction is ExitScope which will return the value
                          returnVal = valStack.Pop();
@@ -122,9 +118,7 @@ namespace Nexus.Execution
                     case InstructionType.Assign:
                         _valLookup.SetValue(op.CacheId, valStack.Pop());
                         break;
-                    
-                    #endregion
-                    
+                     
                     default:
                         throw new InvalidOperationException($"Unknown operation: {op.OpType}");
                 }
@@ -134,7 +128,7 @@ namespace Nexus.Execution
 
             // If no exit code was returned on the top-level then return the success exit code
             returnVal ??= new NexusNumber(SuccessExitCode);
-            return new NexusNumber(SuccessExitCode);
+            return returnVal;
         }
     }
 }
