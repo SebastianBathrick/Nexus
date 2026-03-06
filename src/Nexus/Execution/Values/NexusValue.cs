@@ -7,6 +7,9 @@ namespace Nexus.Execution.Values
     /// </summary>
     public abstract class NexusValue
     {
+        public int ToInt() => (int)ToDouble();
+        public abstract double ToDouble();
+
         /// <summary>Returns the sum of this and <paramref name="right" />.</summary>
         protected abstract NexusValue Add(NexusValue right);
 

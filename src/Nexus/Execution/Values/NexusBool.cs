@@ -4,6 +4,9 @@ namespace Nexus.Execution.Values
 {
     public class NexusBool : NexusValue
     {
+        public const double TrueValue = 1.0;
+        public const double FalseValue = 0.0;
+
         readonly bool _val;
 
         public NexusBool(bool val)
@@ -11,7 +14,7 @@ namespace Nexus.Execution.Values
             _val = val;
         }
 
-        double ToDouble() => _val ? 1.0 : 0.0;
+        public override double ToDouble() => _val ? TrueValue : FalseValue;
 
         NexusNumber AsNumber() => new(ToDouble());
 

@@ -1,10 +1,10 @@
 using Nexus.Compilation;
 using Nexus.Execution;
 using Nexus.Execution.Values;
-using Nexus.LexicalAnalysis;
 using Nexus.Lexing;
 using Nexus.Logging;
-using Nexus.SyntaxAnalysis;
+using Nexus.Parsing;
+
 namespace Nexus
 {
     public static class NexusInterpreter

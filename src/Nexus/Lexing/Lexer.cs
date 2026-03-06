@@ -1,5 +1,4 @@
 using System;
-using Nexus.LexicalAnalysis;
 
 namespace Nexus.Lexing
 {

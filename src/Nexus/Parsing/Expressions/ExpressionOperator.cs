@@ -1,4 +1,4 @@
-namespace Nexus.SyntaxAnalysis.Expressions
+namespace Nexus.Parsing.Expressions
 {
     enum ExpressionOperator : uint
     {

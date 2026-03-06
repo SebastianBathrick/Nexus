@@ -1,5 +1,6 @@
 using System;
-namespace Nexus.LexicalAnalysis
+
+namespace Nexus.Lexing
 {
     class CharStream
     {

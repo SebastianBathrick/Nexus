@@ -17,6 +17,8 @@ namespace Nexus.Execution.Values
             _val = val;
         }
 
+        public override double ToDouble() => _val;
+
         static double AsDouble(NexusValue v)
         {
             if (v is NexusNumber n) return n._val;

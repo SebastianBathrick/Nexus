@@ -1,7 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-namespace Nexus.Logging;
+
+namespace Nexus.Logging
+{
 
 public abstract class Logger : ILogger
 {
@@ -54,47 +56,6 @@ public abstract class Logger : ILogger
     public void SetFormat(string format)
     {
         LabelFormat = format;
-    }
-
-    public virtual string Serialize()
-    {
-        var options = new JsonSerializerOptions
-        {
-            Converters = { new JsonStringEnumConverter() }
-        };
-
-        var obj = new
-        {
-            IsEnabled = IsEnabled(),
-            MinimumLogLevel,
-            IsLabelsEnabled,
-            IsSeparatorEnabled,
-            LabelFormat
-        };
-
-        return JsonSerializer.Serialize(obj, options);
-    }
-
-    public virtual void Deserialize(string json)
-    {
-        using var doc = JsonDocument.Parse(json);
-        var root = doc.RootElement;
-
-        if (root.TryGetProperty("IsEnabled", out var isEnabled))
-            SetIsEnabled(isEnabled.GetBoolean());
-
-        if (root.TryGetProperty(nameof(MinimumLogLevel), out var minLevel))
-            if (Enum.TryParse<LogLevel>(minLevel.GetString(), out var parsed))
-                MinimumLogLevel = parsed;
-
-        if (root.TryGetProperty(nameof(IsLabelsEnabled), out var isLabelsEnabled))
-            IsLabelsEnabled = isLabelsEnabled.GetBoolean();
-
-        if (root.TryGetProperty(nameof(IsSeparatorEnabled), out var isSeparatorEnabled))
-            IsSeparatorEnabled = isSeparatorEnabled.GetBoolean();
-
-        if (root.TryGetProperty(nameof(LabelFormat), out var labelFormat))
-            LabelFormat = labelFormat.ValueKind == JsonValueKind.Null ? null : labelFormat.GetString();
     }
 
     public void Verbose(string msg, params object[]? props)
@@ -318,4 +279,5 @@ public abstract class Logger : ILogger
     }
 
     #endregion
+}
 }

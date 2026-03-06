@@ -1,5 +1,6 @@
 using System.Text;
-namespace Nexus.SyntaxAnalysis.Statements
+
+namespace Nexus.Parsing.Statements
 {
     class BlockNode : Node
     {

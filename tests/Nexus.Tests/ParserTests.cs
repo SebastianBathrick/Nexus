@@ -1,9 +1,8 @@
-using Nexus.LexicalAnalysis;
 using Nexus.Lexing;
-using Nexus.SyntaxAnalysis;
-using Nexus.SyntaxAnalysis.Expressions;
-using Nexus.SyntaxAnalysis.Expressions.Literals;
-using Nexus.SyntaxAnalysis.Statements;
+using Nexus.Parsing;
+using Nexus.Parsing.Expressions;
+using Nexus.Parsing.Statements;
+
 namespace Nexus.Tests;
 
 [TestFixture]

@@ -1,5 +1,5 @@
 using System;
-namespace Nexus.SyntaxAnalysis.Expressions
+namespace Nexus.Parsing.Expressions
 {
     class ExpressionNode : Node
     {

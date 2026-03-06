@@ -1,4 +1,4 @@
-namespace Nexus.SyntaxAnalysis
+namespace Nexus.Parsing
 {
     class SyntaxTree : Node
     {

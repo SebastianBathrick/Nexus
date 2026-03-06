@@ -1,4 +1,4 @@
-namespace Nexus.SyntaxAnalysis.Statements
+namespace Nexus.Parsing.Statements
 {
     class ReturnNode : StatementNode
     {

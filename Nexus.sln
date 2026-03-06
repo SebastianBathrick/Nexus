@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus", "src\Nexus\Nexus.csproj", "{F9D2A6CC-78E9-42EA-929A-7D3E71F4F1CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Console", "src\Nexus.Console\Nexus.Console.csproj", "{BB6EB9D6-DE6F-4FA3-95A5-C57055CA79CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Cli", "src\Nexus.Cli\Nexus.Cli.csproj", "{BB6EB9D6-DE6F-4FA3-95A5-C57055CA79CB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Tests", "tests\Nexus.Tests\Nexus.Tests.csproj", "{E63CCE5F-FBC3-4538-99E6-820B3B77F955}"
 EndProject

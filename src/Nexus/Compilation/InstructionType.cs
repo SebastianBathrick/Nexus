@@ -19,6 +19,8 @@ namespace Nexus.Compilation
         Or,
         Not,
 
+        LookupValue,
+
         PushConstant,
         Declare,
         Assign,

@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Nexus.Execution.Values;
-using Nexus.SyntaxAnalysis;
-using Nexus.SyntaxAnalysis.Expressions;
-using Nexus.SyntaxAnalysis.Statements;
-using Nexus.SyntaxAnalysis.Expressions.Literals;
+using Nexus.Parsing;
+using Nexus.Parsing.Expressions;
+using Nexus.Parsing.Statements;
 
 namespace Nexus.Compilation
 {

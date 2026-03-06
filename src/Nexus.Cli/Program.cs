@@ -1,6 +1,7 @@
-﻿using Nexus.Execution.Values;
+﻿using Nexus;
+using Nexus.Execution.Values;
 
-namespace Nexus.Cli;
+namespace Clua.Cli;
 
 public static class Program
 {

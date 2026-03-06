@@ -1,4 +1,4 @@
-namespace Nexus.SyntaxAnalysis.Expressions.Literals
+namespace Nexus.Parsing.Expressions
 {
     abstract class LiteralNode : Node
     {

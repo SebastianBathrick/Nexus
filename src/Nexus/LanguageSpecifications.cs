@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using Nexus.LexicalAnalysis;
+using Nexus.Lexing;
+
 namespace Nexus
 {
     static class LanguageSpecifications

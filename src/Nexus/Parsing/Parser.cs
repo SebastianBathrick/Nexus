@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Nexus.LexicalAnalysis;
-using Nexus.SyntaxAnalysis.Expressions;
-using Nexus.SyntaxAnalysis.Expressions.Literals;
-using Nexus.SyntaxAnalysis.Statements;
-namespace Nexus.SyntaxAnalysis
+using Nexus.Execution.Values;
+using Nexus.Lexing;
+using Nexus.Parsing.Expressions;
+using Nexus.Parsing.Statements;
+
+namespace Nexus.Parsing
 {
     class Parser
     {
@@ -267,11 +268,11 @@ namespace Nexus.SyntaxAnalysis
             if (tkns.IsOfType(TokenType.KeywordFalse))
             {
                 tkns.Consume();
-                return new NumberLiteralNode(-FalseBoolToNumberValue);
+                return new NumberLiteralNode(-NexusBool.FalseValue);
             }
 
             return new ExpressionNode(ExpressionOperator.Multiplication,
-                new NumberLiteralNode(-1), ParseFactor(tkns));
+                new NumberLiteralNode(-NexusBool.TrueValue), ParseFactor(tkns));
         }
 
         #region TokenType to ExpressionOperator Methods

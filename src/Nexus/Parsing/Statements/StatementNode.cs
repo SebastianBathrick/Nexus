@@ -1,4 +1,4 @@
-namespace Nexus.SyntaxAnalysis.Statements
+namespace Nexus.Parsing.Statements
 {
     abstract class StatementNode : Node
     {
