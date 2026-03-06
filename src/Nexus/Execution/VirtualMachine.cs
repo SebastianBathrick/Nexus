@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Nexus.Runtime.Values;
-namespace Nexus.Runtime
+using Nexus.Compilation;
+using Nexus.Execution.Values;
+
+namespace Nexus.Execution
 {
     class VirtualMachine
     {

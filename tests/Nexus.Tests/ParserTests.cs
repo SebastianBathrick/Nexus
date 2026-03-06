@@ -1,4 +1,5 @@
 using Nexus.LexicalAnalysis;
+using Nexus.Lexing;
 using Nexus.SyntaxAnalysis;
 using Nexus.SyntaxAnalysis.Expressions;
 using Nexus.SyntaxAnalysis.Expressions.Literals;

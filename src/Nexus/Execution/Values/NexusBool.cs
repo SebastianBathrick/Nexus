@@ -1,5 +1,6 @@
 using System;
-namespace Nexus.Runtime.Values
+
+namespace Nexus.Execution.Values
 {
     public class NexusBool : NexusValue
     {
