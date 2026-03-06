@@ -7,7 +7,7 @@ One of its design goals is to keep features to a minimum, even fewer than Lua's.
 
 
 
-Building on these principles, the current primary focus is to complete the library (Nova.csproj). Nova’s interpreter processes code by first splitting the source code into tokens. Using these tokens, it builds a syntax tree; that tree is then flattened/compiled into bytecode, and finally, the compiled code is passed to the virtual machine for execution. These steps—parsing, compiling, and executing—are handled by the library’s primary interpreter class, allowing compilation and execution of source code at runtime.
+Building on these principles, the current primary focus is to complete the library (Nexus.csproj). Nexus’s interpreter processes code by first splitting the source code into tokens. Using these tokens, it builds a syntax tree; that tree is then flattened/compiled into bytecode, and finally, the compiled code is passed to the virtual machine for execution. These steps—parsing, compiling, and executing—are handled by the library’s primary interpreter class, allowing compilation and execution of source code at runtime.
 
 # Data Types
 Nexus is a dynamically typed language with the following primitives:
