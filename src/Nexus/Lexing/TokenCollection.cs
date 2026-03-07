@@ -62,6 +62,6 @@ namespace Nexus.Lexing
             new List<Token>(_tokens);
 
         public override string ToString() =>
-            _tokens.Count == 0 ? "[NO TOKENS]" : $"[{string.Join(", ", _tokens)}]";
+            _tokens.Count == 0 ? "[NO TOKENS]" : $"[\n\t{string.Join("\n\t", _tokens)}\n]";
     }
 }

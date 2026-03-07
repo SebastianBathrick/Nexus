@@ -42,7 +42,7 @@ namespace Nexus
             totTimer?.Stop();
 
             logger?.Info("LEXING DURATION: {Time}ms", stepTimer?.Elapsed.ToString(TimeFormat));
-            logger?.Debug("\n\nTokens:\n\t{Tokens}\n", tokenCollection);
+            logger?.Debug("\n\nTokens:\n{Tokens}\n", tokenCollection);
 
             // [Syntax analysis]========================================================================================
             stepTimer?.Reset();

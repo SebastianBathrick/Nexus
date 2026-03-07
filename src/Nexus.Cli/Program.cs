@@ -48,6 +48,6 @@ public static class Program
 
         
         Console.WriteLine(result.ToString());
-        return result is NexusNumber ? result.ToInt() : 0;
+        return 0; // TODO: Return the source code's exit code once better error handling is added
     }
 }

@@ -13,6 +13,10 @@ namespace Nexus.Parsing.Statements
             IsImplicitDeclaration = false;
         }
 
-        public override string ToString() => $"AssignmentNode({Identifier} = {Expression})";
+        internal override string ToDebugString(int depth)
+        {
+            var pad = Pad(depth);
+            return $"{pad}{nameof(AssignmentNode)}({Identifier},\n{Expression.ToDebugString(depth + 1)}\n{pad})";
+        }
     }
 }

@@ -9,8 +9,10 @@ namespace Nexus.Parsing.Statements
 
         public Node Expression { get; }
 
-        /* Just write "return" instead of getting the keyword from LanguageSpecifications, as ToString
-         * because Node.ToString() is only for debugging purposes. */
-        public override string ToString() => $"ReturnNode({Expression})";
+        internal override string ToDebugString(int depth)
+        {
+            var pad = Pad(depth);
+            return $"{pad}{nameof(ReturnNode)}(\n{Expression.ToDebugString(depth + 1)}\n{pad})";
+        }
     }
 }

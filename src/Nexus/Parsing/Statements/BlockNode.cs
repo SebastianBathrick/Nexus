@@ -11,13 +11,13 @@ namespace Nexus.Parsing.Statements
 
         public Node[] Statements { get; }
 
-        public override string ToString()
+        internal override string ToDebugString(int depth)
         {
-            var sb = new StringBuilder("\tBlockNode(\n");
+            var pad = Pad(depth);
+            var sb = new StringBuilder($"{pad}{nameof(BlockNode)}(\n");
             foreach (var node in Statements)
-                sb.AppendLine($"\t\t{node}");
-            
-            sb.AppendLine("\t)");
+                sb.AppendLine(node.ToDebugString(depth + 1));
+            sb.Append($"{pad})");
             return sb.ToString();
         }
     }

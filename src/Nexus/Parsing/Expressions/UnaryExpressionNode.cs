@@ -11,10 +11,11 @@ namespace Nexus.Parsing.Expressions
         public ExpressionOperator Operator { get; }
         public Node Operand { get; }
 
-        public override string ToString() => Operator switch
+        internal override string ToDebugString(int depth)
         {
-            ExpressionOperator.LogicalNot => $"UnaryExpressionNode(!{Operand})",
-            _ => $"UnaryExpressionNode({Operator} {Operand})"
-        };
+            var pad     = Pad(depth);
+            var content = Pad(depth + 1);
+            return $"{pad}{nameof(UnaryExpressionNode)}(\n{content}{ExpressionNode.GetOperatorLabel(Operator)}\n{Operand.ToDebugString(depth + 1)}\n{pad})";
+        }
     }
 }

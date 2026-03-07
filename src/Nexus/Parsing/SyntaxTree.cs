@@ -9,6 +9,6 @@ namespace Nexus.Parsing
 
         public Node TopLevelBlockNode { get; }
 
-        public override string ToString() => TopLevelBlockNode.ToString();
+        internal override string ToDebugString(int depth) => TopLevelBlockNode.ToDebugString(depth);
     }
 }
