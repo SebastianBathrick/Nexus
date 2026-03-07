@@ -154,11 +154,16 @@ namespace Chow.Compilation
 
         void AddPushInstruction(Node node)
         {
-            if (node is not LiteralNode literal)
+            if (node is IdentifierNode identifierNode)
             {
-                _instructions.Add(new Instruction(InstructionType.ConstantPush));
+                if (!_varNumIdMap.TryGetValue(identifierNode.Identifier, out var varId))
+                    throw new InvalidOperationException($"Undefined variable: {identifierNode.Identifier}");
+                _instructions.Add(new Instruction(InstructionType.VariablePushValue, varId));
                 return;
             }
+
+            if (node is not LiteralNode literal)
+                throw new InvalidOperationException($"Unsupported node type in push: {node.GetType().Name}");
 
             // Convert the token's lexeme to the data type determined by the token type
             var newVal = ParseLiteral(literal);
