@@ -1,6 +1,6 @@
 using Chow.Lexing;
 
-namespace Chow.Tests;
+namespace Chow.Tests.Lexing;
 
 [TestFixture]
 public class CharStreamTests

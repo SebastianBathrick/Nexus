@@ -1,6 +1,5 @@
-using Chow.Execution.Values;
-
-namespace Chow.Tests;
+using Chow.Values;
+namespace Chow.Tests.Execution;
 
 [TestFixture]
 public class ChowNumberTests

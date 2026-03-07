@@ -1,6 +1,7 @@
-﻿using Chow;
-using Chow.Execution.Values;
-using Chow.Logging;
+﻿using Chow.Logging;
+using Chow.Values;
+
+namespace Chow.Cli;
 
 public static class Program
 {
@@ -37,12 +38,12 @@ public static class Program
             }
             
             var srcCode = string.Join(ArgumentJoinSeperator, args.Skip(FlagCodeStartIndexOffset));
-            result = ChowInterpreter.Run<ConsoleLogger>(srcCode, minLogLevel);
+            result = ChowEngine.Run<ConsoleLogger>(srcCode, minLogLevel);
         }
         else
         {
             var srcCode = string.Join(ArgumentJoinSeperator, args);
-            result = ChowInterpreter.Run(srcCode);
+            result = ChowEngine.Run(srcCode);
         }
         
 

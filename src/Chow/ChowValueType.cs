@@ -1,8 +1,9 @@
-namespace Chow.Execution.Values
+namespace Chow.Values
 {
     public enum ChowValueType
     {
         Number,
-        Bool
+        Bool,
+        Variable
     }
 }

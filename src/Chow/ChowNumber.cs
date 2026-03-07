@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
-
-namespace Chow.Execution.Values
+namespace Chow.Values
 {
     public class ChowNumber : ChowValue
     {
@@ -18,12 +17,15 @@ namespace Chow.Execution.Values
             _val = val;
         }
 
+        public override ChowValueType Type => ChowValueType.Number;
+
         public override int ToInt() => (int)_val;
+
         public override double ToDouble() => _val;
+
         public override bool ToBool() => (int)_val == BoolTrueIntValue;
 
         public override bool IsType(ChowValueType type) => type == ChowValueType.Number;
-        public override ChowValueType Type => ChowValueType.Number;
 
         static double AsDouble(ChowValue v)
         {

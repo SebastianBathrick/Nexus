@@ -1,6 +1,5 @@
 using System;
-
-namespace Chow.Execution.Values
+namespace Chow.Values
 {
     public class ChowBool : ChowValue
     {
@@ -17,12 +16,15 @@ namespace Chow.Execution.Values
             _val = val;
         }
 
+        public override ChowValueType Type => ChowValueType.Bool;
+
         public override int ToInt() => _val ? TrueIntValue : FalseIntValue;
+
         public override double ToDouble() => _val ? TrueValue : FalseValue;
+
         public override bool ToBool() => _val;
 
         public override bool IsType(ChowValueType type) => type == ChowValueType.Bool;
-        public override ChowValueType Type => ChowValueType.Bool;
 
         ChowNumber AsNumber() => new(ToDouble());
 

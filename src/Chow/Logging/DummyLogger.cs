@@ -1,9 +1,6 @@
 using System;
-using Chow.Logging;
-
 namespace Chow.Logging
 {
-
 // Does nothing when methods are called
     class DummyLogger : ILogger
     {

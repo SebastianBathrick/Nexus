@@ -1,5 +1,4 @@
 using System;
-
 namespace Chow.Logging
 {
     public static class Log

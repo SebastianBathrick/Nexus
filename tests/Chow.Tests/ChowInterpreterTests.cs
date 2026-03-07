@@ -1,5 +1,5 @@
-using Chow.Execution;
-using Chow.Execution.Values;
+using Chow.Interpretation;
+using Chow.Values;
 
 namespace Chow.Tests;
 
@@ -8,13 +8,13 @@ public class ChowInterpreterTests
 {
     static void AssertRunResult(string source, string expectedToString)
     {
-        var result = ChowInterpreter.Run(source);
+        var result = ChowEngine.Run(source);
         Assert.That(result.ToString(), Is.EqualTo(expectedToString));
     }
 
     static void AssertRunBool(string source, bool expected)
     {
-        var result = ChowInterpreter.Run(source);
+        var result = ChowEngine.Run(source);
         Assert.That(result, Is.InstanceOf<ChowBool>());
         Assert.That(((ChowBool)result).ToString(), Is.EqualTo(expected ? "true" : "false"));
     }
@@ -776,13 +776,13 @@ public class ChowInterpreterTests
     [Test]
     public void Run_InvalidSyntaxUnexpectedToken_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => ChowInterpreter.Run("return 1 2"));
+        Assert.Throws<ArgumentException>(() => ChowEngine.Run("return 1 2"));
     }
 
     [Test]
     public void Run_EmptyInput_ReturnsSuccessCode()
     {
-        var result = ChowInterpreter.Run("");
+        var result = ChowEngine.Run("");
         Assert.That(result, Is.InstanceOf<ChowNumber>());
         Assert.That(result.ToString(), Is.EqualTo(VirtualMachine.SuccessExitCode.ToString()));
     }

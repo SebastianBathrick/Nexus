@@ -1,8 +1,7 @@
 using Chow.Compilation;
-using Chow.Execution;
-using Chow.Execution.Values;
-
-namespace Chow.Tests;
+using Chow.Interpretation;
+using Chow.Values;
+namespace Chow.Tests.Execution;
 
 [TestFixture]
 public class VirtualMachineTests
@@ -14,7 +13,7 @@ public class VirtualMachineTests
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
-            new Instruction(InstructionType.PushConstant,0),
+            new Instruction(InstructionType.ConstantPush,0),
             new Instruction(InstructionType.Return),
             new Instruction(InstructionType.ExitScope)
         };
@@ -31,8 +30,8 @@ public class VirtualMachineTests
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
-            new Instruction(InstructionType.PushConstant,0),
-            new Instruction(InstructionType.PushConstant,1),
+            new Instruction(InstructionType.ConstantPush,0),
+            new Instruction(InstructionType.ConstantPush,1),
             new Instruction(InstructionType.Add),
             new Instruction(InstructionType.Return),
             new Instruction(InstructionType.ExitScope)
@@ -50,8 +49,8 @@ public class VirtualMachineTests
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
-            new Instruction(InstructionType.PushConstant,0),
-            new Instruction(InstructionType.PushConstant,1),
+            new Instruction(InstructionType.ConstantPush,0),
+            new Instruction(InstructionType.ConstantPush,1),
             new Instruction(InstructionType.Subtract),
             new Instruction(InstructionType.Return),
             new Instruction(InstructionType.ExitScope)
@@ -69,8 +68,8 @@ public class VirtualMachineTests
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
-            new Instruction(InstructionType.PushConstant,0),
-            new Instruction(InstructionType.PushConstant,1),
+            new Instruction(InstructionType.ConstantPush,0),
+            new Instruction(InstructionType.ConstantPush,1),
             new Instruction(InstructionType.Multiply),
             new Instruction(InstructionType.Return),
             new Instruction(InstructionType.ExitScope)
@@ -88,8 +87,8 @@ public class VirtualMachineTests
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
-            new Instruction(InstructionType.PushConstant,0),
-            new Instruction(InstructionType.PushConstant,1),
+            new Instruction(InstructionType.ConstantPush,0),
+            new Instruction(InstructionType.ConstantPush,1),
             new Instruction(InstructionType.Divide),
             new Instruction(InstructionType.Return),
             new Instruction(InstructionType.ExitScope)
@@ -107,8 +106,8 @@ public class VirtualMachineTests
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
-            new Instruction(InstructionType.PushConstant,0),
-            new Instruction(InstructionType.PushConstant,1),
+            new Instruction(InstructionType.ConstantPush,0),
+            new Instruction(InstructionType.ConstantPush,1),
             new Instruction(InstructionType.EqualTo),
             new Instruction(InstructionType.Return),
             new Instruction(InstructionType.ExitScope)
@@ -127,8 +126,8 @@ public class VirtualMachineTests
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
-            new Instruction(InstructionType.PushConstant,0),
-            new Instruction(InstructionType.PushConstant,1),
+            new Instruction(InstructionType.ConstantPush,0),
+            new Instruction(InstructionType.ConstantPush,1),
             new Instruction(InstructionType.NotEqualTo),
             new Instruction(InstructionType.Return),
             new Instruction(InstructionType.ExitScope)
@@ -146,8 +145,8 @@ public class VirtualMachineTests
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
-            new Instruction(InstructionType.PushConstant,0),
-            new Instruction(InstructionType.PushConstant,1),
+            new Instruction(InstructionType.ConstantPush,0),
+            new Instruction(InstructionType.ConstantPush,1),
             new Instruction(InstructionType.LessThan),
             new Instruction(InstructionType.Return),
             new Instruction(InstructionType.ExitScope)
@@ -165,8 +164,8 @@ public class VirtualMachineTests
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
-            new Instruction(InstructionType.PushConstant,0),
-            new Instruction(InstructionType.PushConstant,1),
+            new Instruction(InstructionType.ConstantPush,0),
+            new Instruction(InstructionType.ConstantPush,1),
             new Instruction(InstructionType.GreaterThan),
             new Instruction(InstructionType.Return),
             new Instruction(InstructionType.ExitScope)
@@ -184,8 +183,8 @@ public class VirtualMachineTests
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
-            new Instruction(InstructionType.PushConstant,0),
-            new Instruction(InstructionType.PushConstant,1),
+            new Instruction(InstructionType.ConstantPush,0),
+            new Instruction(InstructionType.ConstantPush,1),
             new Instruction(InstructionType.And),
             new Instruction(InstructionType.Return),
             new Instruction(InstructionType.ExitScope)
@@ -203,8 +202,8 @@ public class VirtualMachineTests
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
-            new Instruction(InstructionType.PushConstant,0),
-            new Instruction(InstructionType.PushConstant,1),
+            new Instruction(InstructionType.ConstantPush,0),
+            new Instruction(InstructionType.ConstantPush,1),
             new Instruction(InstructionType.Or),
             new Instruction(InstructionType.Return),
             new Instruction(InstructionType.ExitScope)
@@ -222,7 +221,7 @@ public class VirtualMachineTests
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
-            new Instruction(InstructionType.PushConstant,0),
+            new Instruction(InstructionType.ConstantPush,0),
             new Instruction(InstructionType.Not),
             new Instruction(InstructionType.Return),
             new Instruction(InstructionType.ExitScope)

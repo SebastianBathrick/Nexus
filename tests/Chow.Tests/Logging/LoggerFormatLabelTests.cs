@@ -1,6 +1,6 @@
 using Chow.Logging;
 
-namespace Chow.Tests;
+namespace Chow.Tests.Logging;
 
 [TestFixture]
 public class LoggerFormatLabelTests

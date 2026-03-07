@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Chow.Execution.Values;
 using Chow.Parsing;
 using Chow.Parsing.Expressions;
 using Chow.Parsing.Statements;
-
+using Chow.Values;
 namespace Chow.Compilation
 {
     class ChunkCompiler
@@ -13,30 +11,30 @@ namespace Chow.Compilation
         const int FirstVariableId = 0;
         const int ConstantListIndexNotFound = -1;
 
-        public Chunk Chunk => _compiledChunk ?? throw new InvalidOperationException("No chunk has been compiled");
-
         // Used as an is-dirty flag to avoid accidental reuse of instances       
-        readonly BlockNode _blockNode;         
-        Chunk? _compiledChunk;
-        readonly List<Instruction> _instructions = new();
+        readonly BlockNode _blockNode;
         readonly List<ChowValue> _constantList = new();
+        readonly List<Instruction> _instructions = new();
 
         // Replaces variable names with integers for easier serialization
         readonly Dictionary<string, int> _varNumIdMap = new();
+        Chunk? _compiledChunk;
 
         // The VM will use integers in-place of their identifiers to locate variables from previous stack frames (tables will work differently)
         int _varId = FirstVariableId;
 
-        private ChunkCompiler(BlockNode blockNode, KeyValuePair<string, int>[]? parentVars = null)
+        ChunkCompiler(BlockNode blockNode, KeyValuePair<string, int>[]? parentVars = null)
         {
             _blockNode = blockNode;
 
             if (parentVars == null)
                 return;
-            
+
             foreach (var pair in parentVars)
                 _varNumIdMap[pair.Key] = pair.Value;
         }
+
+        public Chunk Chunk => _compiledChunk ?? throw new InvalidOperationException("No chunk has been compiled");
 
         public static Chunk CompileTopLevel(Node root)
         {
@@ -56,7 +54,6 @@ namespace Chow.Compilation
             if (_compiledChunk is not null)
                 throw new InvalidOperationException("A chunk has already been compiled");
 
-            // Indicates that there is a new block that could possibly contain new variable declarations
             _instructions.Add(new Instruction(InstructionType.EnterScope));
 
             foreach (var node in _blockNode.Statements)
@@ -78,7 +75,7 @@ namespace Chow.Compilation
 
             // After a chunk is executed, all variables declared within the chunk will be removed
             _instructions.Add(new Instruction(InstructionType.ExitScope));
-            _compiledChunk = new(_instructions.ToArray(), _constantList.ToArray());
+            _compiledChunk = new Chunk(_instructions.ToArray(), _constantList.ToArray());
         }
 
         void AddAssignmentInstructions(AssignmentNode node)
@@ -86,17 +83,16 @@ namespace Chow.Compilation
             // Execution: The expression will be evaluated and the result will be pushed to the value stack
             AddExpressionInstructions(node.Expression);
 
-            // Execution: If the variable has not been declared yet, declare it and add it to the variable cache
+            // Execution: If the variable has not been declared yet, add it to the variable cache
             if (!_varNumIdMap.TryGetValue(node.Identifier, out var vmCacheIndex))
             {
                 vmCacheIndex = _varId++;
                 _varNumIdMap[node.Identifier] = vmCacheIndex;
-                _instructions.Add(new Instruction(InstructionType.Declare, vmCacheIndex));
             }
 
             /* Execution: Pop expression result from the value stack, use the variable ID to reference the variable,
              * and assign the result to the variable */
-            _instructions.Add(new Instruction(InstructionType.Assign, vmCacheIndex));
+            _instructions.Add(new Instruction(InstructionType.VariableAssignValue, vmCacheIndex));
         }
 
         void AddReturnInstructions(Node node)
@@ -107,6 +103,24 @@ namespace Chow.Compilation
             AddExpressionInstructions(returnNode.Expression);
             _instructions.Add(new Instruction(InstructionType.Return));
         }
+
+        #region List Methods
+
+        ChowValue ParseLiteral(LiteralNode node)
+        {
+            ChowValue val;
+
+            if (node is NumberLiteralNode numNode)
+                val = new ChowNumber(numNode.GetNumberValue());
+            else if (node is BoolLiteralNode boolNode)
+                val = new ChowBool(boolNode.GetBoolValue());
+            else
+                throw new ArgumentException($"Cannot push constant for node type: {node.GetType().Name}");
+
+            return val;
+        }
+
+        #endregion
 
         #region Expression Methods
 
@@ -142,7 +156,7 @@ namespace Chow.Compilation
         {
             if (node is not LiteralNode literal)
             {
-                _instructions.Add(new Instruction(InstructionType.PushConstant, ConstantListIndexNotFound));
+                _instructions.Add(new Instruction(InstructionType.ConstantPush));
                 return;
             }
 
@@ -170,7 +184,7 @@ namespace Chow.Compilation
                 _constantList.Add(newVal);
             }
 
-            _instructions.Add(new Instruction(InstructionType.PushConstant, constIndex));
+            _instructions.Add(new Instruction(InstructionType.ConstantPush, constIndex));
         }
 
         static InstructionType ToOpType(ExpressionOperator op)
@@ -191,24 +205,6 @@ namespace Chow.Compilation
                 ExpressionOperator.LogicalOr => InstructionType.Or,
                 _ => throw new InvalidOperationException($"Unsupported operator: {op}")
             };
-        }
-
-        #endregion
-
-        #region List Methods
-
-        ChowValue ParseLiteral(LiteralNode node)
-        {
-            ChowValue val;
-
-            if (node is NumberLiteralNode numNode)
-                val = new ChowNumber(numNode.GetNumberValue());
-            else if (node is BoolLiteralNode boolNode)
-                val = new ChowBool(boolNode.GetBoolValue());
-            else
-                throw new ArgumentException($"Cannot push constant for node type: {node.GetType().Name}");
-
-            return val;
         }
 
         #endregion

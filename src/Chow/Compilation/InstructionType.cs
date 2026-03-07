@@ -19,13 +19,11 @@ namespace Chow.Compilation
         Or,
         Not,
 
-        LookupValue,
-
-        PushConstant,
-        Declare,
-        Assign,
+        ConstantPush,
+        VariableAssignValue,
+        VariablePushValue,
 
         EnterScope,
-        ExitScope,
+        ExitScope
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Text;
-
 namespace Chow.Lexing
 {
     class TokenBuilder

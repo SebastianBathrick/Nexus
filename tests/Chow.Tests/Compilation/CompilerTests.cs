@@ -3,7 +3,7 @@ using Chow.Parsing;
 using Chow.Parsing.Expressions;
 using Chow.Parsing.Statements;
 
-namespace Chow.Tests;
+namespace Chow.Tests.Compilation;
 
 [TestFixture]
 public class CompilerTests
@@ -20,7 +20,7 @@ public class CompilerTests
 
         Assert.That(chunk.Length, Is.EqualTo(4));
         Assert.That(chunk[0].OpType, Is.EqualTo(InstructionType.EnterScope));
-        Assert.That(chunk[1].OpType, Is.EqualTo(InstructionType.PushConstant));
+        Assert.That(chunk[1].OpType, Is.EqualTo(InstructionType.ConstantPush));
         Assert.That(chunk[1].CacheId, Is.EqualTo(0));
         Assert.That(chunk[2].OpType, Is.EqualTo(InstructionType.Return));
         Assert.That(chunk[3].OpType, Is.EqualTo(InstructionType.ExitScope));
@@ -41,8 +41,8 @@ public class CompilerTests
 
         Assert.That(chunk.Length, Is.EqualTo(6));
         Assert.That(chunk[0].OpType, Is.EqualTo(InstructionType.EnterScope));
-        Assert.That(chunk[1].OpType, Is.EqualTo(InstructionType.PushConstant));
-        Assert.That(chunk[2].OpType, Is.EqualTo(InstructionType.PushConstant));
+        Assert.That(chunk[1].OpType, Is.EqualTo(InstructionType.ConstantPush));
+        Assert.That(chunk[2].OpType, Is.EqualTo(InstructionType.ConstantPush));
         Assert.That(chunk[3].OpType, Is.EqualTo(InstructionType.Add));
         Assert.That(chunk[4].OpType, Is.EqualTo(InstructionType.Return));
         Assert.That(chunk[5].OpType, Is.EqualTo(InstructionType.ExitScope));

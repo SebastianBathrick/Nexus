@@ -41,6 +41,6 @@ namespace Chow.Lexing
 
         // Reserved keywords
         KeywordReturn,
-        KeywordIf,
+        KeywordIf
     }
 }

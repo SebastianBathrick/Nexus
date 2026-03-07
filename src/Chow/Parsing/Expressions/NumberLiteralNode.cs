@@ -1,5 +1,4 @@
 using System.Globalization;
-
 namespace Chow.Parsing.Expressions
 {
     class NumberLiteralNode : LiteralNode

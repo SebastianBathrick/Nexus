@@ -3,14 +3,14 @@ using Chow.Parsing;
 using Chow.Parsing.Expressions;
 using Chow.Parsing.Statements;
 
-namespace Chow.Tests;
+namespace Chow.Tests.Parsing;
 
 [TestFixture]
 public class ParserTests
 {
     static Node Parse(string source)
     {
-        // Use real TokenCollection from Chow.Tokens (internal, visible via InternalsVisibleTo).
+        // Use real TokenCollection from ChowEngine.Tokens (internal, visible via InternalsVisibleTo).
         var tokenCollection = Lexer.Lex(source);
         return Parser.ParseTokens(tokenCollection);
     }

@@ -1,37 +1,32 @@
 using System;
 using System.Collections.Generic;
 using Chow.Compilation;
-using Chow.Execution.Values;
-
-namespace Chow.Execution
+using Chow.Values;
+namespace Chow.Interpretation
 {
     class VirtualMachine
     {
         public const int SuccessExitCode = 0;
         const int ChunkStartIndex = 0;
 
-        ValueLookupTable _valLookup = new();
-
         static bool IsTruthy(ChowValue v)
         {
-            if (v is ChowBool) 
+            if (v is ChowBool)
                 return v != new ChowBool(false);
-            if (v is ChowNumber) 
+
+            if (v is ChowNumber)
                 return v != new ChowNumber(0);
 
             return true;
         }
 
-        public static ChowValue ExecuteTopLevel(Chunk chunk)
-        {
-            var instance = new VirtualMachine();
-            return instance.ExecuteChunk(chunk) ?? new ChowNumber(SuccessExitCode);
-        }
+        public static ChowValue ExecuteTopLevel(Chunk chunk) => ExecuteChunk(chunk) ?? new ChowNumber(SuccessExitCode);
 
-        ChowValue? ExecuteChunk(Chunk chunk)
+        static ChowValue? ExecuteChunk(Chunk chunk)
         {
             var chunkIndex = ChunkStartIndex;
-            var valStack = new Stack<ChowValue>();
+            var valStack = new FastStack<ChowValue>();
+            var varStack = new VariableStack();
             ChowValue? returnVal = null;
 
             while (chunkIndex < chunk.Length)
@@ -42,17 +37,25 @@ namespace Chow.Execution
                 {
                     // [Scope Instructions]================================================================================
                     case InstructionType.EnterScope:
-                        _valLookup.EnterScope();
                         break;
                     case InstructionType.ExitScope:
-                        // This case is if the scope executed all instructions without returning
-                        _valLookup.ExitScope();
+                        // Set to the instruction before which could be an enter scope instruction
+                        var backTrackIndex = chunkIndex - 1;
 
-                        // If null chunk represents a control structure block or void function
-                        return returnVal;
+                        // Remove each variable that was declared after the last enter scope instruction
+                        while (chunk[backTrackIndex].OpType != InstructionType.EnterScope)
+                        {
+                            if (chunk[backTrackIndex--].OpType == InstructionType.VariableAssignValue)
+                                varStack.Pop();
+
+                            if (backTrackIndex < 0)
+                                throw new InvalidOperationException($"No {nameof(InstructionType.EnterScope)} instruction found");
+                        }
+
+                        break;
 
                     // [Expression Instructions]================================================================================
-                    case InstructionType.PushConstant:
+                    case InstructionType.ConstantPush:
                         valStack.Push(chunk.GetConstant(op.CacheId));
                         break;
                     case InstructionType.Add:
@@ -109,16 +112,26 @@ namespace Chow.Execution
 
                     // [Statement Instructions]================================================================================
                     case InstructionType.Return:
-                         // Store it, because the following instruction is ExitScope which will return the value
-                         returnVal = valStack.Pop();
+                        // Store it, because the following instruction is ExitScope which will return the value
+                        returnVal = valStack.Pop();
                         break;
-                    case InstructionType.Declare:
-                        _valLookup.AddIdentifier(op.CacheId);
+                    // TODO: Declaration parsing is no longer required
+                    case InstructionType.VariableAssignValue:
+                        var targetVar = varStack.LookUp(op.CacheId);
+                        var assignVal = valStack.Pop();
+                        
+                        if (targetVar == null)
+                            varStack.Push(new Variable(op.CacheId, assignVal));
+                        else
+                            targetVar.Assign(assignVal);
                         break;
-                    case InstructionType.Assign:
-                        _valLookup.SetValue(op.CacheId, valStack.Pop());
+
+                    case InstructionType.VariablePushValue:
+                        var valueVar = varStack.LookUp(op.CacheId);
+                        if (valueVar == null)
+                            throw new InvalidOperationException($"Variable {op.CacheId} not found");
+                        valStack.Push(valueVar.Value);
                         break;
-                     
                     default:
                         throw new InvalidOperationException($"Unknown operation: {op.OpType}");
                 }

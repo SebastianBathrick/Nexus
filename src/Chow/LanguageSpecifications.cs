@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Chow.Lexing;
-
 namespace Chow
 {
     static class LanguageSpecifications

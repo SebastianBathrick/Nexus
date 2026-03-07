@@ -1,18 +1,21 @@
-namespace Chow.Execution.Values
+namespace Chow.Values
 {
     /// <summary>
-    ///     Represents a value in the Chow programming language created during compilation and used
-    ///     during execution. This is the base class for all values in the Chow programming language.
+    ///     Represents a value in the ChowEngine programming language created during compilation and used
+    ///     during execution. This is the base class for all values in the ChowEngine programming language.
     ///     This can represent a number, boolean, string, function, or table.
     /// </summary>
     public abstract class ChowValue
     {
+        public abstract ChowValueType Type { get; }
+
         public abstract int ToInt();
+
         public abstract double ToDouble();
+
         public abstract bool ToBool();
 
         public abstract bool IsType(ChowValueType type);
-        public abstract ChowValueType Type { get; }
 
         /// <summary>Returns the sum of this and <paramref name="right" />.</summary>
         protected abstract ChowValue Add(ChowValue right);
@@ -83,6 +86,7 @@ namespace Chow.Execution.Values
         public static bool operator >=(ChowValue left, ChowValue right) => left.GreaterThanOrEqualTo(right);
 
         public override bool Equals(object? obj) => obj is ChowValue other && EqualTo(other);
+
         public abstract override int GetHashCode();
 
         public abstract override string ToString();

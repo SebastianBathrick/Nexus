@@ -1,5 +1,4 @@
 using System.Text;
-
 namespace Chow.Parsing.Statements
 {
     class BlockNode : Node
@@ -17,6 +16,7 @@ namespace Chow.Parsing.Statements
             var sb = new StringBuilder($"{pad}{nameof(BlockNode)}(\n");
             foreach (var node in Statements)
                 sb.AppendLine(node.ToDebugString(depth + 1));
+
             sb.Append($"{pad})");
             return sb.ToString();
         }

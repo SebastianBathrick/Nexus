@@ -1,3 +1,4 @@
+using System.Text;
 namespace Chow.Parsing
 {
     abstract class Node
@@ -6,12 +7,12 @@ namespace Chow.Parsing
 
         internal abstract string ToDebugString(int depth);
 
-        public override sealed string ToString() => ToDebugString(0);
+        public sealed override string ToString() => ToDebugString(0);
 
         protected static string Pad(int depth)
         {
-            var sb = new System.Text.StringBuilder();
-            for (int i = 0; i < depth; i++) sb.Append(IndentUnit);
+            var sb = new StringBuilder();
+            for (var i = 0; i < depth; i++) sb.Append(IndentUnit);
             return sb.ToString();
         }
     }
