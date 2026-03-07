@@ -85,7 +85,7 @@ namespace Chow.Values
         /// <summary>Greater-than-or-equal (uses left's <see cref="GreaterThanOrEqualTo" />).</summary>
         public static bool operator >=(ChowValue left, ChowValue right) => left.GreaterThanOrEqualTo(right);
 
-        public override bool Equals(object? obj) => obj is ChowValue other && EqualTo(other);
+        public override bool Equals(object obj) => obj is ChowValue other && EqualTo(other);
 
         public abstract override int GetHashCode();
 

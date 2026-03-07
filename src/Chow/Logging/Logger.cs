@@ -20,6 +20,8 @@ namespace Chow.Logging
 
         const LogLevel InitialMinimumLogLevel = LogLevel.None;
 
+        public const string NullPropertyLiteral = "NULL";
+
         const string DefaultLabelFormat = "[{LogLevel} | {Timestamp:MM-dd HH:mm:ss}]:";
 
         const string LogLevelPlaceholder = "LogLevel";
@@ -44,7 +46,7 @@ namespace Chow.Logging
         public LogLevel MinimumLogLevel { get; set; }
         public bool IsLabelsEnabled { get; set; }
         public bool IsSeparatorEnabled { get; set; }
-        public string? LabelFormat { get; set; }
+        public string LabelFormat { get; set; }
 
         #endregion
 
@@ -55,49 +57,49 @@ namespace Chow.Logging
             LabelFormat = format;
         }
 
-        public void Verbose(string msg, params object?[] props)
+        public void Verbose(string msg, params object[] props)
         {
             if (IsEnabled() && LogLevel.Verbose >= MinimumLogLevel)
                 Log(LogLevel.Verbose, msg, props);
         }
 
-        public void Debug(string msg, params object?[] props)
+        public void Debug(string msg, params object[] props)
         {
             if (IsEnabled() && LogLevel.Debug >= MinimumLogLevel)
                 Log(LogLevel.Debug, msg, props);
         }
 
-        public void Info(string msg, params object?[] props)
+        public void Info(string msg, params object[] props)
         {
             if (IsEnabled() && LogLevel.Info >= MinimumLogLevel)
                 Log(LogLevel.Info, msg, props);
         }
 
-        public void Warning(string msg, params object?[] props)
+        public void Warning(string msg, params object[] props)
         {
             if (IsEnabled() && LogLevel.Warning >= MinimumLogLevel)
                 Log(LogLevel.Warning, msg, props);
         }
 
-        public void Error(string msg, params object?[] props)
+        public void Error(string msg, params object[] props)
         {
             if (IsEnabled() && LogLevel.Error >= MinimumLogLevel)
                 Log(LogLevel.Error, msg, props);
         }
 
-        public void Error(Exception ex, string msg, params object?[] props)
+        public void Error(Exception ex, string msg, params object[] props)
         {
             if (IsEnabled() && LogLevel.Error >= MinimumLogLevel)
                 Log(LogLevel.Error, ex, msg, props);
         }
 
-        public void Critical(string msg, params object?[] props)
+        public void Critical(string msg, params object[] props)
         {
             if (IsEnabled() && LogLevel.Critical >= MinimumLogLevel)
                 Log(LogLevel.Critical, msg, props);
         }
 
-        public void Critical(Exception ex, string msg, params object?[] props)
+        public void Critical(Exception ex, string msg, params object[] props)
         {
             if (IsEnabled() && LogLevel.Critical >= MinimumLogLevel)
                 Log(LogLevel.Critical, ex, msg, props);
@@ -109,7 +111,7 @@ namespace Chow.Logging
 
         protected abstract void OutputFormattedMessage(string msg);
 
-        protected string InsertProperties(string msg, params object?[] props)
+        protected string InsertProperties(string msg, params object[] props)
         {
             if (props == null || props.Length == 0)
                 return msg;
@@ -150,14 +152,14 @@ namespace Chow.Logging
                 if (foundIndex >= 0 && foundIndex < props.Length)
                 {
                     var prop = props[foundIndex];
-                    sb.Append(prop?.ToString() ?? ILogger.NullPropertyLiteral);
+                    sb.Append(prop?.ToString() ?? NullPropertyLiteral);
                 }
                 else if (propIndex < props.Length)
                 {
                     var prop = props[propIndex];
                     bound.Add((tagName, propIndex));
                     propIndex++;
-                    sb.Append(prop?.ToString() ?? ILogger.NullPropertyLiteral);
+                    sb.Append(prop?.ToString() ?? NullPropertyLiteral);
                 }
                 else
                 {
@@ -240,7 +242,7 @@ namespace Chow.Logging
 
         #region Private Methods
 
-        void Log(LogLevel logLvl, Exception ex, string msg, params object?[] props)
+        void Log(LogLevel logLvl, Exception ex, string msg, params object[] props)
         {
             if (!IsEnabled() || logLvl < MinimumLogLevel)
                 return;
@@ -249,7 +251,7 @@ namespace Chow.Logging
             Log(logLvl, msg, props);
         }
 
-        void Log(LogLevel logLvl, string msg, params object?[] props)
+        void Log(LogLevel logLvl, string msg, params object[] props)
         {
             if (!IsEnabled() || logLvl < MinimumLogLevel)
                 return;

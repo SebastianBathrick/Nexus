@@ -20,14 +20,18 @@ namespace Chow.Interpretation
             return true;
         }
 
-        public static ChowValue ExecuteTopLevel(Chunk chunk) => ExecuteChunk(chunk) ?? new ChowNumber(SuccessExitCode);
+        public static ChowValue ExecuteTopLevel(Chunk chunk)
+        {
+            var result = ExecuteChunk(chunk);
+            return (object)result != null ? result : new ChowNumber(SuccessExitCode);
+        }
 
-        static ChowValue? ExecuteChunk(Chunk chunk)
+        static ChowValue ExecuteChunk(Chunk chunk)
         {
             var chunkIndex = ChunkStartIndex;
             var valStack = new FastStack<ChowValue>();
             var varStack = new VariableStack();
-            ChowValue? returnVal = null;
+            ChowValue returnVal = null;
 
             while (chunkIndex < chunk.Length)
             {
@@ -140,7 +144,7 @@ namespace Chow.Interpretation
             }
 
             // If no exit code was returned on the top-level then return the success exit code
-            returnVal ??= new ChowNumber(SuccessExitCode);
+            if ((object)returnVal == null) returnVal = new ChowNumber(SuccessExitCode);
             return returnVal;
         }
     }

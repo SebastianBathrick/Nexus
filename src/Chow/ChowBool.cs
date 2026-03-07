@@ -26,13 +26,13 @@ namespace Chow.Values
 
         public override bool IsType(ChowValueType type) => type == ChowValueType.Bool;
 
-        ChowNumber AsNumber() => new(ToDouble());
+        ChowNumber AsNumber() => new ChowNumber(ToDouble());
 
         ChowValue RightAsNumber(ChowValue right) => right is ChowBool rightBool ? rightBool.AsNumber() : right;
 
         protected override ChowValue Add(ChowValue right)
         {
-            if (right is not ChowNumber && right is not ChowBool)
+            if (!(right is ChowNumber) && !(right is ChowBool))
                 throw new InvalidOperationException($"Cannot add ChowBool and {right.GetType().Name}.");
 
             return AsNumber() + RightAsNumber(right);
@@ -40,7 +40,7 @@ namespace Chow.Values
 
         protected override ChowValue Subtract(ChowValue right)
         {
-            if (right is not ChowNumber && right is not ChowBool)
+            if (!(right is ChowNumber) && !(right is ChowBool))
                 throw new InvalidOperationException($"Cannot subtract ChowBool and {right.GetType().Name}.");
 
             return AsNumber() - RightAsNumber(right);
@@ -48,7 +48,7 @@ namespace Chow.Values
 
         protected override ChowValue Multiply(ChowValue right)
         {
-            if (right is not ChowNumber && right is not ChowBool)
+            if (!(right is ChowNumber) && !(right is ChowBool))
                 throw new InvalidOperationException($"Cannot multiply ChowBool and {right.GetType().Name}.");
 
             return AsNumber() * RightAsNumber(right);
@@ -56,7 +56,7 @@ namespace Chow.Values
 
         protected override ChowValue Divide(ChowValue right)
         {
-            if (right is not ChowNumber && right is not ChowBool)
+            if (!(right is ChowNumber) && !(right is ChowBool))
                 throw new InvalidOperationException($"Cannot divide ChowBool and {right.GetType().Name}.");
 
             return AsNumber() / RightAsNumber(right);
@@ -74,7 +74,7 @@ namespace Chow.Values
 
         protected override bool LessThan(ChowValue right)
         {
-            if (right is not ChowNumber && right is not ChowBool)
+            if (!(right is ChowNumber) && !(right is ChowBool))
                 throw new InvalidOperationException($"Cannot compare ChowBool and {right.GetType().Name}.");
 
             return AsNumber() < RightAsNumber(right);
@@ -82,7 +82,7 @@ namespace Chow.Values
 
         protected override bool GreaterThan(ChowValue right)
         {
-            if (right is not ChowNumber && right is not ChowBool)
+            if (!(right is ChowNumber) && !(right is ChowBool))
                 throw new InvalidOperationException($"Cannot compare ChowBool and {right.GetType().Name}.");
 
             return AsNumber() > RightAsNumber(right);
@@ -90,7 +90,7 @@ namespace Chow.Values
 
         protected override bool LessThanOrEqualTo(ChowValue right)
         {
-            if (right is not ChowNumber && right is not ChowBool)
+            if (!(right is ChowNumber) && !(right is ChowBool))
                 throw new InvalidOperationException($"Cannot compare ChowBool and {right.GetType().Name}.");
 
             return AsNumber() <= RightAsNumber(right);
@@ -98,7 +98,7 @@ namespace Chow.Values
 
         protected override bool GreaterThanOrEqualTo(ChowValue right)
         {
-            if (right is not ChowNumber && right is not ChowBool)
+            if (!(right is ChowNumber) && !(right is ChowBool))
                 throw new InvalidOperationException($"Cannot compare ChowBool and {right.GetType().Name}.");
 
             return AsNumber() >= RightAsNumber(right);

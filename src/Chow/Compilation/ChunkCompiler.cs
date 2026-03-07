@@ -13,17 +13,17 @@ namespace Chow.Compilation
 
         // Used as an is-dirty flag to avoid accidental reuse of instances       
         readonly BlockNode _blockNode;
-        readonly List<ChowValue> _constantList = new();
-        readonly List<Instruction> _instructions = new();
+        readonly List<ChowValue> _constantList = new List<ChowValue>();
+        readonly List<Instruction> _instructions = new List<Instruction>();
 
         // Replaces variable names with integers for easier serialization
-        readonly Dictionary<string, int> _varNumIdMap = new();
-        Chunk? _compiledChunk;
+        readonly Dictionary<string, int> _varNumIdMap = new Dictionary<string, int>();
+        Chunk _compiledChunk;
 
         // The VM will use integers in-place of their identifiers to locate variables from previous stack frames (tables will work differently)
         int _varId = FirstVariableId;
 
-        ChunkCompiler(BlockNode blockNode, KeyValuePair<string, int>[]? parentVars = null)
+        ChunkCompiler(BlockNode blockNode, KeyValuePair<string, int>[] parentVars = null)
         {
             _blockNode = blockNode;
 
@@ -38,10 +38,12 @@ namespace Chow.Compilation
 
         public static Chunk CompileTopLevel(Node root)
         {
-            if (root is not SyntaxTree tree)
+            var tree = root as SyntaxTree;
+            if (tree == null)
                 throw new ArgumentException($"{nameof(root)} is not a {nameof(SyntaxTree)}");
 
-            if (tree.TopLevelBlockNode is not BlockNode blockNode)
+            var blockNode = tree.TopLevelBlockNode as BlockNode;
+            if (blockNode == null)
                 throw new ArgumentException($"{nameof(tree.TopLevelBlockNode)} is not a {nameof(BlockNode)}");
 
             var rootCompiler = new ChunkCompiler(blockNode);
@@ -51,7 +53,7 @@ namespace Chow.Compilation
 
         void Compile()
         {
-            if (_compiledChunk is not null)
+            if (_compiledChunk != null)
                 throw new InvalidOperationException("A chunk has already been compiled");
 
             _instructions.Add(new Instruction(InstructionType.EnterScope));
@@ -97,7 +99,8 @@ namespace Chow.Compilation
 
         void AddReturnInstructions(Node node)
         {
-            if (node is not ReturnNode returnNode)
+            var returnNode = node as ReturnNode;
+            if (returnNode == null)
                 throw new ArgumentException("node is not a ReturnNode");
 
             AddExpressionInstructions(returnNode.Expression);
@@ -132,7 +135,8 @@ namespace Chow.Compilation
                 return;
             }
 
-            if (node is not ExpressionNode expression)
+            var expression = node as ExpressionNode;
+            if (expression == null)
             {
                 AddPushInstruction(node);
                 return;
@@ -162,7 +166,8 @@ namespace Chow.Compilation
                 return;
             }
 
-            if (node is not LiteralNode literal)
+            var literal = node as LiteralNode;
+            if (literal == null)
                 throw new InvalidOperationException($"Unsupported node type in push: {node.GetType().Name}");
 
             // Convert the token's lexeme to the data type determined by the token type
@@ -194,22 +199,22 @@ namespace Chow.Compilation
 
         static InstructionType ToOpType(ExpressionOperator op)
         {
-            return op switch
+            switch (op)
             {
-                ExpressionOperator.Addition => InstructionType.Add,
-                ExpressionOperator.Subtraction => InstructionType.Subtract,
-                ExpressionOperator.Multiplication => InstructionType.Multiply,
-                ExpressionOperator.Division => InstructionType.Divide,
-                ExpressionOperator.Inequality => InstructionType.NotEqualTo,
-                ExpressionOperator.Equality => InstructionType.EqualTo,
-                ExpressionOperator.GreaterThan => InstructionType.GreaterThan,
-                ExpressionOperator.GreaterThanOrEqual => InstructionType.GreaterThanOrEqualTo,
-                ExpressionOperator.LessThan => InstructionType.LessThan,
-                ExpressionOperator.LessThanOrEqual => InstructionType.LessThanOrEqualTo,
-                ExpressionOperator.LogicalAnd => InstructionType.And,
-                ExpressionOperator.LogicalOr => InstructionType.Or,
-                _ => throw new InvalidOperationException($"Unsupported operator: {op}")
-            };
+                case ExpressionOperator.Addition: return InstructionType.Add;
+                case ExpressionOperator.Subtraction: return InstructionType.Subtract;
+                case ExpressionOperator.Multiplication: return InstructionType.Multiply;
+                case ExpressionOperator.Division: return InstructionType.Divide;
+                case ExpressionOperator.Inequality: return InstructionType.NotEqualTo;
+                case ExpressionOperator.Equality: return InstructionType.EqualTo;
+                case ExpressionOperator.GreaterThan: return InstructionType.GreaterThan;
+                case ExpressionOperator.GreaterThanOrEqual: return InstructionType.GreaterThanOrEqualTo;
+                case ExpressionOperator.LessThan: return InstructionType.LessThan;
+                case ExpressionOperator.LessThanOrEqual: return InstructionType.LessThanOrEqualTo;
+                case ExpressionOperator.LogicalAnd: return InstructionType.And;
+                case ExpressionOperator.LogicalOr: return InstructionType.Or;
+                default: throw new InvalidOperationException($"Unsupported operator: {op}");
+            }
         }
 
         #endregion

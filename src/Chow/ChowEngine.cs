@@ -31,15 +31,15 @@ namespace Chow
         ///     The ChowValue returned by the top-level code. If the code does not execute a top-level return statement with
         ///     an expression, then it will return a ChowNumber containing a <see cref="VirtualMachine.SuccessExitCode" />.
         /// </returns>
-        public static ChowValue Run(string sourceCode, ILogger? logger = null)
+        public static ChowValue Run(string sourceCode, ILogger logger = null)
         {
             // Measures individual execution times for each step (lexing, syntax analysis, compilation, execution)
-            Stopwatch? stepTimer = null;
+            Stopwatch stepTimer = null;
 
-            // Measures total execution time for the entire pipeline 
-            Stopwatch? totTimer = null;
+            // Measures total execution time for the entire pipeline
+            Stopwatch totTimer = null;
 
-            if (logger is not null && logger.MinimumLogLevel > LogLevel.None)
+            if (logger != null && logger.MinimumLogLevel > LogLevel.None)
             {
                 stepTimer = new Stopwatch();
                 totTimer = new Stopwatch();
