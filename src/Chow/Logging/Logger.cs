@@ -190,36 +190,35 @@ namespace Chow.Logging
 
                 var tagStart = i + 1;
                 var tagLength = closingBrace - tagStart;
-                var tagSpan = labelFormat.AsSpan(tagStart, tagLength);
+                var tag = labelFormat.Substring(tagStart, tagLength);
 
-                var colonIndex = tagSpan.IndexOf(FormatSeparator);
-                ReadOnlySpan<char> tagName;
-                ReadOnlySpan<char> format;
+                var colonIndex = tag.IndexOf(FormatSeparator);
+                string tagName;
+                string format;
 
                 if (colonIndex >= 0)
                 {
-                    tagName = tagSpan.Slice(0, colonIndex);
-                    format = tagSpan.Slice(colonIndex + 1);
+                    tagName = tag.Substring(0, colonIndex);
+                    format = tag.Substring(colonIndex + 1);
                 }
                 else
                 {
-                    tagName = tagSpan;
-                    format = default;
+                    tagName = tag;
+                    format = null;
                 }
 
                 i = closingBrace;
 
-                if (tagName.SequenceEqual(LogLevelPlaceholder.AsSpan()) ||
-                    tagName.SequenceEqual(LevelPlaceholder.AsSpan()))
+                if (tagName == LogLevelPlaceholder || tagName == LevelPlaceholder)
                 {
                     sb.Append(level.ToString());
                 }
-                else if (tagName.SequenceEqual(TimestampPlaceholder.AsSpan()))
+                else if (tagName == TimestampPlaceholder)
                 {
-                    if (!format.IsEmpty)
+                    if (!string.IsNullOrEmpty(format))
                         try
                         {
-                            sb.Append(timestamp.ToString(format.ToString()));
+                            sb.Append(timestamp.ToString(format));
                         }
                         catch (FormatException)
                         {
@@ -230,7 +229,7 @@ namespace Chow.Logging
                 }
                 else
                 {
-                    sb.Append(OpenBrace).Append(tagSpan.ToString()).Append(CloseBrace);
+                    sb.Append(OpenBrace).Append(tag).Append(CloseBrace);
                 }
             }
 
