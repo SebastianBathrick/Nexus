@@ -39,17 +39,17 @@ namespace Chow.Interpretation
                     case InstructionType.EnterScope:
                         break;
                     case InstructionType.ExitScope:
-                        // Set to the instruction before which could be an enter scope instruction
                         var backTrackIndex = chunkIndex - 1;
+                        var seenVarIds = new HashSet<int>();
 
-                        // Remove each variable that was declared after the last enter scope instruction
                         while (chunk[backTrackIndex].OpType != InstructionType.EnterScope)
                         {
-                            if (chunk[backTrackIndex--].OpType == InstructionType.VariableAssignValue)
-                                varStack.Pop();
-
                             if (backTrackIndex < 0)
                                 throw new InvalidOperationException($"No {nameof(InstructionType.EnterScope)} instruction found");
+
+                            var backTrackOp = chunk[backTrackIndex--];
+                            if (backTrackOp.OpType == InstructionType.VariableAssignValue && seenVarIds.Add(backTrackOp.CacheId))
+                                varStack.Pop();
                         }
 
                         break;

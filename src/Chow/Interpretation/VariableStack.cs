@@ -11,8 +11,12 @@ namespace Chow.Interpretation
             var peekDepth = 0;
 
             while (peekDepth < Count)
+            {
                 if (Peek(peekDepth).Id == id)
                     return Peek(peekDepth);
+
+                peekDepth++;
+            }
 
             return null;
         }
