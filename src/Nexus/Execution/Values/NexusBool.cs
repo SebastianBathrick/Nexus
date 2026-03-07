@@ -4,8 +4,11 @@ namespace Nexus.Execution.Values
 {
     public class NexusBool : NexusValue
     {
+        public const int TrueIntValue = 1;
+        const int FalseIntValue = 0;
         public const double TrueValue = 1.0;
         public const double FalseValue = 0.0;
+
 
         readonly bool _val;
 
@@ -14,7 +17,12 @@ namespace Nexus.Execution.Values
             _val = val;
         }
 
+        public override int ToInt() => _val ? TrueIntValue : FalseIntValue;
         public override double ToDouble() => _val ? TrueValue : FalseValue;
+        public override bool ToBool() => _val;
+
+        public override bool IsType(NexusValueType type) => type == NexusValueType.Bool;
+        public override NexusValueType Type => NexusValueType.Bool;
 
         NexusNumber AsNumber() => new(ToDouble());
 

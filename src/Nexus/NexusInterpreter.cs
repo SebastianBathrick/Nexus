@@ -30,7 +30,7 @@ namespace Nexus
                 totTimer = new();
             }
             
-            logger.Debug("\n\nSource Code:\n\t{Code}\n", sourceCode);
+            logger?.Debug("\n\nSource Code:\n\t{Code}\n", sourceCode);
 
             // [Lexical analysis]=======================================================================================
             totTimer?.Start();

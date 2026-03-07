@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Nexus.Execution.Values;
 using Nexus.Parsing;
 using Nexus.Parsing.Expressions;
@@ -10,6 +11,7 @@ namespace Nexus.Compilation
     class ChunkCompiler
     {
         const int FirstVariableId = 0;
+        const int ConstantListIndexNotFound = -1;
 
         public Chunk Chunk => _compiledChunk ?? throw new InvalidOperationException("No chunk has been compiled");
 
@@ -138,15 +140,37 @@ namespace Nexus.Compilation
 
         void AddPushInstruction(Node node)
         {
-            if (node is LiteralNode literal)
+            if (node is not LiteralNode literal)
             {
-                var value = ParseLiteral(literal);
-                _constantList.Add(value);
-                _instructions.Add(new Instruction(InstructionType.PushConstant, _constantList.Count - 1));
+                _instructions.Add(new Instruction(InstructionType.PushConstant, ConstantListIndexNotFound));
                 return;
             }
 
-            throw new ArgumentException($"Cannot push constant for node type: {node.GetType().Name}");
+            // Convert the token's lexeme to the data type determined by the token type
+            var newVal = ParseLiteral(literal);
+            var constIndex = ConstantListIndexNotFound;
+
+            // Check for an existing constant that matches the exact value being pushed (NOT A REFERENCE AND NOT COERCED)
+            switch (newVal.Type)
+            {
+                case NexusValueType.Number:
+                    constIndex = _constantList.FindIndex(v => v.IsType(NexusValueType.Number) && v.ToDouble() == newVal.ToDouble());
+                    break;
+                case NexusValueType.Bool:
+                    constIndex = _constantList.FindIndex(v => v.IsType(NexusValueType.Bool) && v.ToBool() == newVal.ToBool());
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unsupported constant literal type: {newVal.Type}");
+            }
+
+            // If no existing constant was found, add the new value to the constant list and push its index
+            if (constIndex == ConstantListIndexNotFound)
+            {
+                constIndex = _constantList.Count;
+                _constantList.Add(newVal);
+            }
+
+            _instructions.Add(new Instruction(InstructionType.PushConstant, constIndex));
         }
 
         static InstructionType ToOpType(ExpressionOperator op)

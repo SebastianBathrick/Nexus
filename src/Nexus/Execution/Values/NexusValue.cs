@@ -7,8 +7,12 @@ namespace Nexus.Execution.Values
     /// </summary>
     public abstract class NexusValue
     {
-        public int ToInt() => (int)ToDouble();
+        public abstract int ToInt();
         public abstract double ToDouble();
+        public abstract bool ToBool();
+
+        public abstract bool IsType(NexusValueType type);
+        public abstract NexusValueType Type { get; }
 
         /// <summary>Returns the sum of this and <paramref name="right" />.</summary>
         protected abstract NexusValue Add(NexusValue right);
@@ -79,7 +83,6 @@ namespace Nexus.Execution.Values
         public static bool operator >=(NexusValue left, NexusValue right) => left.GreaterThanOrEqualTo(right);
 
         public override bool Equals(object? obj) => obj is NexusValue other && EqualTo(other);
-
         public abstract override int GetHashCode();
 
         public abstract override string ToString();
