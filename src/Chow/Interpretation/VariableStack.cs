@@ -6,7 +6,7 @@ namespace Chow.Interpretation
     {
         public VariableStack() : base() {}
 
-        public Variable? LookUp(int id)
+        public Variable LookUp(int id)
         {
             var peekDepth = 0;
 

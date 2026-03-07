@@ -42,7 +42,7 @@ namespace Chow.Parsing
 
         #region Statement Parsing Methods
 
-        static bool TryParseStatement(TokenCollection tkns, out Node? statementNode)
+        static bool TryParseStatement(TokenCollection tkns, out Node statementNode)
         {
             if (tkns.IsEmpty)
             {
@@ -282,29 +282,29 @@ namespace Chow.Parsing
         {
             /* Note: The not equals/inequality operator is handled by ParseComparisonExpression (caller)
              *       because it is split into two separate tokens ("is not"). So that's why it's absent here. */
-            return tokenType switch
+            switch (tokenType)
             {
-                TokenType.SymbolGreater => ExpressionOperator.GreaterThan,
-                TokenType.SymbolGreaterEqual => ExpressionOperator.GreaterThanOrEqual,
-                TokenType.SymbolLess => ExpressionOperator.LessThan,
-                TokenType.SymbolLessEqual => ExpressionOperator.LessThanOrEqual,
-                TokenType.KeywordEquals => ExpressionOperator.Equality,
-                TokenType.SymbolNotEqual => ExpressionOperator.Inequality,
-                _ => throw new ArgumentException($"Invalid comparison operator: {tokenType}")
-            };
+                case TokenType.SymbolGreater: return ExpressionOperator.GreaterThan;
+                case TokenType.SymbolGreaterEqual: return ExpressionOperator.GreaterThanOrEqual;
+                case TokenType.SymbolLess: return ExpressionOperator.LessThan;
+                case TokenType.SymbolLessEqual: return ExpressionOperator.LessThanOrEqual;
+                case TokenType.KeywordEquals: return ExpressionOperator.Equality;
+                case TokenType.SymbolNotEqual: return ExpressionOperator.Inequality;
+                default: throw new ArgumentException($"Invalid comparison operator: {tokenType}");
+            }
         }
 
 
         static ExpressionOperator GetArithmeticOperationType(TokenType tokenType)
         {
-            return tokenType switch
+            switch (tokenType)
             {
-                TokenType.SymbolPlus => ExpressionOperator.Addition,
-                TokenType.SymbolMinus => ExpressionOperator.Subtraction,
-                TokenType.SymbolMultiply => ExpressionOperator.Multiplication,
-                TokenType.SymbolDivide => ExpressionOperator.Division,
-                _ => throw new ArgumentException($"Invalid arithmetic operator: {tokenType}")
-            };
+                case TokenType.SymbolPlus: return ExpressionOperator.Addition;
+                case TokenType.SymbolMinus: return ExpressionOperator.Subtraction;
+                case TokenType.SymbolMultiply: return ExpressionOperator.Multiplication;
+                case TokenType.SymbolDivide: return ExpressionOperator.Division;
+                default: throw new ArgumentException($"Invalid arithmetic operator: {tokenType}");
+            }
         }
 
         #endregion

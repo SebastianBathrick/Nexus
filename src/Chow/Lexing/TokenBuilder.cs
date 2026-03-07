@@ -4,7 +4,8 @@ namespace Chow.Lexing
 {
     class TokenBuilder
     {
-        StringBuilder? _builder;
+        // Lazy-initialize as not all tokens require their lexeme to be cached
+        StringBuilder _builder;
         TokenType _tokenType;
 
         public TokenBuilder(TokenType tokenType = TokenType.None)
@@ -23,7 +24,8 @@ namespace Chow.Lexing
 
         public void Append(char c)
         {
-            _builder ??= new StringBuilder();
+            if (_builder == null)
+                _builder = new StringBuilder();
             _builder.Append(c);
         }
 

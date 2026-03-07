@@ -4,7 +4,7 @@ namespace Chow.Lexing
 {
     class TokenCollection
     {
-        readonly List<Token> _tokens = new();
+        readonly List<Token> _tokens = new List<Token>();
         int _index;
 
         public IReadOnlyList<Token> Tokens => _tokens;

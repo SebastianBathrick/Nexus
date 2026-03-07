@@ -28,23 +28,26 @@ namespace Chow.Parsing.Expressions
         public Node Left { get; }
         public Node Right { get; }
 
-        internal static string GetOperatorLabel(ExpressionOperator op) => op switch
+        internal static string GetOperatorLabel(ExpressionOperator op)
         {
-            ExpressionOperator.Addition => OpAdd,
-            ExpressionOperator.Subtraction => OpSubtract,
-            ExpressionOperator.Multiplication => OpMultiply,
-            ExpressionOperator.Division => OpDivide,
-            ExpressionOperator.LogicalAnd => OpAnd,
-            ExpressionOperator.LogicalOr => OpOr,
-            ExpressionOperator.GreaterThan => OpGreaterThan,
-            ExpressionOperator.GreaterThanOrEqual => OpGreaterThanEqual,
-            ExpressionOperator.LessThan => OpLessThan,
-            ExpressionOperator.LessThanOrEqual => OpLessThanEqual,
-            ExpressionOperator.Equality => OpEquality,
-            ExpressionOperator.Inequality => OpInequality,
-            ExpressionOperator.LogicalNot => OpNot,
-            _ => throw new InvalidOperationException($"Unsupported operator: {op}")
-        };
+            switch (op)
+            {
+                case ExpressionOperator.Addition: return OpAdd;
+                case ExpressionOperator.Subtraction: return OpSubtract;
+                case ExpressionOperator.Multiplication: return OpMultiply;
+                case ExpressionOperator.Division: return OpDivide;
+                case ExpressionOperator.LogicalAnd: return OpAnd;
+                case ExpressionOperator.LogicalOr: return OpOr;
+                case ExpressionOperator.GreaterThan: return OpGreaterThan;
+                case ExpressionOperator.GreaterThanOrEqual: return OpGreaterThanEqual;
+                case ExpressionOperator.LessThan: return OpLessThan;
+                case ExpressionOperator.LessThanOrEqual: return OpLessThanEqual;
+                case ExpressionOperator.Equality: return OpEquality;
+                case ExpressionOperator.Inequality: return OpInequality;
+                case ExpressionOperator.LogicalNot: return OpNot;
+                default: throw new InvalidOperationException($"Unsupported operator: {op}");
+            }
+        }
 
         internal override string ToDebugString(int depth)
         {

@@ -13,7 +13,7 @@ namespace Chow.Interpretation
 
         #endregion
 
-        T[]? _vals = null;
+        T[] _vals = null;
         int _len = 0;
 
         public int Count => _len;
@@ -28,7 +28,8 @@ namespace Chow.Interpretation
 
         public void Push(T val)
         {
-            _vals ??= new T[MinCapacity];
+            if (_vals == null)
+                _vals = new T[MinCapacity];
 
             if (_len == _vals.Length)
                 Resize(_vals.Length * GrowthFactor);
