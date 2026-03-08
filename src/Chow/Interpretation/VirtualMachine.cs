@@ -29,7 +29,7 @@ namespace Chow.Interpretation
         static ChowValue ExecuteChunk(Chunk chunk)
         {
             var chunkIndex = ChunkStartIndex;
-            var valStack = new FastStack<ChowValue>();
+            var valStack = new FastStack<TaggedUnion>();
             var varStack = new VariableStack();
             ChowValue returnVal = null;
 

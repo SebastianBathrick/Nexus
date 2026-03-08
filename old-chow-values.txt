@@ -1,0 +1,325 @@
+# while you are working on the tagged union, just avoid using string for now
+
+namespace Chow.Values
+{
+    /// <summary>
+    ///     Represents a value in the ChowEngine programming language created during compilation and used
+    ///     during execution. This is the base class for all values in the ChowEngine programming language.
+    ///     This can represent a number, boolean, string, function, or table.
+    /// </summary>
+    public abstract class ChowValue
+    {
+        public abstract ChowValueType Type { get; }
+
+        public abstract int ToInt();
+
+        public abstract double ToDouble();
+
+        public abstract bool ToBool();
+
+        public abstract bool IsType(ChowValueType type);
+
+        /// <summary>Returns the sum of this and <paramref name="right" />.</summary>
+        protected abstract ChowValue Add(ChowValue right);
+
+        /// <summary>Returns the difference of this and <paramref name="right" />.</summary>
+        protected abstract ChowValue Subtract(ChowValue right);
+
+        /// <summary>Returns the product of this and <paramref name="right" />.</summary>
+        protected abstract ChowValue Multiply(ChowValue right);
+
+        /// <summary>Returns the quotient of this and <paramref name="right" />.</summary>
+        protected abstract ChowValue Divide(ChowValue right);
+
+        /// <summary>Returns whether this is equal to <paramref name="right" />.</summary>
+        protected abstract bool EqualTo(ChowValue right);
+
+        /// <summary>Returns whether this is equal to <paramref name="right" />.</summary>
+        protected abstract bool EqualTo(double right);
+
+        /// <summary>Returns whether this is less than <paramref name="right" />.</summary>
+        protected abstract bool LessThan(ChowValue right);
+
+        /// <summary>Returns whether this is greater than <paramref name="right" />.</summary>
+        protected abstract bool GreaterThan(ChowValue right);
+
+        /// <summary>Returns whether this is less than or equal to <paramref name="right" />.</summary>
+        protected abstract bool LessThanOrEqualTo(ChowValue right);
+
+        /// <summary>Returns whether this is greater than or equal to <paramref name="right" />.</summary>
+        protected abstract bool GreaterThanOrEqualTo(ChowValue right);
+
+        /// <summary>Adds two values (uses left's <see cref="Add" />).</summary>
+        public static ChowValue operator +(ChowValue left, ChowValue right) => left.Add(right);
+
+        /// <summary>Subtracts two values (uses left's <see cref="Subtract" />).</summary>
+        public static ChowValue operator -(ChowValue left, ChowValue right) => left.Subtract(right);
+
+        /// <summary>Multiplies two values (uses left's <see cref="Multiply" />).</summary>
+        public static ChowValue operator *(ChowValue left, ChowValue right) => left.Multiply(right);
+
+        /// <summary>Divides two values (uses left's <see cref="Divide" />).</summary>
+        public static ChowValue operator /(ChowValue left, ChowValue right) => left.Divide(right);
+
+        /// <summary>Equality (uses left's <see cref="EqualTo(ChowValue)" />).</summary>
+        public static bool operator ==(ChowValue left, ChowValue right) => left.EqualTo(right);
+
+        /// <summary>Inequality (uses left's <see cref="EqualTo(ChowValue)" />).</summary>
+        public static bool operator !=(ChowValue left, ChowValue right) => !left.EqualTo(right);
+
+        public static bool operator ==(ChowValue left, double right) => left.EqualTo(right);
+
+        public static bool operator !=(ChowValue left, double right) => !left.EqualTo(right);
+
+        public static bool operator ==(double left, ChowValue right) => right.EqualTo(left);
+
+        public static bool operator !=(double left, ChowValue right) => !right.EqualTo(left);
+
+        /// <summary>Less-than (uses left's <see cref="LessThan" />).</summary>
+        public static bool operator <(ChowValue left, ChowValue right) => left.LessThan(right);
+
+        /// <summary>Greater-than (uses left's <see cref="GreaterThan" />).</summary>
+        public static bool operator >(ChowValue left, ChowValue right) => left.GreaterThan(right);
+
+        /// <summary>Less-than-or-equal (uses left's <see cref="LessThanOrEqualTo" />).</summary>
+        public static bool operator <=(ChowValue left, ChowValue right) => left.LessThanOrEqualTo(right);
+
+        /// <summary>Greater-than-or-equal (uses left's <see cref="GreaterThanOrEqualTo" />).</summary>
+        public static bool operator >=(ChowValue left, ChowValue right) => left.GreaterThanOrEqualTo(right);
+
+        public override bool Equals(object obj) => obj is ChowValue other && EqualTo(other);
+
+        public abstract override int GetHashCode();
+
+        public abstract override string ToString();
+    }
+}
+
+using System;
+using System.Globalization;
+namespace Chow.Values
+{
+    public class ChowNumber : ChowValue
+    {
+        const int BoolTrueIntValue = 1;
+        readonly double _val;
+
+        public ChowNumber(double val)
+        {
+            _val = val;
+        }
+
+        public ChowNumber(int val)
+        {
+            _val = val;
+        }
+
+        public override ChowValueType Type => ChowValueType.Number;
+
+        public override int ToInt() => (int)_val;
+
+        public override double ToDouble() => _val;
+
+        public override bool ToBool() => (int)_val == BoolTrueIntValue;
+
+        public override bool IsType(ChowValueType type) => type == ChowValueType.Number;
+
+        static double AsDouble(ChowValue v)
+        {
+            if (v is ChowNumber n) return n._val;
+            if (v is ChowBool b) return b == new ChowBool(true) ? 1.0 : 0.0;
+
+            throw new InvalidOperationException($"Cannot coerce {v.GetType().Name} to number.");
+        }
+
+        protected override ChowValue Add(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot add ChowNumber and {right.GetType().Name}.");
+
+            return new ChowNumber(_val + AsDouble(right));
+        }
+
+        protected override ChowValue Subtract(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot subtract ChowNumber and {right.GetType().Name}.");
+
+            return new ChowNumber(_val - AsDouble(right));
+        }
+
+        protected override ChowValue Multiply(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot multiply ChowNumber and {right.GetType().Name}.");
+
+            return new ChowNumber(_val * AsDouble(right));
+        }
+
+        protected override ChowValue Divide(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot divide ChowNumber and {right.GetType().Name}.");
+
+            return new ChowNumber(_val / AsDouble(right));
+        }
+
+        protected override bool EqualTo(ChowValue right)
+        {
+            if (right is ChowNumber rNum) return _val.Equals(rNum._val);
+            if (right is ChowBool) return _val.Equals(AsDouble(right));
+
+            return false;
+        }
+
+        protected override bool EqualTo(double right) => _val.Equals(right);
+
+        protected override bool LessThan(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot compare ChowNumber with {right.GetType().Name}.");
+
+            return _val < AsDouble(right);
+        }
+
+        protected override bool GreaterThan(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot compare ChowNumber with {right.GetType().Name}.");
+
+            return _val > AsDouble(right);
+        }
+
+        protected override bool LessThanOrEqualTo(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot compare ChowNumber with {right.GetType().Name}.");
+
+            return _val <= AsDouble(right);
+        }
+
+        protected override bool GreaterThanOrEqualTo(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot compare ChowNumber with {right.GetType().Name}.");
+
+            return _val >= AsDouble(right);
+        }
+
+        public override int GetHashCode() => _val.GetHashCode();
+
+        public override string ToString() => _val.ToString(CultureInfo.InvariantCulture);
+    }
+}
+
+using System;
+namespace Chow.Values
+{
+    public class ChowBool : ChowValue
+    {
+        public const int TrueIntValue = 1  
+        const int FalseIntValue = 0;
+        public const double TrueValue = 1.0;
+        public const double FalseValue = 0.0;
+
+
+        readonly bool _val;
+
+        public ChowBool(bool val)
+        {
+            _val = val;
+        }
+
+        public override ChowValueType Type => ChowValueType.Bool;
+
+        public override int ToInt() => _val ? TrueIntValue : FalseIntValue;
+
+        public override double ToDouble() => _val ? TrueValue : FalseValue;
+
+        public override bool ToBool() => _val;
+
+        public override bool IsType(ChowValueType type) => type == ChowValueType.Bool;
+
+        ChowNumber AsNumber() => new ChowNumber(ToDouble());
+
+        ChowValue RightAsNumber(ChowValue right) => right is ChowBool rightBool ? rightBool.AsNumber() : right;
+
+        protected override ChowValue Add(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot add ChowBool and {right.GetType().Name}.");
+
+            return AsNumber() + RightAsNumber(right);
+        }
+
+        protected override ChowValue Subtract(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot subtract ChowBool and {right.GetType().Name}.");
+
+            return AsNumber() - RightAsNumber(right);
+        }
+
+        protected override ChowValue Multiply(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot multiply ChowBool and {right.GetType().Name}.");
+
+            return AsNumber() * RightAsNumber(right);
+        }
+
+        protected override ChowValue Divide(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot divide ChowBool and {right.GetType().Name}.");
+
+            return AsNumber() / RightAsNumber(right);
+        }
+
+        protected override bool EqualTo(ChowValue right)
+        {
+            if (right is ChowBool rightBool) return _val == rightBool._val;
+            if (right is ChowNumber) return AsNumber() == right;
+
+            return false;
+        }
+
+        protected override bool EqualTo(double right) => ToDouble().Equals(right);
+
+        protected override bool LessThan(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot compare ChowBool and {right.GetType().Name}.");
+
+            return AsNumber() < RightAsNumber(right);
+        }
+
+        protected override bool GreaterThan(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot compare ChowBool and {right.GetType().Name}.");
+
+            return AsNumber() > RightAsNumber(right);
+        }
+
+        protected override bool LessThanOrEqualTo(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot compare ChowBool and {right.GetType().Name}.");
+
+            return AsNumber() <= RightAsNumber(right);
+        }
+
+        protected override bool GreaterThanOrEqualTo(ChowValue right)
+        {
+            if (!(right is ChowNumber) && !(right is ChowBool))
+                throw new InvalidOperationException($"Cannot compare ChowBool and {right.GetType().Name}.");
+
+            return AsNumber() >= RightAsNumber(right);
+        }
+
+        public override int GetHashCode() => _val.GetHashCode();
+
+        public override string ToString() => _val ? "true" : "false";
+    }
+}

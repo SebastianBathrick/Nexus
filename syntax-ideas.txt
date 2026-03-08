@@ -1,0 +1,44 @@
+# ==[TABLE EXAMPLE]====================================================
+
+myRecord = [
+	firstName: "John"
+	lastName: "Smith"
+	birthday: [month: 12 day: 4 year: 1992]
+	_lastFourSocial: 3324
+
+	# The function when accessed
+	getFullName: (prefix) {
+		fullName =  firstName + lastName
+		return prefix + " " + fullName
+	}	
+
+	toText: (prefix) {
+    	return 
+		"Name: " + getFullName(prefix) + 
+		"Birthday: " + birthday.month + "/" + 
+		birthday.day + "/" + birthday.year +
+    	"Last 4 of SSN: " + _lastFourSocial
+   }
+
+   hopesAndDreams: () 
+	   return false
+]
+
+# ==[ACCESSING TABLE ELEMENTS]=========================================
+
+# --(Indexes)----------------------------------------------------------
+print(myRecord[1]) # Output: John
+myRecord[1] = "King"
+print(myRecord[1]) # Output: King
+
+# --(Name Runtime Lookup)---------------------------------------------
+print(myRecord["_lastFourSocial"]) # Output: 3324
+
+# --(Dot Notation)----------------------------------------------------
+
+funcVar = myRecord.toText
+
+fullName = myRecord.getFullName("Mr.")
+print(fullName)
+
+# Even without parameters, the function still has to be called with parentheses
