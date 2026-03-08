@@ -1,4 +1,3 @@
-using Chow.Values;
 namespace Chow.Interpretation
 {
     class Variable

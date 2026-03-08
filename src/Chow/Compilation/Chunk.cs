@@ -1,13 +1,13 @@
 using System.Text;
-using Chow.Values;
+using Chow.Interpretation;
 namespace Chow.Compilation
 {
     class Chunk
     {
-        readonly ChowValue[] _constsCache;
+        readonly TaggedUnion[] _constsCache;
         readonly Instruction[] _instructions;
 
-        public Chunk(Instruction[] instructions, ChowValue[] constsCache)
+        public Chunk(Instruction[] instructions, TaggedUnion[] constsCache)
         {
             _instructions = instructions;
             _constsCache = constsCache;
@@ -17,7 +17,7 @@ namespace Chow.Compilation
 
         public Instruction this[int index] => _instructions[index];
 
-        public ChowValue GetConstant(int index) => _constsCache[index];
+        public TaggedUnion GetConstant(int index) => _constsCache[index];
 
         public override string ToString()
         {

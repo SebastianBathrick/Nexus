@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace Chow.Interpretation
 {
-    struct TaggedUnion
+    public struct TaggedUnion
     {
         #region Constants
 
@@ -261,5 +261,5 @@ namespace Chow.Interpretation
         #endregion
     }
 
-    enum TagType { Bool, Number, String }
+    public enum TagType { Bool, Number, String }
 }

@@ -1,6 +1,5 @@
 using Chow.Compilation;
 using Chow.Interpretation;
-using Chow.Values;
 namespace Chow.Tests.Execution;
 
 [TestFixture]
@@ -9,7 +8,7 @@ public class VirtualMachineTests
     [Test]
     public void ExecuteChunk_PushConstantThenReturn_ReturnsThatConstant()
     {
-        var constants = new ChowValue[] { new ChowNumber(42) };
+        var constants = new TaggedUnion[] { new TaggedUnion((double)42) };
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
@@ -26,7 +25,7 @@ public class VirtualMachineTests
     [Test]
     public void ExecuteChunk_PushTwoConstantsAddReturn_ReturnsSum()
     {
-        var constants = new ChowValue[] { new ChowNumber(3), new ChowNumber(7) };
+        var constants = new TaggedUnion[] { new TaggedUnion((double)3), new TaggedUnion((double)7) };
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
@@ -45,7 +44,7 @@ public class VirtualMachineTests
     [Test]
     public void ExecuteChunk_Subtract_ReturnsDifference()
     {
-        var constants = new ChowValue[] { new ChowNumber(10), new ChowNumber(3) };
+        var constants = new TaggedUnion[] { new TaggedUnion((double)10), new TaggedUnion((double)3) };
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
@@ -64,7 +63,7 @@ public class VirtualMachineTests
     [Test]
     public void ExecuteChunk_Multiply_ReturnsProduct()
     {
-        var constants = new ChowValue[] { new ChowNumber(4), new ChowNumber(5) };
+        var constants = new TaggedUnion[] { new TaggedUnion((double)4), new TaggedUnion((double)5) };
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
@@ -83,7 +82,7 @@ public class VirtualMachineTests
     [Test]
     public void ExecuteChunk_Divide_ReturnsQuotient()
     {
-        var constants = new ChowValue[] { new ChowNumber(20), new ChowNumber(4) };
+        var constants = new TaggedUnion[] { new TaggedUnion((double)20), new TaggedUnion((double)4) };
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
@@ -102,7 +101,7 @@ public class VirtualMachineTests
     [Test]
     public void ExecuteChunk_EqualTo_ReturnsTrueWhenEqual()
     {
-        var constants = new ChowValue[] { new ChowNumber(1), new ChowNumber(1) };
+        var constants = new TaggedUnion[] { new TaggedUnion((double)1), new TaggedUnion((double)1) };
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
@@ -115,14 +114,14 @@ public class VirtualMachineTests
 
         var chunk = new Chunk(instructions, constants);
         var result = VirtualMachine.ExecuteTopLevel(chunk);
-        Assert.That(result, Is.InstanceOf<ChowBool>());
+        Assert.That(result.Tag, Is.EqualTo(TagType.Bool));
         Assert.That(result.ToString(), Is.EqualTo("true"));
     }
 
     [Test]
     public void ExecuteChunk_NotEqualTo_ReturnsTrueWhenDifferent()
     {
-        var constants = new ChowValue[] { new ChowNumber(1), new ChowNumber(2) };
+        var constants = new TaggedUnion[] { new TaggedUnion((double)1), new TaggedUnion((double)2) };
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
@@ -141,7 +140,7 @@ public class VirtualMachineTests
     [Test]
     public void ExecuteChunk_LessThan_ReturnsBool()
     {
-        var constants = new ChowValue[] { new ChowNumber(1), new ChowNumber(2) };
+        var constants = new TaggedUnion[] { new TaggedUnion((double)1), new TaggedUnion((double)2) };
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
@@ -160,7 +159,7 @@ public class VirtualMachineTests
     [Test]
     public void ExecuteChunk_GreaterThan_ReturnsBool()
     {
-        var constants = new ChowValue[] { new ChowNumber(3), new ChowNumber(2) };
+        var constants = new TaggedUnion[] { new TaggedUnion((double)3), new TaggedUnion((double)2) };
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
@@ -179,7 +178,7 @@ public class VirtualMachineTests
     [Test]
     public void ExecuteChunk_And_ReturnsLogicalAnd()
     {
-        var constants = new ChowValue[] { new ChowBool(true), new ChowBool(false) };
+        var constants = new TaggedUnion[] { new TaggedUnion(true), new TaggedUnion(false) };
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
@@ -198,7 +197,7 @@ public class VirtualMachineTests
     [Test]
     public void ExecuteChunk_Or_ReturnsLogicalOr()
     {
-        var constants = new ChowValue[] { new ChowBool(true), new ChowBool(false) };
+        var constants = new TaggedUnion[] { new TaggedUnion(true), new TaggedUnion(false) };
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
@@ -217,7 +216,7 @@ public class VirtualMachineTests
     [Test]
     public void ExecuteChunk_Not_ReturnsNegatedBool()
     {
-        var constants = new ChowValue[] { new ChowBool(false) };
+        var constants = new TaggedUnion[] { new TaggedUnion(false) };
         var instructions = new[]
         {
             new Instruction(InstructionType.EnterScope),
@@ -236,7 +235,7 @@ public class VirtualMachineTests
     public void ExecuteChunk_UnknownOpType_ThrowsInvalidOperationException()
     {
         var instructions = new[] { new Instruction((InstructionType)999) };
-        var chunk = new Chunk(instructions, Array.Empty<ChowValue>());
+        var chunk = new Chunk(instructions, Array.Empty<TaggedUnion>());
         Assert.Throws<InvalidOperationException>(() => VirtualMachine.ExecuteTopLevel(chunk));
     }
 }

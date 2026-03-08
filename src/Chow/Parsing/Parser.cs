@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Chow.Lexing;
 using Chow.Parsing.Expressions;
 using Chow.Parsing.Statements;
-using Chow.Values;
 namespace Chow.Parsing
 {
     class Parser
@@ -269,11 +268,11 @@ namespace Chow.Parsing
             if (tkns.IsOfType(TokenType.KeywordFalse))
             {
                 tkns.Consume();
-                return new NumberLiteralNode(-ChowBool.FalseValue);
+                return new NumberLiteralNode(-FalseBoolToNumberValue);
             }
 
             return new ExpressionNode(ExpressionOperator.Multiplication,
-                new NumberLiteralNode(-ChowBool.TrueValue), ParseFactor(tkns));
+                new NumberLiteralNode(-TrueBoolToNumberValue), ParseFactor(tkns));
         }
 
         #region TokenType to ExpressionOperator Methods

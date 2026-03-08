@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using Chow.Compilation;
-using Chow.Values;
 namespace Chow.Interpretation
 {
     class VirtualMachine
@@ -9,29 +7,17 @@ namespace Chow.Interpretation
         public const int SuccessExitCode = 0;
         const int ChunkStartIndex = 0;
 
-        static bool IsTruthy(ChowValue v)
+        public static TaggedUnion ExecuteTopLevel(Chunk chunk)
         {
-            if (v is ChowBool)
-                return v != new ChowBool(false);
-
-            if (v is ChowNumber)
-                return v != new ChowNumber(0);
-
-            return true;
+            return ExecuteChunk(chunk);
         }
 
-        public static ChowValue ExecuteTopLevel(Chunk chunk)
-        {
-            var result = ExecuteChunk(chunk);
-            return (object)result != null ? result : new ChowNumber(SuccessExitCode);
-        }
-
-        static ChowValue ExecuteChunk(Chunk chunk)
+        static TaggedUnion ExecuteChunk(Chunk chunk)
         {
             var chunkIndex = ChunkStartIndex;
             var valStack = new FastStack<TaggedUnion>();
             var varStack = new VariableStack();
-            ChowValue returnVal = null;
+            TaggedUnion? returnVal = null;
 
             while (chunkIndex < chunk.Length)
             {
@@ -43,19 +29,8 @@ namespace Chow.Interpretation
                     case InstructionType.EnterScope:
                         break;
                     case InstructionType.ExitScope:
-                        var backTrackIndex = chunkIndex - 1;
-                        var seenVarIds = new HashSet<int>();
-
-                        while (chunk[backTrackIndex].OpType != InstructionType.EnterScope)
-                        {
-                            if (backTrackIndex < 0)
-                                throw new InvalidOperationException($"No {nameof(InstructionType.EnterScope)} instruction found");
-
-                            var backTrackOp = chunk[backTrackIndex--];
-                            if (backTrackOp.OpType == InstructionType.VariableAssignValue && seenVarIds.Add(backTrackOp.CacheId))
-                                varStack.Pop();
-                        }
-
+                        for (var i = 0; i < op.CacheId; i++)
+                            varStack.Pop();
                         break;
 
                     // [Expression Instructions]================================================================================
@@ -63,55 +38,67 @@ namespace Chow.Interpretation
                         valStack.Push(chunk.GetConstant(op.CacheId));
                         break;
                     case InstructionType.Add:
-                        ChowValue rAdd = valStack.Pop(), lAdd = valStack.Pop();
+                        var rAdd = valStack.Pop();
+                        var lAdd = valStack.Pop();
                         valStack.Push(lAdd + rAdd);
                         break;
                     case InstructionType.Subtract:
-                        ChowValue rSub = valStack.Pop(), lSub = valStack.Pop();
+                        var rSub = valStack.Pop();
+                        var lSub = valStack.Pop();
                         valStack.Push(lSub - rSub);
                         break;
                     case InstructionType.Multiply:
-                        ChowValue rMul = valStack.Pop(), lMul = valStack.Pop();
+                        var rMul = valStack.Pop();
+                        var lMul = valStack.Pop();
                         valStack.Push(lMul * rMul);
                         break;
                     case InstructionType.Divide:
-                        ChowValue rDiv = valStack.Pop(), lDiv = valStack.Pop();
+                        var rDiv = valStack.Pop();
+                        var lDiv = valStack.Pop();
                         valStack.Push(lDiv / rDiv);
                         break;
                     case InstructionType.EqualTo:
-                        ChowValue rEq = valStack.Pop(), lEq = valStack.Pop();
-                        valStack.Push(new ChowBool(lEq == rEq));
+                        var rEq = valStack.Pop();
+                        var lEq = valStack.Pop();
+                        valStack.Push(lEq == rEq);
                         break;
                     case InstructionType.NotEqualTo:
-                        ChowValue rNe = valStack.Pop(), lNe = valStack.Pop();
-                        valStack.Push(new ChowBool(lNe != rNe));
+                        var rNe = valStack.Pop();
+                        var lNe = valStack.Pop();
+                        valStack.Push(lNe != rNe);
                         break;
                     case InstructionType.Not:
-                        valStack.Push(new ChowBool(!IsTruthy(valStack.Pop())));
+                        valStack.Push(TaggedUnion.Not(valStack.Pop()));
                         break;
                     case InstructionType.LessThan:
-                        ChowValue rLt = valStack.Pop(), lLt = valStack.Pop();
-                        valStack.Push(new ChowBool(lLt < rLt));
+                        var rLt = valStack.Pop();
+                        var lLt = valStack.Pop();
+                        valStack.Push(lLt < rLt);
                         break;
                     case InstructionType.GreaterThan:
-                        ChowValue rGt = valStack.Pop(), lGt = valStack.Pop();
-                        valStack.Push(new ChowBool(lGt > rGt));
+                        var rGt = valStack.Pop();
+                        var lGt = valStack.Pop();
+                        valStack.Push(lGt > rGt);
                         break;
                     case InstructionType.GreaterThanOrEqualTo:
-                        ChowValue rGe = valStack.Pop(), lGe = valStack.Pop();
-                        valStack.Push(new ChowBool(lGe >= rGe));
+                        var rGe = valStack.Pop();
+                        var lGe = valStack.Pop();
+                        valStack.Push(lGe >= rGe);
                         break;
                     case InstructionType.LessThanOrEqualTo:
-                        ChowValue rLe = valStack.Pop(), lLe = valStack.Pop();
-                        valStack.Push(new ChowBool(lLe <= rLe));
+                        var rLe = valStack.Pop();
+                        var lLe = valStack.Pop();
+                        valStack.Push(lLe <= rLe);
                         break;
                     case InstructionType.And:
-                        ChowValue rAnd = valStack.Pop(), lAnd = valStack.Pop();
-                        valStack.Push(new ChowBool(IsTruthy(lAnd) && IsTruthy(rAnd)));
+                        var rAnd = valStack.Pop();
+                        var lAnd = valStack.Pop();
+                        valStack.Push(TaggedUnion.And(lAnd, rAnd));
                         break;
                     case InstructionType.Or:
-                        ChowValue rOr = valStack.Pop(), lOr = valStack.Pop();
-                        valStack.Push(new ChowBool(IsTruthy(lOr) || IsTruthy(rOr)));
+                        var rOr = valStack.Pop();
+                        var lOr = valStack.Pop();
+                        valStack.Push(TaggedUnion.Or(lOr, rOr));
                         break;
 
                     // [Statement Instructions]================================================================================
@@ -123,7 +110,7 @@ namespace Chow.Interpretation
                     case InstructionType.VariableAssignValue:
                         var targetVar = varStack.LookUp(op.CacheId);
                         var assignVal = valStack.Pop();
-                        
+
                         if (targetVar == null)
                             varStack.Push(new Variable(op.CacheId, assignVal));
                         else
@@ -144,8 +131,8 @@ namespace Chow.Interpretation
             }
 
             // If no exit code was returned on the top-level then return the success exit code
-            if ((object)returnVal == null) returnVal = new ChowNumber(SuccessExitCode);
-            return returnVal;
+            if (!returnVal.HasValue) returnVal = new TaggedUnion(SuccessExitCode);
+            return returnVal.Value;
         }
     }
 }

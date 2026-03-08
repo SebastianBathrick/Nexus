@@ -1,5 +1,4 @@
 using Chow.Interpretation;
-using Chow.Values;
 
 namespace Chow.Tests;
 
@@ -15,8 +14,7 @@ public class ChowInterpreterTests
     static void AssertRunBool(string source, bool expected)
     {
         var result = ChowEngine.Run(source);
-        Assert.That(result, Is.InstanceOf<ChowBool>());
-        Assert.That(((ChowBool)result).ToString(), Is.EqualTo(expected ? "true" : "false"));
+        Assert.That(result.ToString(), Is.EqualTo(expected ? "true" : "false"));
     }
 
     // Arithmetic
@@ -783,7 +781,7 @@ public class ChowInterpreterTests
     public void Run_EmptyInput_ReturnsSuccessCode()
     {
         var result = ChowEngine.Run("");
-        Assert.That(result, Is.InstanceOf<ChowNumber>());
+        Assert.That(result.Tag, Is.EqualTo(TagType.Number));
         Assert.That(result.ToString(), Is.EqualTo(VirtualMachine.SuccessExitCode.ToString()));
     }
 }

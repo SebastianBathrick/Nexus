@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Chow.Interpretation;
 using Chow.Parsing;
 using Chow.Parsing.Expressions;
 using Chow.Parsing.Statements;
-using Chow.Values;
 namespace Chow.Compilation
 {
     class ChunkCompiler
@@ -11,9 +11,9 @@ namespace Chow.Compilation
         const int FirstVariableId = 0;
         const int ConstantListIndexNotFound = -1;
 
-        // Used as an is-dirty flag to avoid accidental reuse of instances       
+        // Used as an is-dirty flag to avoid accidental reuse of instances
         readonly BlockNode _blockNode;
-        readonly List<ChowValue> _constantList = new List<ChowValue>();
+        readonly List<TaggedUnion> _constantList = new List<TaggedUnion>();
         readonly List<Instruction> _instructions = new List<Instruction>();
 
         // Replaces variable names with integers for easier serialization
@@ -75,8 +75,9 @@ namespace Chow.Compilation
                 throw new ArgumentException($"Unsupported node type: {node.GetType().Name}");
             }
 
-            // After a chunk is executed, all variables declared within the chunk will be removed
-            _instructions.Add(new Instruction(InstructionType.ExitScope));
+            // After a chunk is executed, all variables declared within the chunk will be removed.
+            // CacheId carries the count of variables to pop from the variable stack.
+            _instructions.Add(new Instruction(InstructionType.ExitScope, _varId));
             _compiledChunk = new Chunk(_instructions.ToArray(), _constantList.ToArray());
         }
 
@@ -109,18 +110,14 @@ namespace Chow.Compilation
 
         #region List Methods
 
-        ChowValue ParseLiteral(LiteralNode node)
+        TaggedUnion ParseLiteral(LiteralNode node)
         {
-            ChowValue val;
-
             if (node is NumberLiteralNode numNode)
-                val = new ChowNumber(numNode.GetNumberValue());
-            else if (node is BoolLiteralNode boolNode)
-                val = new ChowBool(boolNode.GetBoolValue());
-            else
-                throw new ArgumentException($"Cannot push constant for node type: {node.GetType().Name}");
+                return new TaggedUnion(numNode.GetNumberValue());
+            if (node is BoolLiteralNode boolNode)
+                return new TaggedUnion(boolNode.GetBoolValue());
 
-            return val;
+            throw new ArgumentException($"Cannot push constant for node type: {node.GetType().Name}");
         }
 
         #endregion
@@ -175,16 +172,16 @@ namespace Chow.Compilation
             var constIndex = ConstantListIndexNotFound;
 
             // Check for an existing constant that matches the exact value being pushed (NOT A REFERENCE AND NOT COERCED)
-            switch (newVal.Type)
+            switch (newVal.Tag)
             {
-                case ChowValueType.Number:
-                    constIndex = _constantList.FindIndex(v => v.IsType(ChowValueType.Number) && v.ToDouble() == newVal.ToDouble());
+                case TagType.Number:
+                    constIndex = _constantList.FindIndex(v => v.Tag == TagType.Number && v.NumberValue == newVal.NumberValue);
                     break;
-                case ChowValueType.Bool:
-                    constIndex = _constantList.FindIndex(v => v.IsType(ChowValueType.Bool) && v.ToBool() == newVal.ToBool());
+                case TagType.Bool:
+                    constIndex = _constantList.FindIndex(v => v.Tag == TagType.Bool && v.BoolValue == newVal.BoolValue);
                     break;
                 default:
-                    throw new InvalidOperationException($"Unsupported constant literal type: {newVal.Type}");
+                    throw new InvalidOperationException($"Unsupported constant literal type: {newVal.Tag}");
             }
 
             // If no existing constant was found, add the new value to the constant list and push its index
